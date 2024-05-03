@@ -1,16 +1,16 @@
-package sv.edu.ues.fia.pdm.proyecto.grupo3.ui.slideshow;
+package sv.edu.ues.fia.pdm.proyecto.grupo3.ui.ciclo;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-public class SlideshowViewModel extends ViewModel {
+public class CicloViewModel extends ViewModel {
 
     private final MutableLiveData<String> mText;
 
-    public SlideshowViewModel() {
+    public CicloViewModel() {
         mText = new MutableLiveData<>();
-        mText.setValue("This is slideshow fragment");
+        mText.setValue("Menu Ciclo");
     }
 
     public LiveData<String> getText() {
