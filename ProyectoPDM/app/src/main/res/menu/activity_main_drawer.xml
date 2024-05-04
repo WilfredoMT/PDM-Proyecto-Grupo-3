@@ -8,13 +8,40 @@
             android:id="@+id/nav_home"
             android:icon="@drawable/ic_menu_camera"
             android:title="@string/menu_home" />
+
         <item
-            android:id="@+id/nav_gallery"
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="@string/menu_gallery" />
+            android:id="@+id/nav_menuCiclo"
+            android:icon="@drawable/ic_ciclo"
+            android:title="@string/menu_ciclo" />
         <item
-            android:id="@+id/nav_slideshow"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="@string/menu_slideshow" />
+            android:id="@+id/nav_menuMaterias"
+            android:icon="@drawable/asignatura"
+            android:title="@string/menu_materias" />
+        <item
+            android:id="@+id/nav_menuLocales"
+            android:icon="@drawable/aula_salon"
+            android:title="@string/menu_locales" />
+        <item
+            android:id="@+id/nav_menuCoordinador"
+            android:icon="@drawable/coordinador"
+            android:title="@string/menu_coordindor" />
+        <item
+            android:id="@+id/nav_menuSolicitudes"
+            android:icon="@drawable/prupuesta"
+            android:title="@string/menu_solicitudes" />
+        <item
+            android:id="@+id/nav_menuDocentes"
+            android:icon="@drawable/docentes"
+            android:title="@string/menu_docentes" />
+        <item
+            android:id="@+id/nav_menuHorarios"
+            android:icon="@drawable/horarios"
+            android:title="@string/menu_horarios" />
+
+        <item
+            android:id="@+id/nav_menuEventos"
+            android:icon="@drawable/evento"
+            android:title="@string/menu_eventos" />
+
     </group>
 </menu>
