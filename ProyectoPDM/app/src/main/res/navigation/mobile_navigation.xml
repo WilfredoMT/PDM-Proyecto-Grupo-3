@@ -16,6 +16,43 @@
         android:name="sv.edu.ues.fia.pdm.proyecto.grupo3.ui.ciclo.CicloFragment"
         android:label="@string/menu_home"
         tools:layout="@layout/fragment_ciclo" />
+    <fragment
+        android:id="@+id/nav_menuMaterias"
+        android:name="sv.edu.ues.fia.pdm.proyecto.grupo3.ui.materias.MateriasFragment"
+        android:label="@string/menu_home"
+        tools:layout="@layout/fragment_ciclo" />
+    <fragment
+        android:id="@+id/nav_menuLocales"
+        android:name="sv.edu.ues.fia.pdm.proyecto.grupo3.ui.locales.LocalesFragment"
+        android:label="@string/menu_home"
+        tools:layout="@layout/fragment_ciclo" />
+    <fragment
+        android:id="@+id/nav_menuCoordinador"
+        android:name="sv.edu.ues.fia.pdm.proyecto.grupo3.ui.coordinadores.CoordinadoresFragment"
+        android:label="@string/menu_home"
+        tools:layout="@layout/fragment_ciclo" />
+    <fragment
+        android:id="@+id/nav_menuSolicitudes"
+        android:name="sv.edu.ues.fia.pdm.proyecto.grupo3.ui.solicitudes.SolicitudesFragment"
+        android:label="@string/menu_home"
+        tools:layout="@layout/fragment_ciclo" />
+    <fragment
+        android:id="@+id/nav_menuDocentes"
+        android:name="sv.edu.ues.fia.pdm.proyecto.grupo3.ui.docentes.DocentesFragment"
+        android:label="@string/menu_home"
+        tools:layout="@layout/fragment_ciclo" />
+    <fragment
+        android:id="@+id/nav_menuHorarios"
+        android:name="sv.edu.ues.fia.pdm.proyecto.grupo3.ui.horarios.HorariosFragment"
+        android:label="@string/menu_home"
+        tools:layout="@layout/fragment_ciclo" />
+    <fragment
+        android:id="@+id/nav_menuEventos"
+        android:name="sv.edu.ues.fia.pdm.proyecto.grupo3.ui.eventos.EventosFragment"
+        android:label="@string/menu_home"
+        tools:layout="@layout/fragment_ciclo" />
+
+
 
 
     <fragment

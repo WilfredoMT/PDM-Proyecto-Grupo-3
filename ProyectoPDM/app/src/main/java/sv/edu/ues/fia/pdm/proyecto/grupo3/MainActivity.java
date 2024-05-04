@@ -68,9 +68,13 @@ public class MainActivity extends AppCompatActivity {
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_gallery, R.id.nav_menuCiclo)
+                //Añadir los otros fragments
+                R.id.nav_home, R.id.nav_menuCiclo, R.id.nav_menuMaterias, R.id.nav_menuLocales, R.id.nav_menuCoordinador, R.id.nav_menuSolicitudes, R.id.nav_menuDocentes, R.id.nav_menuHorarios, R.id.nav_menuEventos )
+
                 .setOpenableLayout(drawer)
                 .build();
+
+
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
@@ -97,7 +101,6 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
-
 
         return true;
     }
