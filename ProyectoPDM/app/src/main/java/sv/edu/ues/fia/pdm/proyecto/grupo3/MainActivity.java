@@ -1,8 +1,12 @@
 package sv.edu.ues.fia.pdm.proyecto.grupo3;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -12,6 +16,7 @@ import android.view.Menu;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 
+import androidx.core.view.GravityCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -22,6 +27,10 @@ import android.util.Log;
 import android.content.Intent;
 
 import sv.edu.ues.fia.pdm.proyecto.grupo3.databinding.ActivityMainBinding;
+import sv.edu.ues.fia.pdm.proyecto.grupo3.ui.home.HomeFragment;
+import sv.edu.ues.fia.pdm.proyecto.grupo3.R;
+
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -29,9 +38,17 @@ public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
     private BaseDatosHelper baseDatosHelper;
 
+    public String[] infoUsuario;
+    private SharedPreferences sharedPreferences;
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //Acceso a SharedPreferences
+        sharedPreferences = getSharedPreferences("loginPrefs", Context.MODE_PRIVATE);
         baseDatosHelper = new BaseDatosHelper(this);
 
 
@@ -47,24 +64,86 @@ public class MainActivity extends AppCompatActivity {
         imagenLogeadoId = intent.getIntExtra("Imagen", 0);
 
 
+
+
+
+        //pasar bundle a fragment de home
+        infoUsuario = new String[]{usuarioLogeado, rolLogeado};
+
+
+
         //rolLogeado
-        //Log.e("main", usuarioLogeado);
-        //Log.e("main", rolLogeado);
+        Log.e("main", usuarioLogeado);
+        Log.e("main", rolLogeado);
+
+
+
 
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+
         setSupportActionBar(binding.appBarMain.toolbar);
+
+        //Ocultar FAB
+        binding.appBarMain.fab.setImageResource(R.drawable.power);
+        binding.appBarMain.fab.setVisibility(View.GONE);
         binding.appBarMain.fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
+
         });
         DrawerLayout drawer = binding.drawerLayout;
         NavigationView navigationView = binding.navView;
+        //Mostrar/Ocultar menus segun usuario
+
+        MenuItem menuCiclo = navigationView.getMenu().findItem(R.id.nav_menuCiclo);
+        MenuItem menuMaterias = navigationView.getMenu().findItem(R.id.nav_menuMaterias);
+        MenuItem menuLocales = navigationView.getMenu().findItem(R.id.nav_menuLocales);
+        MenuItem menuCoordinador = navigationView.getMenu().findItem(R.id.nav_menuCoordinador);
+        MenuItem menuSolicitudes = navigationView.getMenu().findItem(R.id.nav_menuSolicitudes);
+        MenuItem menuDocentes = navigationView.getMenu().findItem(R.id.nav_menuDocentes);
+        MenuItem menuHorarios = navigationView.getMenu().findItem(R.id.nav_menuHorarios);
+        MenuItem menuEventos = navigationView.getMenu().findItem(R.id.nav_menuEventos);
+        menuCiclo.setVisible(false);
+        menuMaterias.setVisible(false);
+        menuLocales.setVisible(false);
+        menuCoordinador.setVisible(false);
+        menuSolicitudes.setVisible(false);
+        menuDocentes.setVisible(false);
+        menuHorarios.setVisible(false);
+        menuEventos.setVisible(false);
+
+        //usuario admin
+        if (rolLogeado.equals("Administrador")) {
+            menuCiclo.setVisible(true);
+            menuMaterias.setVisible(true);
+            menuLocales.setVisible(true);
+            menuCoordinador.setVisible(true);
+            menuSolicitudes.setVisible(true);
+
+        }
+        if (rolLogeado.equals("Coordinador")) {
+            menuDocentes.setVisible(true);
+            menuHorarios.setVisible(true);
+            menuEventos.setVisible(true);
+
+
+        }
+        if (rolLogeado.equals("Docente")) {
+            menuHorarios.setVisible(true);
+            menuEventos.setVisible(true);
+
+        }
+
+
+
+
+
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
@@ -97,6 +176,38 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public void toggleFabVisibility(boolean visible) {
+        if (visible) {
+            binding.appBarMain.fab.setVisibility(View.VISIBLE);
+        } else {
+            binding.appBarMain.fab.setVisibility(View.GONE);
+        }
+    }
+
+    // click listener para FAB
+    public void setFabClickListener(View.OnClickListener listener) {
+        binding.appBarMain.fab.setOnClickListener(listener);
+    }
+    // Icono Para FAB
+    public void setFabIcon(Drawable icon) {
+        binding.appBarMain.fab.setImageDrawable(icon);
+    }
+
+    private void logoff() {
+        // borrar credenciales
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.remove("loggedIn");
+        editor.remove("username");
+        editor.remove("rol");
+        editor.remove("imagenIndex");
+        editor.apply();
+
+        // redirigir a la pantalla de login
+        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -106,9 +217,30 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_logoff){
+            logoff();
+        }
+        else
+        {
+            //Barra de menus
+            if (id == android.R.id.home){
+                DrawerLayout drawer = binding.drawerLayout;
+                drawer.openDrawer(GravityCompat.START);
+            }
+
+        }
+        return true;
+    }
+
+
+    @Override
     public boolean onSupportNavigateUp() {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
     }
+
+
 }

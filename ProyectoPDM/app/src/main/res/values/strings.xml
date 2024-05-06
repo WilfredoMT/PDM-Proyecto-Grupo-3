@@ -27,5 +27,52 @@
     <string name="menu_locales">Locales</string>
     <string name="menu_materias">Materias\n</string>
     <string name="menu_ciclo">Ciclos\n</string>
+    <string name="bienvenido">"Bienvenido/a "</string>
+    <string name="sistema_reserva"> al sistema de Reserva de Locales de la FIA</string>
+    <string name="ayuda">Selecciona una funcion en el menu para continuar</string>
+    <string name="contraseña">Contraseña</string>
+    <string name="usuario">Usuario</string>
+    <string name="recordarusuario">Recordar usuario y contraseña</string>
+    <string name="cerrarsesion">Cerrar Sesión</string>
+    <string name="ciclostodos">Todos los Ciclos registrados:</string>
+    <string name="editar">Editar</string>
+    <string name="borrar">Borrar</string>
+    <string name="presiona">Presiona el boton para agregar un ciclo</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="agregarciclo">Registrar un nuevo ciclo</string>
+
+    <string name="choose_number">Elegir numero de ciclo</string>
+    <string-array name="numbers">
+        <item>01</item>
+        <item>02</item>
+
+    </string-array>
+    <string name="choose_year">Elegir el año</string>
+    <string name="agregar_ciclo">Agregar Ciclo</string>
+    <string name="seleccionarvalores">Selecciona los datos correspondientes</string>
+    <string name="ciclonumero">Numero de ciclo en el año</string>
+    <string name="cicloanio">Año</string>
+    <string name="fechainicio">Fecha de inicio</string>
+    <string name="fechafin">Fecha de finalizacion</string>
+    <string name="registrar">Agregar</string>
+    <string name="confirmacion">Confirmacion</string>
+    <string name="estas_seguro_de_borrar">Estas seguro de borrar</string>
+    <string name="si">Si</string>
+    <string name="no">No</string>
+    <string name="ciclo_borrado_correctamente">Ciclo Borrado correctamente</string>
+    <string name="accion_cancelada">Accion cancelada</string>
+    <string name="estas_seguro_de_borrar_el_ciclo">"Estas seguro de borrar el ciclo: "</string>
+    <string name="editar_ciclo">Editar Ciclo</string>
+    <string name="editando_el_ciclo">"Editando el ciclo: "</string>
+    <string name="editando_el_ciclos">"Editando el ciclo: "</string>
+    <string-array name="years">
+        <item>2022</item>
+        <item>2023</item>
+        <item>2024</item>
+        <item>2025</item>
+        <item>2026</item>
+
+    </string-array>
 
 </resources>

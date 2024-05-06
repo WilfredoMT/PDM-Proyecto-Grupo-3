@@ -13,6 +13,15 @@
         android:theme="@style/Theme.ProyectoPDM"
         tools:targetApi="31">
         <activity
+            android:name=".ui.ciclo.EditarCicloActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.ciclo.AgregarCicloActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.login.editarUsuarioActivity"
+            android:exported="false" />
+        <activity
             android:name=".CicloMenuActivity"
             android:exported="false" />
         <activity
