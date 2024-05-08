@@ -98,7 +98,7 @@ public class CicloFragment extends Fragment {
 
         //Acciones FAB
         //FaB visible
-        ((MainActivity) requireActivity()).toggleFabVisibility(true);
+        ((MainActivity) requireActivity()).binding.appBarMain.fab.setVisibility(View.VISIBLE);
 
         ((MainActivity) requireActivity()).setFabIcon(ContextCompat.getDrawable(requireContext(), R.drawable.plus));
 
@@ -130,6 +130,7 @@ public class CicloFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        ((MainActivity) requireActivity()).binding.appBarMain.fab.setVisibility(View.GONE);
         binding = null;
     }
     @Override
@@ -144,6 +145,7 @@ public class CicloFragment extends Fragment {
     }
 
     public void refreshRecyclerView() {
+        ((MainActivity) requireActivity()).binding.appBarMain.fab.setVisibility(View.VISIBLE);
         Cursor cursor = mDbHelper.getReadableDatabase().query(
                 BaseDatosHelper.CICLO_TABLA,
                 null,

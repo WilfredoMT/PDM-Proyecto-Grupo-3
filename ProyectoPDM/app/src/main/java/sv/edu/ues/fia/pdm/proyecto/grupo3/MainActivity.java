@@ -35,7 +35,7 @@ import sv.edu.ues.fia.pdm.proyecto.grupo3.R;
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
-    private ActivityMainBinding binding;
+    public ActivityMainBinding binding;
     private BaseDatosHelper baseDatosHelper;
 
     public String[] infoUsuario;
@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
 
         //Acceso a SharedPreferences
         sharedPreferences = getSharedPreferences("loginPrefs", Context.MODE_PRIVATE);
@@ -86,14 +87,13 @@ public class MainActivity extends AppCompatActivity {
 
         setSupportActionBar(binding.appBarMain.toolbar);
 
-        //Ocultar FAB
-        binding.appBarMain.fab.setImageResource(R.drawable.power);
-        binding.appBarMain.fab.setVisibility(View.GONE);
+        //Acciones FAB
+        binding.appBarMain.fab.setImageResource(R.drawable.menu);
+        binding.appBarMain.fab.setVisibility(View.VISIBLE);
         binding.appBarMain.fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                abrirMenu();
             }
 
         });
@@ -232,6 +232,11 @@ public class MainActivity extends AppCompatActivity {
 
         }
         return true;
+    }
+    public void abrirMenu(){
+        DrawerLayout drawer = binding.drawerLayout;
+        drawer.openDrawer(GravityCompat.START);
+
     }
 
 

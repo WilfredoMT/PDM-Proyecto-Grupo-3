@@ -155,12 +155,19 @@ public class EditarCicloActivity extends AppCompatActivity {
                 String nombreEditado = "Ciclo " + numeroCicloEditado + " " + anioCicloEditado;
 
 
+
                 baseDatosHelper = new BaseDatosHelper(getBaseContext());
-                baseDatosHelper.actualizarCiclo(idCiclo, nombreEditado, fechaInicioEditado.toString(), fechaFinEditado.toString());
-                Toast.makeText(EditarCicloActivity.this, "Ciclo editado correctamente", Toast.LENGTH_SHORT).show();
+                if (!baseDatosHelper.existeCiclo(nombreEditado, id) ) {
+                    // Si no existe permitir editar ciclo
+                    baseDatosHelper.actualizarCiclo(idCiclo, nombreEditado, fechaInicioEditado.toString(), fechaFinEditado.toString());
+                    Toast.makeText(EditarCicloActivity.this, R.string.ciclo_editado_correctamente, Toast.LENGTH_SHORT).show();
+                    finish();
 
+                } else {
+                    // Si existe mostrar error
+                    Toast.makeText(EditarCicloActivity.this, R.string.el_ciclo_ya_existe_en_la_base_de_datos, Toast.LENGTH_SHORT).show();
+                }
 
-                finish();
 
             }
         });

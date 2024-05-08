@@ -8,6 +8,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import android.util.Log;
@@ -35,6 +38,7 @@ public class HomeFragment extends Fragment {
         homeViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
 
         MainActivity act =(MainActivity) getActivity();
+
         homeViewModel.getText().observe(getViewLifecycleOwner(), newText -> {
             // texto para la TextView
             textView.setText(getString(R.string.bienvenido)+ act.infoUsuario[0]+ getString(R.string.sistema_reserva));
@@ -44,12 +48,39 @@ public class HomeFragment extends Fragment {
         Log.e("homeFragment", act.infoUsuario[0]);
         Log.e("homeFragment", act.infoUsuario[1]);
 
+
+
         return root;
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        //Acciones FAB
+        //FaB visible
+
+        ((MainActivity) requireActivity()).binding.appBarMain.fab.setVisibility(View.VISIBLE);
+
+        ((MainActivity) requireActivity()).setFabIcon(ContextCompat.getDrawable(requireContext(), R.drawable.menu));
+
+        // click listener para este fragment
+        ((MainActivity) requireActivity()).setFabClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((MainActivity) requireActivity()).abrirMenu();
+
+
+
+            }
+        });
+
+
+
+    }
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
+        ((MainActivity) requireActivity()).binding.appBarMain.fab.setVisibility(View.GONE);
         binding = null;
     }
 

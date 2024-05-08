@@ -66,6 +66,24 @@
     <string name="editar_ciclo">Editar Ciclo</string>
     <string name="editando_el_ciclo">"Editando el ciclo: "</string>
     <string name="editando_el_ciclos">"Editando el ciclo: "</string>
+    <string name="todas_las_materias_registradas">Todas las materias registradas</string>
+    <string name="presiona_el_boton_para_agregar_una_materia">Presiona el boton para agregar una materia</string>
+    <string name="estas_seguro_de_borrar_la_materia">"Estas seguro de borrar la materia: "</string>
+    <string name="materia_borrada_correctamente">"Materia borrada correctamente "</string>
+    <string name="ciclo_editado_correctamente">Ciclo editado correctamente</string>
+    <string name="el_ciclo_ya_existe_en_la_base_de_datos">El ciclo ya existe en la base de datos</string>
+    <string name="ciclo_agregado_correctamente">Ciclo agregado correctamente</string>
+    <string name="ingresa_datos">Ingresa los datos correspondientes</string>
+    <string name="escribe_el_nombre_de_la_materia">Escribe el nombre de la materia</string>
+    <string name="escribe_el_codigo_de_la_materia">Escribe el codigo de la materia</string>
+    <string name="nombremateria">Nombre de la materia</string>
+    <string name="codigomateria">Codigo de la materia</string>
+    <string name="agregar_materia">Agregar Materia</string>
+    <string name="materia_agregada_correctamente">Materia agregada correctamente</string>
+    <string name="la_materia_ya_existe">La materia ya existe</string>
+    <string name="editando_materia">Editando materia:</string>
+    <string name="editar_materia">Editar Materia</string>
+    <string name="materia_editada_correctamente">Materia editada correctamente</string>
     <string-array name="years">
         <item>2022</item>
         <item>2023</item>
