@@ -41,7 +41,7 @@ public class HomeFragment extends Fragment {
 
         homeViewModel.getText().observe(getViewLifecycleOwner(), newText -> {
             // texto para la TextView
-            textView.setText(getString(R.string.bienvenido)+ act.infoUsuario[0]+ getString(R.string.sistema_reserva));
+            textView.setText(getString(R.string.bienvenido)+ act.infoUsuario[0]+ " " + getString(R.string.sistema_reserva));
         });
 
 

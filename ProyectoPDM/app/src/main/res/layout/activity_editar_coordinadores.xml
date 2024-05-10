@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.coordinadores.CoordinadoresFragment">
+
+
+    <EditText
+        android:id="@+id/EditTextContra"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="368dp"
+        android:entries="@array/numbers"
+        android:hint="@string/contraseña"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.513"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+    <TextView
+        android:id="@+id/textViewContra"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/contraCoord"
+        app:layout_constraintBottom_toBottomOf="@+id/EditTextContra"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.238"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/EditTextNombreUsuario"
+        app:layout_constraintVertical_bias="0.111" />
+
+    <EditText
+        android:id="@+id/EditTextNombreUsuario"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="292dp"
+        android:entries="@array/numbers"
+        android:hint="@string/usuario"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.513"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+    <TextView
+        android:id="@+id/textViewNombreUser"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/Nombreusuario"
+        app:layout_constraintBottom_toBottomOf="@+id/EditTextNombreUsuario"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.195"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/EditTextEmail"
+        app:layout_constraintVertical_bias="0.122" />
+
+    <EditText
+        android:id="@+id/EditTextEmail"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="216dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.504"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+
+    <TextView
+        android:id="@+id/textViewemail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="56dp"
+        android:text="@string/email"
+        app:layout_constraintBottom_toBottomOf="@+id/EditTextEmail"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.203"
+
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/textViewNombreCoord"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+
+        android:text="@string/nombreCoord"
+        app:layout_constraintBottom_toBottomOf="@+id/EditTextNombreCoordinador"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.221"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView"
+        app:layout_constraintVertical_bias="0.218" />
+
+    <TextView
+        android:id="@+id/textViewApecoord"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="48dp"
+
+        android:text="@string/appelidoCoord"
+        app:layout_constraintBottom_toBottomOf="@+id/EditTextApellidoCoordinador"
+        app:layout_constraintEnd_toEndOf="parent"
+
+        app:layout_constraintHorizontal_bias="0.22"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <EditText
+        android:id="@+id/EditTextApellidoCoordinador"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="132dp"
+        android:entries="@array/numbers"
+        android:hint="@string/escribapecoord"
+
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.504"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+    <EditText
+        android:id="@+id/EditTextNombreCoordinador"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="56dp"
+        android:entries="@array/numbers"
+        android:hint="@string/escribanombrecoord"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.504"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:text="@string/editarcoordinador"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.51"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <Button
+        android:id="@+id/buttonAgregarCoordinador"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/editar"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/EditTextEmail"
+        app:layout_constraintVertical_bias="0.86" />
+
+    <ImageView
+        android:id="@+id/imageViewPerfil"
+        android:layout_width="89dp"
+        android:layout_height="98dp"
+        app:layout_constraintBottom_toTopOf="@+id/buttonAgregarCoordinador"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.177"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/EditTextEmail"
+        app:layout_constraintVertical_bias="0.8"
+        android:clickable="true"
+        android:onClick="onImageViewClicked"
+         />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="154dp"
+        android:layout_height="79dp"
+        android:layout_marginStart="108dp"
+        android:text="@string/fotoperfilcambiar"
+        app:layout_constraintBottom_toTopOf="@+id/buttonAgregarCoordinador"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.206"
+        app:layout_constraintStart_toStartOf="@+id/imageViewPerfil"
+        app:layout_constraintTop_toBottomOf="@+id/EditTextContra"
+        app:layout_constraintVertical_bias="0.597" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

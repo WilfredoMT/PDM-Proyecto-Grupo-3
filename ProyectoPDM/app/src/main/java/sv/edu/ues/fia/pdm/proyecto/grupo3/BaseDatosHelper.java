@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
 import java.sql.Date;
@@ -23,6 +24,7 @@ public class BaseDatosHelper extends SQLiteOpenHelper {
     public static final String CICLO_TABLA = "ciclo";
     public static final String ASIGNATURA_TABLA = "asignatura";
     public static final String LOCAL_TABLA = "local";
+    public static final String COORDINADOR_TABLA = "docenteCoordinador";
 
 
     // Tabla Login Columnas //
@@ -51,11 +53,26 @@ public class BaseDatosHelper extends SQLiteOpenHelper {
     public static final String KEY_tipoLocal = "tipo";
     public static final String KEY_capacidadLocal = "capacidad";
 
+    //Tabla DocenteCoordinador columna
+    public static final String KEY_idCoordinador = "idCoordinador";
+    public static final String KEY_nombreCoordinador = "nombre";
+    public static final String KEY_apellidoCoordinador = "apellido";
+    public static final String KEY_emailCoordinador = "email";
+    public static final String KEY_idUsuarioCoordinador = "idUsuario";
 
 
 
                          // Hacer sentencias de creacion SQL //
 
+
+    //Tabla de docenteCoordinador
+    private static final String CREATE_COORDINADOR_TABLA = "CREATE TABLE " + COORDINADOR_TABLA + " ("
+            + KEY_idCoordinador + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+            + KEY_nombreCoordinador + " TEXT,"
+            + KEY_apellidoCoordinador + " TEXT,"
+            + KEY_emailCoordinador + " TEXT,"
+            + KEY_idUsuarioCoordinador + " INTEGER,"
+            + "FOREIGN KEY(" + KEY_idUsuarioCoordinador + ") REFERENCES login(" + KEY_idUsuario + "))" ;
 
     //Tabla de locales
     private static final String CREATE_LOCAL_TABLA = "CREATE TABLE " + LOCAL_TABLA + " ("
@@ -99,6 +116,7 @@ public class BaseDatosHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_CICLO_TABLA);
         db.execSQL(CREATE_ASIGNATURA_TABLA);
         db.execSQL(CREATE_LOCAL_TABLA);
+        db.execSQL(CREATE_COORDINADOR_TABLA);
 
 
     }
@@ -110,6 +128,7 @@ public class BaseDatosHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + CICLO_TABLA);
         db.execSQL("DROP TABLE IF EXISTS " + ASIGNATURA_TABLA);
         db.execSQL("DROP TABLE IF EXISTS " + LOCAL_TABLA);
+        db.execSQL("DROP TABLE IF EXISTS " + COORDINADOR_TABLA);
 
         // Crear tablas de nuevo
         onCreate(db);
@@ -117,7 +136,120 @@ public class BaseDatosHelper extends SQLiteOpenHelper {
 
     //                    Helpers para CRUDs                  //
 
-                        //Tabla locales//
+
+
+
+                           //Tabla Coordinador//
+
+    //agregar coordinador
+    public boolean agregarCoord(String nombre, String apellido, String email, String idUsuario) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(KEY_nombreCoordinador, nombre);
+        values.put(KEY_apellidoCoordinador, apellido);
+        values.put(KEY_emailCoordinador, email);
+        values.put(KEY_idUsuarioCoordinador, idUsuario);
+        long result = db.insert(COORDINADOR_TABLA, null, values);
+        return result != -1;
+    }
+
+    //Get coordinador
+    public Cursor getCoordinador(String id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.query(COORDINADOR_TABLA, new String[]{KEY_idCoordinador,
+                        KEY_nombreCoordinador, KEY_apellidoCoordinador,KEY_emailCoordinador, KEY_idUsuarioCoordinador}, KEY_idCoordinador + "=?",
+                new String[]{id}, null, null, null, null);
+
+        if (cursor != null)
+            cursor.moveToFirst();
+
+        return cursor;
+    }
+
+    //Actualizar coordinador
+    public boolean actualizarCoordinador(String idCoordinador, String nombre, String apellido, String email) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(KEY_nombreCoordinador, nombre);
+        values.put(KEY_apellidoCoordinador, apellido);
+        values.put(KEY_emailCoordinador, email);
+        int rowsAffected = db.update(COORDINADOR_TABLA, values, KEY_idCoordinador + " = ?", new String[]{idCoordinador});
+        return rowsAffected > 0;
+    }
+
+    //Eliminar coordinador
+    public boolean eliminarCoordinador(String id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int rowsAffected = db.delete(COORDINADOR_TABLA, KEY_idCoordinador + " = ?", new String[]{id});
+        return rowsAffected > 0;
+    }
+
+    //Ver si ya existe coordinador registrado
+    public boolean existeCoordinador(String nombre) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+        try {
+            // Query para ver si ya existe el mismo codigo
+            String query = "SELECT * FROM " + COORDINADOR_TABLA + " WHERE " + KEY_nombreCoordinador + "=?";
+            cursor = db.rawQuery(query, new String[]{nombre});
+            // si cursor tiene al menos una row, asignatura ya existe
+            return cursor.getCount() > 0;
+        } finally {
+            // cerrar cursor y db
+            if (cursor != null)
+                cursor.close();
+            db.close();
+        }
+    }
+    //Sobrecargar metodo
+    public boolean existeCoordinador(String nombre, String id) {
+
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+
+        // Query para ver si ya existe el mismo nombre
+        String query = "SELECT * FROM " + COORDINADOR_TABLA + " WHERE " + KEY_nombreCoordinador + "=?";
+        cursor = db.rawQuery(query, new String[]{nombre});
+
+        // si cursor tiene al menos una row, ciclo ya existe
+        boolean rowHay = cursor.getCount() > 0;
+        if(rowHay == true) {
+            cursor.moveToFirst();
+            @SuppressLint("Range") int idEncontrado = cursor.getInt(cursor.getColumnIndex(KEY_idCoordinador));
+            if (idEncontrado == Integer.parseInt(id)) {
+                //el id es el mismo asi que se solo editando el mismo ciclo
+                return false;
+            } else {
+                cursor.close();
+                db.close();
+                return rowHay;
+            }
+
+        }
+        return rowHay;
+    }
+
+
+
+    //Insertar Datos iniciales de coordinador
+    public void insertarDatosInicialesCoord() {
+
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM " + COORDINADOR_TABLA, null);
+        cursor.moveToFirst();
+        int count = cursor.getInt(0);
+        cursor.close();
+
+        if (count == 0) {
+            agregarCoord("nombreCoordinador", "apellidoCoordinador", "coordinador@ues.edu.sv", "2");
+        }
+    }
+
+
+    //Tabla locales//
 
     //agregar local
     public boolean agregarLocal(String nombre, String tipo, String capacidad) {
@@ -135,7 +267,7 @@ public class BaseDatosHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = db.query(LOCAL_TABLA, new String[]{KEY_idLocal,
-                        KEY_nombreLocal, KEY_tipoLocal, KEY_capacidadLocal}, KEY_idAsignatura + "=?",
+                        KEY_nombreLocal, KEY_tipoLocal, KEY_capacidadLocal}, KEY_idLocal + "=?",
                 new String[]{id}, null, null, null, null);
 
         if (cursor != null)
@@ -181,30 +313,31 @@ public class BaseDatosHelper extends SQLiteOpenHelper {
     }
     //Sobrecargar metodo
     public boolean existeLocal(String nombre, String id) {
+
+
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = null;
 
-        // Query para ver si ya existe el mismo codigo
+        // Query para ver si ya existe el mismo nombre
         String query = "SELECT * FROM " + LOCAL_TABLA + " WHERE " + KEY_nombreLocal + "=?";
         cursor = db.rawQuery(query, new String[]{nombre});
-        // si cursor tiene al menos una row, asignatura ya existe
-        boolean hayRow= cursor.getCount() > 0;
 
-        if(hayRow == true) {
+        // si cursor tiene al menos una row, ciclo ya existe
+        boolean rowHay = cursor.getCount() > 0;
+        if(rowHay == true) {
             cursor.moveToFirst();
             @SuppressLint("Range") int idEncontrado = cursor.getInt(cursor.getColumnIndex(KEY_idLocal));
-            if (idEncontrado == Integer.parseInt(id))
-            {
+            if (idEncontrado == Integer.parseInt(id)) {
+                //el id es el mismo asi que se solo editando el mismo ciclo
                 return false;
-            }
-            else {
+            } else {
                 cursor.close();
                 db.close();
-                return true;
+                return rowHay;
             }
-        }
 
-        return true;
+        }
+        return rowHay;
     }
 
 
@@ -220,7 +353,7 @@ public class BaseDatosHelper extends SQLiteOpenHelper {
         if (count == 0) {
             agregarLocal("Miguel Marmol", "Auditorio", "100");
             agregarLocal("Infocentros", "Salon", "25");
-            agregarLocal("Edificio B ", "Edificio", "120");
+            agregarLocal("Edificio B", "Edificio", "120");
             agregarLocal("Edificio C", "Edificio", "120");
 
         }
@@ -451,7 +584,7 @@ public class BaseDatosHelper extends SQLiteOpenHelper {
 
                             //Tabla Login//
     //Añadir usuario
-    public boolean agregarUsuario(String nombreusuario, String clave, String rol, Bitmap imagenpefil) {
+    public long agregarUsuario(String nombreusuario, String clave, String rol, Bitmap imagenpefil) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(KEY_nombreUsuario, nombreusuario);
@@ -459,8 +592,10 @@ public class BaseDatosHelper extends SQLiteOpenHelper {
         values.put(KEY_rol, rol);
         values.put(KEY_imagen_perfil, getBytesFromBitmap(imagenpefil));
 
-        long result = db.insert(LOGIN_TABLA, null, values);
-        return result != -1;
+        long id = db.insert(LOGIN_TABLA, null, values);
+        //long result = db.insert(LOGIN_TABLA, null, values);
+        db.close();
+        return id;
     }
 
     //Bitmap a vector de bytes
@@ -476,12 +611,25 @@ public class BaseDatosHelper extends SQLiteOpenHelper {
     }
 
     //Get Usuario
-    public Cursor getUsuario(String nombreUsuario) {
+    public Cursor getUsuario(String id, String nombre) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.query(LOGIN_TABLA, new String[]{KEY_idUsuario,
+                        KEY_nombreUsuario, KEY_clave, KEY_rol, KEY_imagen_perfil}, KEY_idUsuario + "=?",
+                new String[]{id}, null, null, null, null);
+
+        if (cursor != null)
+            cursor.moveToFirst();
+
+        return cursor;
+    }
+    //Sobrecargar
+    public Cursor getUsuario(String nombre) {
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = db.query(LOGIN_TABLA, new String[]{KEY_idUsuario,
                         KEY_nombreUsuario, KEY_clave, KEY_imagen_perfil, KEY_rol}, KEY_nombreUsuario + "=?",
-                new String[]{nombreUsuario}, null, null, null, null);
+                new String[]{nombre}, null, null, null, null);
 
         if (cursor != null)
             cursor.moveToFirst();
@@ -490,19 +638,21 @@ public class BaseDatosHelper extends SQLiteOpenHelper {
     }
 
     //Actualizar Usuario
-    public boolean actualizarUsuario(String nombreusuario, String clave, String rol) {
+    public boolean actualizarUsuario(String idUsuario, String nombreusuario, String clave, String rol, Bitmap perfil) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
+        values.put(KEY_nombreUsuario, nombreusuario);
         values.put(KEY_clave, clave);
         values.put(KEY_rol, rol);
-        int rowsAffected = db.update(LOGIN_TABLA, values, KEY_nombreUsuario + " = ?", new String[]{nombreusuario});
+        values.put(KEY_imagen_perfil, getBytesFromBitmap(perfil));
+        int rowsAffected = db.update(LOGIN_TABLA, values, KEY_idUsuario + " = ?", new String[]{idUsuario});
         return rowsAffected > 0;
     }
 
     //Eliminar Usuario
-    public boolean eliminarUsuario(String nombreusuario) {
+    public boolean eliminarUsuario(String id) {
         SQLiteDatabase db = this.getWritableDatabase();
-        int rowsAffected = db.delete(LOGIN_TABLA, KEY_nombreUsuario + " = ?", new String[]{nombreusuario});
+        int rowsAffected = db.delete(LOGIN_TABLA, KEY_idUsuario + " = ?", new String[]{id});
         return rowsAffected > 0;
     }
 

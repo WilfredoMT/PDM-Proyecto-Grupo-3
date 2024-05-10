@@ -84,12 +84,53 @@
     <string name="editando_materia">Editando materia:</string>
     <string name="editar_materia">Editar Materia</string>
     <string name="materia_editada_correctamente">Materia editada correctamente</string>
+    <string name="todos_los_locales_registrados">"Todos los locales registrados: "</string>
+    <string name="presiona_agregar_local">Presiona el boton para agregar un Local</string>
+    <string name="estas_seguro_que_deseas_borrar_el_local">Estas seguro que deseas borrar el Local</string>
+    <string name="local_borrado_correctamente">Local borrado correctamente</string>
+    <string name="nombreLocal">Nombre del local</string>
+    <string name="capMaxima">Capacidad maxima (Personas)</string>
+    <string name="nombrelocal">Escriba el nombre del local</string>
+    <string name="maxpersonas">Escribe la capacidad del local</string>
+    <string name="TipoLocal">Selecciona el tipo del local</string>
+    <string name="agregar_local">Agregar Local</string>
+    <string name="local_agregado_correctamente">Local agregado correctamente</string>
+    <string name="el_local_ya_existe_en_la_base_de_datos">El local ya existe en la base de datos</string>
+    <string name="editandolocal">Editando Local:</string>
+    <string name="editar_local">Editar Local</string>
+    <string name="local_editado_correctamente">Local editado correctamente</string>
+    <string name="todos_los_coordinadores_registrados">Todos los coordinadores registrados:</string>
+    <string name="estas_seguro_de_borrar_el_coordinador">Estas seguro de borrar el coordinador</string>
+    <string name="coordinador_borrando_correctamente">Coordinador borrando correctamente</string>
+    <string name="agregar_coordinador">Agregar Coordinador</string>
+    <string name="nombreCoord">Nombre del Coordinador</string>
+    <string name="escribanombrecoord">Escriba el nombre del coordinador</string>
+    <string name="appelidoCoord">Apellido del coordinador</string>
+    <string name="escribapecoord">Escriba el apellido del coordinador</string>
+    <string name="email">Email del coordinador</string>
+    <string name="Nombreusuario">Nombre de usuario</string>
+    <string name="contraCoord">Contraseña de Coordinador</string>
+    <string name="presionaImagen">Toca la imagen para agregar foto de perfil</string>
+    <string name="coordinador_agregado_correctamente">Coordinador agregado correctamente</string>
+    <string name="el_coordinador_ya_esta_registrado">El coordinador ya esta registrado</string>
+    <string name="editarcoordinador">Editando Coordinador:</string>
+    <string name="fotoperfilcambiar">Toca la imagen para cambiar la foto de perfil</string>
+    <string name="editar_coordinador">Editar Coordinador</string>
+    <string name="coordinador_editado_correctamente">Coordinador editado correctamente</string>
     <string-array name="years">
         <item>2022</item>
         <item>2023</item>
         <item>2024</item>
         <item>2025</item>
         <item>2026</item>
+
+    </string-array>
+    <string-array name="tipoLocales">
+        <item>Auditorio</item>
+        <item>Biblioteca</item>
+        <item>Salon</item>
+        <item>Edificio</item>
+        <item>Otro</item>
 
     </string-array>
 
