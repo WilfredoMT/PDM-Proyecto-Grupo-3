@@ -13,6 +13,33 @@
         android:theme="@style/Theme.ProyectoPDM"
         tools:targetApi="31">
         <activity
+            android:name=".ui.coordinadores.EditarCoordinadoresActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.coordinadores.AgregarCoordinadoresActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.locales.EditarLocalesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.locales.AgregarLocalesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.materias.EditarMateriaActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.materias.AgregarMateriaActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.ciclo.EditarCicloActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.ciclo.AgregarCicloActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.login.editarUsuarioActivity"
+            android:exported="false" />
+        <activity
             android:name=".CicloMenuActivity"
             android:exported="false" />
         <activity
