@@ -1,8 +1,4 @@
-package sv.edu.ues.fia.pdm.proyecto.grupo3.ui.coordinadores;
-
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
+package sv.edu.ues.fia.pdm.proyecto.grupo3.ui.encargados;
 
 import android.app.Activity;
 import android.content.Context;
@@ -14,21 +10,21 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import java.io.IOException;
 
 import sv.edu.ues.fia.pdm.proyecto.grupo3.BaseDatosHelper;
 import sv.edu.ues.fia.pdm.proyecto.grupo3.R;
-import sv.edu.ues.fia.pdm.proyecto.grupo3.ui.locales.AgregarLocalesActivity;
 
 
-public class AgregarCoordinadoresActivity extends AppCompatActivity {
+public class AgregarEncargadosActivity extends AppCompatActivity {
 
     BaseDatosHelper baseDatosHelper;
     private static final int PICK_IMAGE_REQUEST = 1;
@@ -38,14 +34,14 @@ public class AgregarCoordinadoresActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_agregar_coordinadores);
+        setContentView(R.layout.activity_agregar_encargados);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle(R.string.agregar_coordinador);
+        getSupportActionBar().setTitle(R.string.agregar_encargado_de_horario);
 
-        Button buttonAgregar = findViewById(R.id.buttonAgregarCoordinador);
-        EditText editTextNombre = findViewById(R.id.EditTextNombreCoordinador);
-        EditText editTextApellido = findViewById(R.id.EditTextApellidoCoordinador);
+        Button buttonAgregar = findViewById(R.id.buttonAgregarEncargado);
+        EditText editTextNombre = findViewById(R.id.EditTextNombreEncargado);
+        EditText editTextApellido = findViewById(R.id.EditTextApellidoEncargado);
         EditText editTextEmail = findViewById(R.id.EditTextEmail);
 
         EditText editTextUsuario= findViewById(R.id.EditTextNombreUsuario);
@@ -69,13 +65,13 @@ public class AgregarCoordinadoresActivity extends AppCompatActivity {
 
                 baseDatosHelper = new BaseDatosHelper(getBaseContext());
 
-                String nombreUsuario, clave, nombreCoord, apellidoCoord, email;
+                String nombreUsuario, clave, nombreEncargado, apellidoEncargado, email;
 
 
                 nombreUsuario = editTextUsuario.getText().toString();
                 clave = editTextClave.getText().toString();
-                nombreCoord = editTextNombre.getText().toString();
-                apellidoCoord = editTextApellido.getText().toString();
+                nombreEncargado = editTextNombre.getText().toString();
+                apellidoEncargado = editTextApellido.getText().toString();
                 email = editTextEmail.getText().toString();
 
 
@@ -85,32 +81,27 @@ public class AgregarCoordinadoresActivity extends AppCompatActivity {
 
                 Bitmap imagenPerfilExtraida = Bitmap.createBitmap(imageViewPerfil.getDrawingCache());
 
-
-
-
-                if (!baseDatosHelper.existeCoordinador(nombreCoord)) {
+                if (!baseDatosHelper.existeEncargado (nombreEncargado)) {
                     // Si no existe agregar ciclo
 
                     //Crear cuenta primero y recuperar id
 
-                    long idCreado = baseDatosHelper.agregarUsuario(nombreUsuario, clave, "Coordinador", imagenPerfilExtraida);
+                    long idCreado = baseDatosHelper.agregarUsuario(nombreUsuario, clave, "Encargado de Horario", imagenPerfilExtraida);
                     String idCreadoStr = String.valueOf(idCreado);
 
-                    //crear coordinador
+                    //crear encargado
 
-                    baseDatosHelper.agregarCoord(nombreCoord, apellidoCoord, email, idCreadoStr);
-                    Toast.makeText(AgregarCoordinadoresActivity.this, R.string.coordinador_agregado_correctamente, Toast.LENGTH_SHORT).show();
+                    baseDatosHelper.agregarEncargado(nombreEncargado, apellidoEncargado, email, idCreadoStr);
+                    Toast.makeText(AgregarEncargadosActivity.this, R.string.encargado_registrado_correctamente, Toast.LENGTH_SHORT).show();
                     finish();
 
                 } else {
                     // Si existe mostrar error
-                    Toast.makeText(AgregarCoordinadoresActivity.this, R.string.el_coordinador_ya_esta_registrado, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AgregarEncargadosActivity.this, R.string.el_encargado_ya_esta_registrado, Toast.LENGTH_SHORT).show();
                 }
 
             }
         });
-
-
 
     }
     private void openGallery() {
@@ -130,6 +121,7 @@ public class AgregarCoordinadoresActivity extends AppCompatActivity {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
                 ImageView imageViewPerfil = findViewById(R.id.imageViewPerfil);
                 imageViewPerfil.setImageBitmap(bitmap);
+
 
 
 

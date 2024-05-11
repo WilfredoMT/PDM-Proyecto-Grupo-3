@@ -8,7 +8,6 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.Spinner;
 import android.widget.Toast;
-
 import sv.edu.ues.fia.pdm.proyecto.grupo3.BaseDatosHelper;
 import sv.edu.ues.fia.pdm.proyecto.grupo3.R;
 
@@ -62,9 +61,7 @@ public class AgregarCicloActivity extends AppCompatActivity {
 
             }
         });
-
     }
-
 
     String formatFecha(int anio, int mes, int dia){
         mes = mes+1;
