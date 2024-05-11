@@ -1,4 +1,4 @@
-package sv.edu.ues.fia.pdm.proyecto.grupo3.ui.locales;
+package sv.edu.ues.fia.pdm.proyecto.grupo3.ui.encargados;
 
 import android.content.Intent;
 import android.database.Cursor;
@@ -20,62 +20,61 @@ import androidx.recyclerview.widget.RecyclerView;
 import sv.edu.ues.fia.pdm.proyecto.grupo3.BaseDatosHelper;
 import sv.edu.ues.fia.pdm.proyecto.grupo3.MainActivity;
 import sv.edu.ues.fia.pdm.proyecto.grupo3.R;
-import sv.edu.ues.fia.pdm.proyecto.grupo3.databinding.FragmentLocalesBinding;
-import sv.edu.ues.fia.pdm.proyecto.grupo3.ui.ciclo.AgregarCicloActivity;
-import sv.edu.ues.fia.pdm.proyecto.grupo3.ui.ciclo.CicloAdapter;
-import sv.edu.ues.fia.pdm.proyecto.grupo3.ui.ciclo.CicloFragment;
+import sv.edu.ues.fia.pdm.proyecto.grupo3.databinding.FragmentEncargadosBinding;
+import sv.edu.ues.fia.pdm.proyecto.grupo3.databinding.FragmentEncargadosBinding;
+import sv.edu.ues.fia.pdm.proyecto.grupo3.ui.encargados.AgregarEncargadosActivity;
+import sv.edu.ues.fia.pdm.proyecto.grupo3.ui.encargados.EncargadosAdapter;
 
-public class LocalesFragment extends Fragment {
 
-    private FragmentLocalesBinding binding;
+public class EncargadosFragment extends Fragment {
+
     //Instancia
-    private static LocalesFragment instance;
+    private static sv.edu.ues.fia.pdm.proyecto.grupo3.ui.encargados.EncargadosFragment instance;
     private BaseDatosHelper baseDatosHelper;
 
     private RecyclerView mRecyclerView;
-    private LocalesAdapter mAdapter;
-
-
+    private sv.edu.ues.fia.pdm.proyecto.grupo3.ui.encargados.EncargadosAdapter mAdapter;
+    private FragmentEncargadosBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        sv.edu.ues.fia.pdm.proyecto.grupo3.ui.locales.LocalesViewModel localesViewModel =
-                new ViewModelProvider(this).get(sv.edu.ues.fia.pdm.proyecto.grupo3.ui.locales.LocalesViewModel.class);
+        sv.edu.ues.fia.pdm.proyecto.grupo3.ui.encargados.EncargadosViewModel encargadosViewModel =
+                new ViewModelProvider(this).get(sv.edu.ues.fia.pdm.proyecto.grupo3.ui.encargados.EncargadosViewModel.class);
         ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+
+        if (actionBar != null) {
+            actionBar.setTitle("Encargado de Horario");
+        }
+
+        binding = FragmentEncargadosBinding.inflate(inflater, container, false);
+        View root = binding.getRoot();
+
         //referencia a mainActivity
         MainActivity act =(MainActivity) getActivity();
 
         //inicializar instancia de fragment
         instance = this;
 
-        if (actionBar != null) {
-            actionBar.setTitle("Locales");
-        }
-
-        binding = FragmentLocalesBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
+        final TextView textView = binding.textEncargados;
+        encargadosViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
 
         //Datos iniciales
         baseDatosHelper = new BaseDatosHelper(getContext());
-        baseDatosHelper.insertarDatosInicialesLocal();
-        baseDatosHelper.insertarDatosInicialesEscuela();
+        baseDatosHelper.insertarDatosInicialesEncargado();
 
-
-        final TextView textView = binding.textLocales;
-        localesViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
         // texto para la texview
-        localesViewModel.getText().observe(getViewLifecycleOwner(), newText -> {
-        textView.setText(R.string.todos_los_locales_registrados);
+        encargadosViewModel.getText().observe(getViewLifecycleOwner(), newText -> {
+            textView.setText(R.string.todos_los_encargados_de_horario_registrados);
         });
 
         //Llenar RecyclerView
         mRecyclerView = root.findViewById(R.id.recyclerView);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        mAdapter = new LocalesAdapter(getContext(), null);
+        mAdapter = new EncargadosAdapter(getContext(), null);
         mRecyclerView.setAdapter(mAdapter);
 
         baseDatosHelper = new BaseDatosHelper(getContext());
         Cursor cursor = baseDatosHelper.getReadableDatabase().query(
-                BaseDatosHelper.LOCAL_TABLA,
+                BaseDatosHelper.ENCARGADO_TABLA,
                 null,
                 null,
                 null,
@@ -85,8 +84,6 @@ public class LocalesFragment extends Fragment {
         );
 
         mAdapter.swapCursor(cursor);
-
-
 
         //Acciones FAB
         //FaB visible
@@ -102,7 +99,7 @@ public class LocalesFragment extends Fragment {
 
                 // on below line creating a child fragment
 
-                Intent intent = new Intent(getActivity(), AgregarLocalesActivity.class);
+                Intent intent = new Intent(getActivity(), AgregarEncargadosActivity.class);
 
                 startActivity(intent);
 
@@ -110,6 +107,9 @@ public class LocalesFragment extends Fragment {
 
             }
         });
+
+
+
 
         return root;
     }
@@ -126,7 +126,7 @@ public class LocalesFragment extends Fragment {
         refreshRecyclerView();
     }
     //Instancia para abrir en otros class/frgamnts/activities
-    public static LocalesFragment getInstance() {
+    public static sv.edu.ues.fia.pdm.proyecto.grupo3.ui.encargados.EncargadosFragment getInstance() {
         return instance;
     }
 
@@ -135,7 +135,7 @@ public class LocalesFragment extends Fragment {
         ((MainActivity) requireActivity()).binding.appBarMain.fab.setVisibility(View.VISIBLE);
 
         Cursor cursor = baseDatosHelper.getReadableDatabase().query(
-                BaseDatosHelper.LOCAL_TABLA,
+                BaseDatosHelper.ENCARGADO_TABLA,
                 null,
                 null,
                 null,

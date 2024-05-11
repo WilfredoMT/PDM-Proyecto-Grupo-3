@@ -30,9 +30,9 @@
             android:icon="@drawable/prupuesta"
             android:title="@string/menu_solicitudes" />
         <item
-            android:id="@+id/nav_menuDocentes"
+            android:id="@+id/nav_menuEncargados"
             android:icon="@drawable/docentes"
-            android:title="@string/menu_docentes" />
+            android:title="@string/encargados" />
         <item
             android:id="@+id/nav_menuHorarios"
             android:icon="@drawable/horarios"

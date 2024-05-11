@@ -117,6 +117,24 @@
     <string name="fotoperfilcambiar">Toca la imagen para cambiar la foto de perfil</string>
     <string name="editar_coordinador">Editar Coordinador</string>
     <string name="coordinador_editado_correctamente">Coordinador editado correctamente</string>
+    <string name="escuela">Escuela</string>
+    <string name="encargados">Encargados</string>
+    <string name="todos_los_encargados_de_horario_registrados">Todos los encargados de horario registrados</string>
+    <string name="presiona_el_boton_para_registar_un_nuevo_encargado">Presiona el boton para registar un nuevo encargado</string>
+    <string name="contrase_a_de_encargado_de_horario">Contraseña de encargado de horario</string>
+    <string name="email_del_encargado_de_horario">Email del encargado de horario</string>
+    <string name="nombre_del_encargado_de_horario">Nombre del encargado de horario</string>
+    <string name="apellido_del_encargado_de_horario">Apellido del encargado de horario</string>
+    <string name="escriba_el_nombre_del_encargado_de_horario">Escriba el nombre del encargado de horario</string>
+    <string name="escribaNombre">Escriba el nombre\n</string>
+    <string name="apellidoEscriba">Escriba el apellido</string>
+    <string name="editandoencargado">Editando el encargado de horario:</string>
+    <string name="estas_seguro_de_que_quieres_borrar_el_encargado_de_horario">Estas seguro de que quieres borrar el encargado de horario</string>
+    <string name="encargado_de_horario_borrado_correctamente">Encargado de horario borrado correctamente</string>
+    <string name="agregar_encargado_de_horario">Agregar encargado de horario</string>
+    <string name="encargado_registrado_correctamente">Encargado registrado correctamente</string>
+    <string name="el_encargado_ya_esta_registrado">El encargado ya esta registrado</string>
+    <string name="encargado_editado_correctamente">Encargado editado correctamente</string>
     <string-array name="years">
         <item>2022</item>
         <item>2023</item>

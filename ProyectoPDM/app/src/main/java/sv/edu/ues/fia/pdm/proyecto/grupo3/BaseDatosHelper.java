@@ -17,7 +17,7 @@ import java.util.Calendar;
 public class BaseDatosHelper extends SQLiteOpenHelper {
     private Context context;
     private static final String DB_NAME = "DBasignaciones";
-    private static final int DB_VERSION = 1;
+    private static int DB_VERSION = 1;
 
     // Nombres de las tablas
     private static final String LOGIN_TABLA = "login";
@@ -25,13 +25,14 @@ public class BaseDatosHelper extends SQLiteOpenHelper {
     public static final String ASIGNATURA_TABLA = "asignatura";
     public static final String LOCAL_TABLA = "local";
     public static final String COORDINADOR_TABLA = "docenteCoordinador";
-    public static final String ESCUELA_TABLA = "Escuela";
+    public static final String ESCUELA_TABLA = "escuela";
+    public static final String ENCARGADO_TABLA = "encargadoHorario";
 
 
     // Tabla Escuela Columnas //
-    static final String KEY_idEscuela = "idEscuela";
-    static final String KEY_nombreEscuela = "nomEscuela";
-    static final String KEY_descripcionEscuela = "descripcionEscuela";
+    public static final String KEY_idEscuela = "idEscuela";
+    public static final String KEY_nombreEscuela = "nomEscuela";
+    public static final String KEY_descripcionEscuela = "descripcionEscuela";
 
 
     // Tabla Login Columnas //
@@ -59,7 +60,6 @@ public class BaseDatosHelper extends SQLiteOpenHelper {
     public static final String KEY_nombreLocal = "nombre";
     public static final String KEY_tipoLocal = "tipo";
     public static final String KEY_capacidadLocal = "capacidad";
-
     public static final String KEY_idEscuelaLocal = "idEscuela";
 
 
@@ -69,6 +69,13 @@ public class BaseDatosHelper extends SQLiteOpenHelper {
     public static final String KEY_apellidoCoordinador = "apellido";
     public static final String KEY_emailCoordinador = "email";
     public static final String KEY_idUsuarioCoordinador = "idUsuario";
+
+    //Tabla EncargadoHorario columnas
+    public static final String KEY_idEncargadoHorario = "idEncargadoHorario";
+    public static final String KEY_nombreEncargadoHorario = "nomEncargadoHorario";
+    public static final String KEY_apellidoEncargadoHorario = "apellidoHorario";
+    public static final String KEY_emailEncargadoHorario = "emailHorario";
+    public static final String KEY_idUsuarioEncargadoHorario= "idUsuario";
 
 
 
@@ -81,8 +88,6 @@ public class BaseDatosHelper extends SQLiteOpenHelper {
             + KEY_nombreEscuela + " TEXT,"
             + KEY_descripcionEscuela + " TEXT)";
 
-
-
     //Tabla de docenteCoordinador
     private static final String CREATE_COORDINADOR_TABLA = "CREATE TABLE " + COORDINADOR_TABLA + " ("
             + KEY_idCoordinador + " INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -92,13 +97,23 @@ public class BaseDatosHelper extends SQLiteOpenHelper {
             + KEY_idUsuarioCoordinador + " INTEGER,"
             + "FOREIGN KEY(" + KEY_idUsuarioCoordinador + ") REFERENCES login(" + KEY_idUsuario + "))" ;
 
+    //Tabla de EncargadoHorario
+    private static final String CREATE_ENCARGADO_TABLA = "CREATE TABLE " + ENCARGADO_TABLA + " ("
+            + KEY_idEncargadoHorario + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+            + KEY_nombreEncargadoHorario + " TEXT,"
+            + KEY_apellidoEncargadoHorario + " TEXT,"
+            + KEY_emailEncargadoHorario + " TEXT,"
+            + KEY_idUsuarioEncargadoHorario + " INTEGER,"
+            + "FOREIGN KEY(" + KEY_idUsuarioEncargadoHorario + ") REFERENCES login(" + KEY_idUsuario + "))" ;
+
     //Tabla de locales
     private static final String CREATE_LOCAL_TABLA = "CREATE TABLE " + LOCAL_TABLA + " ("
             + KEY_idLocal + " INTEGER PRIMARY KEY AUTOINCREMENT, "
             + KEY_nombreLocal + " TEXT,"
             + KEY_tipoLocal + " TEXT,"
             + KEY_capacidadLocal + " INTEGER,"
-            + "FOREIGN KEY(" + KEY_idEscuelaLocal + ") REFERENCES Escuela(" + KEY_idEscuela + "))" ;
+            + KEY_idEscuelaLocal + " INTEGER,"
+            + "FOREIGN KEY(" + KEY_idEscuelaLocal + ") REFERENCES escuela(" + KEY_idEscuela + "))" ;
 
     //Tabla de asignaturas
     private static final String CREATE_ASIGNATURA_TABLA = "CREATE TABLE " + ASIGNATURA_TABLA + " ("
@@ -134,10 +149,10 @@ public class BaseDatosHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_LOGIN_TABLA);
         db.execSQL(CREATE_CICLO_TABLA);
         db.execSQL(CREATE_ASIGNATURA_TABLA);
-        db.execSQL(CREATE_LOCAL_TABLA);
-        db.execSQL(CREATE_COORDINADOR_TABLA);
         db.execSQL(CREATE_ESCUELA_TABLA);
-
+        db.execSQL(CREATE_COORDINADOR_TABLA);
+        db.execSQL(CREATE_ENCARGADO_TABLA);
+        db.execSQL(CREATE_LOCAL_TABLA);
 
     }
 
@@ -167,8 +182,10 @@ public class BaseDatosHelper extends SQLiteOpenHelper {
             db.execSQL("DROP TABLE IF EXISTS " + LOGIN_TABLA);
             db.execSQL("DROP TABLE IF EXISTS " + CICLO_TABLA);
             db.execSQL("DROP TABLE IF EXISTS " + ASIGNATURA_TABLA);
+            db.execSQL("DROP TABLE IF EXISTS " + ESCUELA_TABLA);
             db.execSQL("DROP TABLE IF EXISTS " + LOCAL_TABLA);
             db.execSQL("DROP TABLE IF EXISTS " + COORDINADOR_TABLA);
+            db.execSQL("DROP TABLE IF EXISTS " + ENCARGADO_TABLA);
 
             // Luego, puedes ejecutar los scripts de creación de tablas o realizar cualquier otra actualización necesaria aquí
 
@@ -194,12 +211,25 @@ public class BaseDatosHelper extends SQLiteOpenHelper {
     }
 
     //Get Escuela
-    public Cursor getEscuela(String id) {
+    public Cursor getEscuela(String id, String nombre) {
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = db.query(ESCUELA_TABLA, new String[]{KEY_idEscuela,
                         KEY_nombreEscuela, KEY_descripcionEscuela}, KEY_idEscuela + "=?",
                 new String[]{id}, null, null, null, null);
+
+        if (cursor != null)
+            cursor.moveToFirst();
+
+        return cursor;
+    }
+    //sobrecargar para usar nombre
+    public Cursor getEscuela(String nombre) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.query(ESCUELA_TABLA, new String[]{KEY_idEscuela,
+                        KEY_nombreEscuela, KEY_descripcionEscuela}, KEY_nombreEscuela + "=?",
+                new String[]{nombre}, null, null, null, null);
 
         if (cursor != null)
             cursor.moveToFirst();
@@ -281,6 +311,114 @@ public class BaseDatosHelper extends SQLiteOpenHelper {
         if (count == 0) {
             agregarEscuela("Sistemas informaticos", "Edificio de sistemas");
             agregarEscuela("Ingenieria electrica", "Edificio de electrica");
+        }
+    }
+                         //Tabla Encargado de horario//
+
+    //agregar EncargadoHorario
+    public boolean agregarEncargado(String nombre, String apellido, String email, String idUsuario) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(KEY_nombreEncargadoHorario, nombre);
+        values.put(KEY_apellidoEncargadoHorario, apellido);
+        values.put(KEY_emailEncargadoHorario, email);
+        values.put(KEY_idUsuarioEncargadoHorario, idUsuario);
+        long result = db.insert(ENCARGADO_TABLA, null, values);
+        return result != -1;
+    }
+
+    //Get EncargadoHorario
+    public Cursor getEncargado(String id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.query(ENCARGADO_TABLA, new String[]{KEY_idEncargadoHorario,
+                        KEY_nombreEncargadoHorario, KEY_apellidoEncargadoHorario,KEY_emailEncargadoHorario, KEY_idUsuarioEncargadoHorario}, KEY_idEncargadoHorario + "=?",
+                new String[]{id}, null, null, null, null);
+
+        if (cursor != null)
+            cursor.moveToFirst();
+
+        return cursor;
+    }
+
+    //Actualizar EncargadoHorario
+    public boolean actualizarEncargado(String idEncargadoHorario, String nombre, String apellido, String email) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(KEY_nombreEncargadoHorario, nombre);
+        values.put(KEY_apellidoEncargadoHorario, apellido);
+        values.put(KEY_emailEncargadoHorario, email);
+        int rowsAffected = db.update(ENCARGADO_TABLA, values, KEY_idEncargadoHorario + " = ?", new String[]{idEncargadoHorario});
+        return rowsAffected > 0;
+    }
+
+    //Eliminar EncargadoHorario
+    public boolean eliminarEncargado(String id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int rowsAffected = db.delete(ENCARGADO_TABLA, KEY_idEncargadoHorario + " = ?", new String[]{id});
+        return rowsAffected > 0;
+    }
+
+    //Ver si ya existe EncargadoHorario registrado
+    public boolean existeEncargado(String nombre) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+        try {
+            // Query para ver si ya existe el mismo codigo
+            String query = "SELECT * FROM " + ENCARGADO_TABLA + " WHERE " + KEY_nombreEncargadoHorario + "=?";
+            cursor = db.rawQuery(query, new String[]{nombre});
+            // si cursor tiene al menos una row, asignatura ya existe
+            return cursor.getCount() > 0;
+        } finally {
+            // cerrar cursor y db
+            if (cursor != null)
+                cursor.close();
+            db.close();
+        }
+    }
+    //Sobrecargar metodo
+    public boolean existeEncargado(String nombre, String id) {
+
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+
+        // Query para ver si ya existe el mismo nombre
+        String query = "SELECT * FROM " + ENCARGADO_TABLA + " WHERE " + KEY_nombreEncargadoHorario + "=?";
+        cursor = db.rawQuery(query, new String[]{nombre});
+
+        // si cursor tiene al menos una row, ciclo ya existe
+        boolean rowHay = cursor.getCount() > 0;
+        if(rowHay == true) {
+            cursor.moveToFirst();
+            @SuppressLint("Range") int idEncontrado = cursor.getInt(cursor.getColumnIndex(KEY_idEncargadoHorario));
+            if (idEncontrado == Integer.parseInt(id)) {
+                //el id es el mismo asi que se solo editando el mismo ciclo
+                return false;
+            } else {
+                cursor.close();
+                db.close();
+                return rowHay;
+            }
+
+        }
+        return rowHay;
+    }
+
+
+
+    //Insertar Datos iniciales de EncargadoHorario
+    public void insertarDatosInicialesEncargado() {
+
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM " + ENCARGADO_TABLA, null);
+        cursor.moveToFirst();
+        int count = cursor.getInt(0);
+        cursor.close();
+
+        if (count == 0) {
+            agregarEncargado("nombreEncargadoHorario", "apellidoEncargadoHorario", "encargado@ues.edu.sv", "3");
         }
     }
 
@@ -424,12 +562,13 @@ public class BaseDatosHelper extends SQLiteOpenHelper {
     }
 
     //Actualizar local
-    public boolean actualizarLocal(String idLocal, String nombre, String tipo, String capacidad) {
+    public boolean actualizarLocal(String idLocal, String nombre, String tipo, String capacidad, String idEscuela) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(KEY_nombreLocal, nombre);
         values.put(KEY_tipoLocal, tipo);
         values.put(KEY_capacidadLocal, capacidad);
+        values.put(KEY_idEscuelaLocal, idEscuela);
         int rowsAffected = db.update(LOCAL_TABLA, values, KEY_idLocal + " = ?", new String[]{idLocal});
         return rowsAffected > 0;
     }
@@ -814,7 +953,7 @@ public class BaseDatosHelper extends SQLiteOpenHelper {
         if (count == 0) {
             agregarUsuario("UsuarioAdmin", "PDM115", "Administrador", BitmapFactory.decodeResource(context.getResources(), R.drawable.admin));
             agregarUsuario("UsuarioCoordinador", "PDM115", "Coordinador", BitmapFactory.decodeResource(context.getResources(), R.drawable.coordinacion));
-            agregarUsuario("UsuarioDocente", "PDM115", "Docente", BitmapFactory.decodeResource(context.getResources(), R.drawable.docente));
+            agregarUsuario("UsuarioEncargado", "PDM115", "Encargado de Horario", BitmapFactory.decodeResource(context.getResources(), R.drawable.docente));
         }
     }
 

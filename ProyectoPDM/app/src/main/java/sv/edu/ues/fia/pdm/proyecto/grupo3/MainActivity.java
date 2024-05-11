@@ -106,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
         MenuItem menuLocales = navigationView.getMenu().findItem(R.id.nav_menuLocales);
         MenuItem menuCoordinador = navigationView.getMenu().findItem(R.id.nav_menuCoordinador);
         MenuItem menuSolicitudes = navigationView.getMenu().findItem(R.id.nav_menuSolicitudes);
-        MenuItem menuDocentes = navigationView.getMenu().findItem(R.id.nav_menuDocentes);
+        MenuItem menuEncargados = navigationView.getMenu().findItem(R.id.nav_menuEncargados);
         MenuItem menuHorarios = navigationView.getMenu().findItem(R.id.nav_menuHorarios);
         MenuItem menuEventos = navigationView.getMenu().findItem(R.id.nav_menuEventos);
         menuCiclo.setVisible(false);
@@ -114,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
         menuLocales.setVisible(false);
         menuCoordinador.setVisible(false);
         menuSolicitudes.setVisible(false);
-        menuDocentes.setVisible(false);
+        menuEncargados.setVisible(false);
         menuHorarios.setVisible(false);
         menuEventos.setVisible(false);
 
@@ -124,11 +124,12 @@ public class MainActivity extends AppCompatActivity {
             menuMaterias.setVisible(true);
             menuLocales.setVisible(true);
             menuCoordinador.setVisible(true);
-            menuSolicitudes.setVisible(true);
+            menuEncargados.setVisible(true);
+
 
         }
-        if (rolLogeado.equals("Coordinador")) {
-            menuDocentes.setVisible(true);
+        if (rolLogeado.equals("Encargado de Horario")) {
+
             menuHorarios.setVisible(true);
             menuEventos.setVisible(true);
 
@@ -148,7 +149,7 @@ public class MainActivity extends AppCompatActivity {
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
                 //Añadir los otros fragments
-                R.id.nav_home, R.id.nav_menuCiclo, R.id.nav_menuMaterias, R.id.nav_menuLocales, R.id.nav_menuCoordinador, R.id.nav_menuSolicitudes, R.id.nav_menuDocentes, R.id.nav_menuHorarios, R.id.nav_menuEventos )
+                R.id.nav_home, R.id.nav_menuCiclo, R.id.nav_menuMaterias, R.id.nav_menuLocales, R.id.nav_menuCoordinador, R.id.nav_menuSolicitudes, R.id.nav_menuEncargados, R.id.nav_menuHorarios, R.id.nav_menuEventos )
 
                 .setOpenableLayout(drawer)
                 .build();

@@ -37,8 +37,8 @@
         android:label="@string/menu_home"
         tools:layout="@layout/fragment_ciclo" />
     <fragment
-        android:id="@+id/nav_menuDocentes"
-        android:name="sv.edu.ues.fia.pdm.proyecto.grupo3.ui.docentes.DocentesFragment"
+        android:id="@+id/nav_menuEncargados"
+        android:name="sv.edu.ues.fia.pdm.proyecto.grupo3.ui.encargados.EncargadosFragment"
         android:label="@string/menu_home"
         tools:layout="@layout/fragment_ciclo" />
     <fragment
