@@ -25,6 +25,13 @@ public class BaseDatosHelper extends SQLiteOpenHelper {
     public static final String ASIGNATURA_TABLA = "asignatura";
     public static final String LOCAL_TABLA = "local";
     public static final String COORDINADOR_TABLA = "docenteCoordinador";
+    public static final String ESCUELA_TABLA = "Escuela";
+
+
+    // Tabla Escuela Columnas //
+    static final String KEY_idEscuela = "idEscuela";
+    static final String KEY_nombreEscuela = "nomEscuela";
+    static final String KEY_descripcionEscuela = "descripcionEscuela";
 
 
     // Tabla Login Columnas //
@@ -53,6 +60,9 @@ public class BaseDatosHelper extends SQLiteOpenHelper {
     public static final String KEY_tipoLocal = "tipo";
     public static final String KEY_capacidadLocal = "capacidad";
 
+    public static final String KEY_idEscuelaLocal = "idEscuela";
+
+
     //Tabla DocenteCoordinador columna
     public static final String KEY_idCoordinador = "idCoordinador";
     public static final String KEY_nombreCoordinador = "nombre";
@@ -63,6 +73,14 @@ public class BaseDatosHelper extends SQLiteOpenHelper {
 
 
                          // Hacer sentencias de creacion SQL //
+
+
+    //Tabla de escuela
+    private static final String CREATE_ESCUELA_TABLA = "CREATE TABLE " + ESCUELA_TABLA + " ("
+            + KEY_idEscuela + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+            + KEY_nombreEscuela + " TEXT,"
+            + KEY_descripcionEscuela + " TEXT)";
+
 
 
     //Tabla de docenteCoordinador
@@ -79,7 +97,8 @@ public class BaseDatosHelper extends SQLiteOpenHelper {
             + KEY_idLocal + " INTEGER PRIMARY KEY AUTOINCREMENT, "
             + KEY_nombreLocal + " TEXT,"
             + KEY_tipoLocal + " TEXT,"
-            + KEY_capacidadLocal + " INTEGER)";
+            + KEY_capacidadLocal + " INTEGER,"
+            + "FOREIGN KEY(" + KEY_idEscuelaLocal + ") REFERENCES Escuela(" + KEY_idEscuela + "))" ;
 
     //Tabla de asignaturas
     private static final String CREATE_ASIGNATURA_TABLA = "CREATE TABLE " + ASIGNATURA_TABLA + " ("
@@ -117,10 +136,12 @@ public class BaseDatosHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_ASIGNATURA_TABLA);
         db.execSQL(CREATE_LOCAL_TABLA);
         db.execSQL(CREATE_COORDINADOR_TABLA);
+        db.execSQL(CREATE_ESCUELA_TABLA);
 
 
     }
 
+    /*
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // Eliminar tablas si existen
@@ -129,14 +150,139 @@ public class BaseDatosHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + ASIGNATURA_TABLA);
         db.execSQL("DROP TABLE IF EXISTS " + LOCAL_TABLA);
         db.execSQL("DROP TABLE IF EXISTS " + COORDINADOR_TABLA);
+        db.execSQL("DROP TABLE IF EXISTS " + ESCUELA_TABLA);
 
         // Crear tablas de nuevo
         onCreate(db);
     }
 
+     */
+
+    @Override
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        try {
+            Log.d("DatabaseUpgrade", "onUpgrade called. Old version: " + oldVersion + ", New version: " + newVersion);
+
+            // Eliminar tablas si existen
+            db.execSQL("DROP TABLE IF EXISTS " + LOGIN_TABLA);
+            db.execSQL("DROP TABLE IF EXISTS " + CICLO_TABLA);
+            db.execSQL("DROP TABLE IF EXISTS " + ASIGNATURA_TABLA);
+            db.execSQL("DROP TABLE IF EXISTS " + LOCAL_TABLA);
+            db.execSQL("DROP TABLE IF EXISTS " + COORDINADOR_TABLA);
+
+            // Luego, puedes ejecutar los scripts de creación de tablas o realizar cualquier otra actualización necesaria aquí
+
+        } catch (Exception e) {
+            Log.e("DatabaseUpgrade", "Error upgrading database: " + e.getMessage());
+            // Manejar el error según sea necesario
+        }
+    }
+
     //                    Helpers para CRUDs                  //
 
 
+                       //Tabla Escuela//
+
+    //agregar local
+    public boolean agregarEscuela(String nombre, String descripcion) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(KEY_nombreEscuela, nombre);
+        values.put(KEY_descripcionEscuela, descripcion);
+        long result = db.insert(ESCUELA_TABLA, null, values);
+        return result != -1;
+    }
+
+    //Get Escuela
+    public Cursor getEscuela(String id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.query(ESCUELA_TABLA, new String[]{KEY_idEscuela,
+                        KEY_nombreEscuela, KEY_descripcionEscuela}, KEY_idEscuela + "=?",
+                new String[]{id}, null, null, null, null);
+
+        if (cursor != null)
+            cursor.moveToFirst();
+
+        return cursor;
+    }
+
+    //Actualizar Escuela
+    public boolean actualizarEscuela(String idEscuela, String nombre, String descripcion) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(KEY_nombreEscuela, nombre);
+        values.put(KEY_descripcionEscuela, descripcion);
+        int rowsAffected = db.update(ESCUELA_TABLA, values, KEY_idEscuela + " = ?", new String[]{idEscuela});
+        return rowsAffected > 0;
+    }
+
+    //Eliminar Escuela
+    public boolean eliminarEscuela(String id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int rowsAffected = db.delete(ESCUELA_TABLA, KEY_idEscuela + " = ?", new String[]{id});
+        return rowsAffected > 0;
+    }
+
+    //Ver si ya existe Escuela
+    public boolean existeEscuela(String nombre) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+        try {
+            // Query para ver si ya existe el mismo codigo
+            String query = "SELECT * FROM " + ESCUELA_TABLA + " WHERE " + KEY_nombreEscuela + "=?";
+            cursor = db.rawQuery(query, new String[]{nombre});
+            // si cursor tiene al menos una row, asignatura ya existe
+            return cursor.getCount() > 0;
+        } finally {
+            // cerrar cursor y db
+            if (cursor != null)
+                cursor.close();
+            db.close();
+        }
+    }
+    //Sobrecargar metodo
+    public boolean existeEscuela(String nombre, String id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+
+        // Query para ver si ya existe el mismo nombre
+        String query = "SELECT * FROM " + ESCUELA_TABLA + " WHERE " + KEY_nombreEscuela + "=?";
+        cursor = db.rawQuery(query, new String[]{nombre});
+
+        // si cursor tiene al menos una row, ciclo ya existe
+        boolean rowHay = cursor.getCount() > 0;
+        if(rowHay == true) {
+            cursor.moveToFirst();
+            @SuppressLint("Range") int idEncontrado = cursor.getInt(cursor.getColumnIndex(KEY_idEscuela));
+            if (idEncontrado == Integer.parseInt(id)) {
+                //el id es el mismo asi que se solo editando el mismo ciclo
+                return false;
+            } else {
+                cursor.close();
+                db.close();
+                return rowHay;
+            }
+
+        }
+        return rowHay;
+    }
+
+
+
+    //Insertar Datos iniciales de Escuela
+    public void insertarDatosInicialesEscuela() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM " + ESCUELA_TABLA, null);
+        cursor.moveToFirst();
+        int count = cursor.getInt(0);
+        cursor.close();
+
+        if (count == 0) {
+            agregarEscuela("Sistemas informaticos", "Edificio de sistemas");
+            agregarEscuela("Ingenieria electrica", "Edificio de electrica");
+        }
+    }
 
 
                            //Tabla Coordinador//
@@ -252,12 +398,13 @@ public class BaseDatosHelper extends SQLiteOpenHelper {
     //Tabla locales//
 
     //agregar local
-    public boolean agregarLocal(String nombre, String tipo, String capacidad) {
+    public boolean agregarLocal(String nombre, String tipo, String capacidad, String idEscuela) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(KEY_nombreLocal, nombre);
         values.put(KEY_tipoLocal, tipo);
         values.put(KEY_capacidadLocal, capacidad);
+        values.put(KEY_idEscuelaLocal, idEscuela);
         long result = db.insert(LOCAL_TABLA, null, values);
         return result != -1;
     }
@@ -267,7 +414,7 @@ public class BaseDatosHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = db.query(LOCAL_TABLA, new String[]{KEY_idLocal,
-                        KEY_nombreLocal, KEY_tipoLocal, KEY_capacidadLocal}, KEY_idLocal + "=?",
+                        KEY_nombreLocal, KEY_tipoLocal, KEY_capacidadLocal, KEY_idEscuelaLocal}, KEY_idLocal + "=?",
                 new String[]{id}, null, null, null, null);
 
         if (cursor != null)
@@ -351,10 +498,10 @@ public class BaseDatosHelper extends SQLiteOpenHelper {
         cursor.close();
 
         if (count == 0) {
-            agregarLocal("Miguel Marmol", "Auditorio", "100");
-            agregarLocal("Infocentros", "Salon", "25");
-            agregarLocal("Edificio B", "Edificio", "120");
-            agregarLocal("Edificio C", "Edificio", "120");
+            //agregarLocal("Miguel Marmol", "Auditorio", "100");
+            agregarLocal("Infocentros", "Salon", "25", "1");
+            agregarLocal("Salon A", "Salon", "25", "2");
+            //agregarLocal("Edificio C", "Edificio", "120");
 
         }
     }
