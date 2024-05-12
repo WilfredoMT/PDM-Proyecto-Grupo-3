@@ -40,7 +40,7 @@ public class SolicitudesHorarioFragment extends Fragment {
     private FragmentSolicitudeshorarioBinding binding;
     private BaseDatosHelper baseDatosHelper;
     private RecyclerView mRecyclerView;
-    private CicloAdapter mAdapter;
+    private SolicitudesHorarioAdapter mAdapter;
     private BaseDatosHelper mDbHelper;
 
     private static SolicitudesHorarioFragment instance;
@@ -56,7 +56,7 @@ public class SolicitudesHorarioFragment extends Fragment {
 
         ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
         if (actionBar != null) {
-            actionBar.setTitle("Solicitudes");
+            actionBar.setTitle("Solicitudes de horario");
         }
 
         binding = FragmentSolicitudeshorarioBinding.inflate(inflater, container, false);

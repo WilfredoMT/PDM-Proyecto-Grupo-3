@@ -38,13 +38,13 @@ public class SolicitudesHorarioAdapter extends RecyclerView.Adapter<SolicitudesH
     @Override
     public SolicitudesHorarioAdapter.SolicitudesHorarioViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(mContext);
-        View view = inflater.inflate(R.layout.ciclo_items, parent, false);
-        return new CicloAdapter.SolicitudesHorarioViewHolder(view);
+        View view = inflater.inflate(R.layout.solicitudes_horario_items, parent, false);
+        return new SolicitudesHorarioAdapter.SolicitudesHorarioViewHolder(view);
     }
 
 
     @Override
-    public void onBindViewHolder(@NonNull SolicitudesHorarioAdapter.SolicitudesAdapterViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull SolicitudesHorarioAdapter.SolicitudesHorarioViewHolder holder, int position) {
         if (!mCursor.moveToPosition(position))
             return;
 
@@ -53,20 +53,20 @@ public class SolicitudesHorarioAdapter extends RecyclerView.Adapter<SolicitudesH
         String nomEvento = mCursor.getString(mCursor.getColumnIndexOrThrow(BaseDatosHelper.KEY_nomEvento));
         String id = mCursor.getString(mCursor.getColumnIndexOrThrow(BaseDatosHelper.KEY_idEvento));
 
-        holder.textViewCicloNombre.setText(nomEvento);
+        holder.textViewSolicitudesHorario.setText(nomEvento);
 
         // Set click listeners for buttons
         holder.buttonEdit.setOnClickListener(v -> {
 
-            Intent intent = new Intent(mContext, EditarCicloActivity.class);
+           /* Intent intent = new Intent(mContext, EditarCicloActivity.class);
             intent.putExtra("idEditar", id);
-            mContext.startActivity(intent);
+            mContext.startActivity(intent);*/
 
 
             // Handle edit button click
         });
 
-        holder.buttonDelete.setOnClickListener(v -> {
+        /*holder.buttonDelete.setOnClickListener(v -> {
 
             //booton de borrar
 
@@ -74,7 +74,7 @@ public class SolicitudesHorarioAdapter extends RecyclerView.Adapter<SolicitudesH
 
             builder.setTitle(R.string.confirmacion);
             String mensaje = mContext.getString(R.string.estas_seguro_de_borrar_el_ciclo);
-            builder.setMessage(mensaje +"\n" + nombre);
+            builder.setMessage(mensaje +"\n" + nomEvento);
 
             builder.setPositiveButton(R.string.si, new DialogInterface.OnClickListener() {
 
@@ -99,7 +99,7 @@ public class SolicitudesHorarioAdapter extends RecyclerView.Adapter<SolicitudesH
 
             AlertDialog alert = builder.create();
             alert.show();
-        });
+        });*/
     }
 
     @Override
@@ -117,14 +117,14 @@ public class SolicitudesHorarioAdapter extends RecyclerView.Adapter<SolicitudesH
             notifyDataSetChanged();
     }
 
-    static class CicloViewHolder extends RecyclerView.ViewHolder {
-        TextView textViewCicloNombre;
+    static class SolicitudesHorarioViewHolder extends RecyclerView.ViewHolder {
+        TextView textViewSolicitudesHorario;
         Button buttonEdit;
         Button buttonDelete;
 
-        CicloViewHolder(View itemView) {
+        SolicitudesHorarioViewHolder(View itemView) {
             super(itemView);
-            textViewCicloNombre = itemView.findViewById(R.id.textViewCicloNombre);
+            textViewSolicitudesHorario = itemView.findViewById(R.id.textViewSolicitudesHorario);
             buttonEdit = itemView.findViewById(R.id.buttonEdit);
             buttonDelete = itemView.findViewById(R.id.buttonDelete);
         }

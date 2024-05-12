@@ -826,6 +826,119 @@ public class BaseDatosHelper extends SQLiteOpenHelper {
         }
     }
 
+
+//Tabla Horario//
+
+    //agregar Horario
+    public boolean agregarHorario(String dia, String horaInicioHorario, String horaFinHorario) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(KEY_diaHorario, dia);
+        values.put(KEY_horaInicioHorario, horaInicioHorario);
+        values.put(KEY_horaFinHorario, horaFinHorario);
+        long result = db.insert(HORARIO_TABLA, null, values);
+        return result != -1;
+    }
+
+    //Get Horario
+    public Cursor geHorario(String id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.query(HORARIO_TABLA, new String[]{KEY_idHorario,
+                        KEY_diaHorario, KEY_horaInicioHorario, KEY_horaFinHorario}, KEY_idHorario + "=?",
+                new String[]{id}, null, null, null, null);
+
+        if (cursor != null)
+            cursor.moveToFirst();
+
+        return cursor;
+    }
+
+    //Actualizar Horario
+    public boolean actualizarHorario(String idHorario, String dia, String horaInicioHorario, String horaFinHorario) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(KEY_diaHorario, dia);
+        values.put(KEY_horaInicioHorario, horaInicioHorario);
+        values.put(KEY_horaFinHorario, horaFinHorario);
+        int rowsAffected = db.update(HORARIO_TABLA, values, KEY_idHorario + " = ?", new String[]{idHorario});
+        return rowsAffected > 0;
+    }
+
+    //Eliminar Horario
+    public boolean eliminarHorario(String id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int rowsAffected = db.delete(HORARIO_TABLA, KEY_idHorario + " = ?", new String[]{id});
+        return rowsAffected > 0;
+    }
+
+    //Ver si ya existe Horario registrado
+    /*public boolean existeHorario(String dia) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+        try {
+            // Query para ver si ya existe el mismo nombre
+            String query = "SELECT * FROM " + HORARIO_TABLA + " WHERE " + KEY_diaHorario + "=?";
+            cursor = db.rawQuery(query, new String[]{dia});
+
+
+            // si cursor tiene al menos una row, Horario ya existe
+            return cursor.getCount() > 0;
+        } finally {
+            // cerrar cursor y db
+            if (cursor != null)
+                cursor.close();
+            db.close();
+        }
+    }*/
+    //Sobrecargado para EditarCicloActivity
+    /*public boolean existeCiclo(String nombre, String id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+
+        // Query para ver si ya existe el mismo nombre
+        String query = "SELECT * FROM " + CICLO_TABLA + " WHERE " + KEY_nombreCiclo + "=?";
+        cursor = db.rawQuery(query, new String[]{nombre});
+
+        // si cursor tiene al menos una row, ciclo ya existe
+        boolean rowHay = cursor.getCount() > 0;
+        if(rowHay == true) {
+            cursor.moveToFirst();
+            @SuppressLint("Range") int idEncontrado = cursor.getInt(cursor.getColumnIndex(KEY_idCiclo));
+            if (idEncontrado == Integer.parseInt(id)) {
+                //el id es el mismo asi que se solo editando el mismo ciclo
+                return false;
+            } else {
+                cursor.close();
+                db.close();
+                return rowHay;
+            }
+
+        }
+        return rowHay;
+    }*/
+
+    //Insertar Datos iniciales
+    public void insertarDatosInicialesHorario() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM " + HORARIO_TABLA, null);
+        cursor.moveToFirst();
+        int count = cursor.getInt(0);
+        cursor.close();
+
+        if (count == 0) {
+            agregarHorario("Lunes", "06:20:00", "08:00:00");
+            agregarHorario("Martes", "06:20:00", "06:20:00");
+            agregarHorario("Miercoles", "06:20:00", "06:20:00");
+            agregarHorario("Jueeves", "06:20:00", "06:20:00");
+            agregarHorario("Viernes", "06:20:00", "06:20:00");
+        }
+    }
+
+
+
+
+
     //Tabla de Evento//
     //agregar evento
     public boolean agregarEvento(String nomEvento, String tipoEvento, String idCiclo, String idPropuesta, String idHorario, String idPripridad){
