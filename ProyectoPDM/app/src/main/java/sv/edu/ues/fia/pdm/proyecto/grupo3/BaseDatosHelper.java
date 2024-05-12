@@ -327,6 +327,12 @@ public class BaseDatosHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_HORARIO_TABLA);
         db.execSQL(CREATE_PRIORIDAD_TABLA);
         db.execSQL(CREATE_DISPONIBILIDAD_TABLA);
+        db.execSQL(CREATE_DETALLEPROPUESTA_TABLA);
+        db.execSQL(CREATE_CAMBIOPROPUESTA_TABLA);
+        db.execSQL(CREATE_ASOCIACIONPROPUESTA_TABLA);
+        db.execSQL(CREATE_PROPUESTA_TABLA);
+        db.execSQL(CREATE_EVENTO_TABLA);
+
 
 
     }
