@@ -27,7 +27,25 @@ public class BaseDatosHelper extends SQLiteOpenHelper {
     public static final String COORDINADOR_TABLA = "docenteCoordinador";
     public static final String ESCUELA_TABLA = "escuela";
     public static final String ENCARGADO_TABLA = "encargadoHorario";
+    public static final String GRUPOASIGNATURA_TABLA = "grupoAsignatura";
+    public static final String ASIGNATURACICLO_TABLA = "asignaturaCiclo";
+    public static final String PRIORIDAD_TABLA = "prioridad";
+    public static final String HORARIO_TABLA = "horario";
+    public static final String DISPONIBILIDAD_TABLA = "disponibilidad";
+    public static final String EVENTO_TABLA = "evento";
+    public static final String EVENTOLOCAL_TABLA = "eventoLocal";
+    public static final String PROPUESTA_TABLA = "propuesta";
+    public static final String DETALLEPROPUESTA_TABLA = "detallePropuesta";
+    public static final String ASOCIACIONPROPUESTA_TABLA = "asociacionPropuesta";
+    public static final String CAMBIOPROPUESTA_TABLA = "cambioPropuesta";
 
+
+
+    //------------------------------Atributos grupoAsignatura------------------------------------//
+    public static final String KEY_idGrupo = "idGrupo";
+    public static final String KEY_idAsignaturaGrupo = "idAsignatura";
+    public static final String KEY_idCoordinadorGrupo = "idCoordinador";
+    public static final String KEY_totalIntegrantesGrupo = "totalIntegrantes";
 
     // Tabla Escuela Columnas //
     public static final String KEY_idEscuela = "idEscuela";
@@ -77,9 +95,160 @@ public class BaseDatosHelper extends SQLiteOpenHelper {
     public static final String KEY_emailEncargadoHorario = "emailHorario";
     public static final String KEY_idUsuarioEncargadoHorario= "idUsuario";
 
+    //------------------------------Atributos asignaturaCiclo------------------------------------//
+    public static final String KEY_idAsignaturaAsignaturaCiclo = "idAsignatura";
+    public static final String KEY_idCicloAsignaturaCiclo = "idCiclo";
+
+    //------------------------------Atributos prioridad------------------------------------//
+    public static final String KEY_idPrioridad = "idPrioridad";
+    public static final String KEY_ordenPrioridad = "orden";
+
+    //------------------------------Atributos horario------------------------------------//
+    public static final String KEY_idHorario = "idHorario";
+    public static final String KEY_diaHorario = "dia";
+    public static final String KEY_horaInicioHorario = "horaInicioHorario";
+    public static final String KEY_horaFinHorario = "horaFinHorario";
 
 
-                         // Hacer sentencias de creacion SQL //
+    //------------------------------Atributos disponibilidad------------------------------------//
+    public static final String KEY_idDisponibilidad = "idDisponibilidad";
+    public static final String KEY_idLocalDispo = "idLocal";
+    public static final String KEY_idHorarioDisponibilidad = "idHorario";
+    public static final String KEY_detalleDisponibilidad = "detalleDisponibilidad";
+
+    //------------------------------Atributos evento------------------------------------//
+    public static final String KEY_idEvento = "idEvento";
+    public static final String KEY_idCicloEvento = "idCiclo";
+    public static final String KEY_idPropuestaEvento = "idPropuesta";
+    public static final String KEY_idHorarioEvento = "idHorario";
+    public static final String KEY_idPrioridadEvento = "idPrioridad";
+    public static final String KEY_nomEvento = "nomEvento";
+    public static final String KEY_tipoEvento = "tipoEvento";
+
+    //------------------------------Atributos eventoLocal------------------------------------//
+    public static final String KEY_idEventoLocal = "idEvento";
+    public static final String KEY_idLocalEventoLocal = "idLocal";
+
+    //------------------------------Atributos propuesta------------------------------------//
+    public static final String KEY_idPropuesta = "idPropuesta";
+    public static final String KEY_idCambioPropuesta = "idCambio";
+    public static final String KEY_idEncargadoHorarioPropuesta = "idEncargadoHorario";
+    public static final String KEY_idEncargadoLocalPropuesta = "idEncargadoLocal";
+    public static final String KEY_idEventoPropuesta = "idEvento";
+    public static final String KEY_idCoordinadorPropuesta = "idCoordinador";
+
+    //------------------------------Atributos asociacionPropuesta ------------------------------------//
+    public static final String KEY_idPropuestaAsociacionPropuesta = "idPropuesta";
+    public static final String KEY_idDetalleAsociacionPropuesta = "idDetalle";
+
+    //------------------------------Atributos cambioPropuesta------------------------------------//
+    public static final String KEY_idCambio = "idCambio";
+    public static final String KEY_idPropuestaCambioPropuesta = "idPropuesta";
+    public static final String KEY_motivoCambioPropuesta = "motivo";
+
+    //------------------------------Atributos detallePropuesta------------------------------------//
+    public static final String KEY_idDetalle = "idDetalle";
+    public static final String KEY_idCambioDetallePropuesta = "idCambio";
+    public static final String KEY_descripcionDetallePropuesta = "descripcionPropuesta";
+    public static final String KEY_horaInicioDetallePropuesta = "horaInicioPropuesta";
+    public static final String KEY_horaFinDetallePropuesta = "horaFinPropuesta";
+
+    // Hacer sentencias de creacion SQL //
+
+    //--------------------------------------tabla detallePropuesta-------------------------------------------//
+    private static final String CREATE_DETALLEPROPUESTA_TABLA = "CREATE TABLE " + DETALLEPROPUESTA_TABLA + " ("
+            + KEY_idDetalle + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+            + KEY_idCambioDetallePropuesta + " INTEGER,"
+            + KEY_descripcionDetallePropuesta + " TEXT,"
+            + KEY_horaInicioDetallePropuesta + " DATE,"
+            + KEY_horaFinDetallePropuesta + " DATE,"
+            + "FOREIGN KEY(" + KEY_idCambioDetallePropuesta + ") REFERENCES cambioPropuesta(" + KEY_idCambio + "))" ;
+
+    //--------------------------------------tabla asociacionPropuesta-------------------------------------------//
+    private static final String CREATE_ASOCIACIONPROPUESTA_TABLA = "CREATE TABLE " + ASOCIACIONPROPUESTA_TABLA + " ("
+            + KEY_idPropuestaAsociacionPropuesta + " INTEGER,"
+            + KEY_idDetalleAsociacionPropuesta + " INTEGER,"
+            + "FOREIGN KEY(" + KEY_idPropuestaAsociacionPropuesta + ") REFERENCES propuesta(" + KEY_idPropuesta + "),"
+            + "FOREIGN KEY(" + KEY_idDetalleAsociacionPropuesta + ") REFERENCES detallePropuesta(" + KEY_idDetalle + "))";
+
+    //--------------------------------------tabla cambioPropuesta-------------------------------------------//
+    private static final String CREATE_CAMBIOPROPUESTA_TABLA = "CREATE TABLE " + CAMBIOPROPUESTA_TABLA + " ("
+            + KEY_idCambio + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+            + KEY_idPropuestaCambioPropuesta + " INTEGER,"
+            + KEY_motivoCambioPropuesta + " TEXT,"
+            + "FOREIGN KEY(" + KEY_idPropuestaCambioPropuesta + ") REFERENCES propuesta(" + KEY_idPropuesta + "))" ;
+
+    //--------------------------------------tabla propuesta-------------------------------------------//
+    private static final String CREATE_PROPUESTA_TABLA = "CREATE TABLE " + PROPUESTA_TABLA + " ("
+            + KEY_idPropuesta + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+            + KEY_idCambioPropuesta + " INTEGER,"
+            + KEY_idEncargadoHorarioPropuesta + " INTEGER,"
+            + KEY_idEncargadoLocalPropuesta + " INTEGER,"
+            + KEY_idEventoPropuesta + " INTEGER,"
+            + KEY_idCoordinadorPropuesta + " INTEGER,"
+            + "FOREIGN KEY(" + KEY_idCambioPropuesta + ") REFERENCES cambioPropuesta(" + KEY_idCambio + "),"
+            + "FOREIGN KEY(" + KEY_idEncargadoHorarioPropuesta + ") REFERENCES encargadoHorario(" + KEY_idEncargadoHorario + "),"
+            //+ "FOREIGN KEY(" + KEY_idEncargadoLocalPropuesta + ") REFERENCES encargadoLocal(" + KEY_idEncargadoLocal + "),"
+            + "FOREIGN KEY(" + KEY_idEventoPropuesta + ") REFERENCES evento(" + KEY_idEvento + "),"
+            + "FOREIGN KEY(" + KEY_idCoordinadorPropuesta + ") REFERENCES docenteCoordinador(" + KEY_idCoordinador + "))" ;
+
+    //--------------------------------------tabla eventoLocal-------------------------------------------//
+    private static final String CREATE_EVENTOLOCAL_TABLA = "CREATE TABLE " + EVENTOLOCAL_TABLA + " ("
+            + KEY_idEventoLocal + " INTEGER,"
+            + KEY_idLocalEventoLocal + " INTEGER,"
+            + "FOREIGN KEY(" + KEY_idEventoLocal + ") REFERENCES evento(" + KEY_idAsignatura + "),"
+            + "FOREIGN KEY(" + KEY_idLocalEventoLocal + ") REFERENCES local(" + KEY_idCiclo + "))" ;
+
+    private static final String CREATE_EVENTO_TABLA = "CREATE TABLE " + EVENTO_TABLA + " ("
+            + KEY_idEvento + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+            + KEY_idCicloEvento + " INTEGER,"
+            + KEY_idPropuestaEvento + " INTEGER,"
+            + KEY_idHorarioEvento + " INTEGER,"
+            + KEY_idPrioridadEvento + " INTEGER,"
+            + KEY_nomEvento + " TEXT,"
+            + KEY_tipoEvento + " TEXT,"
+            + "FOREIGN KEY(" + KEY_idCicloEvento + ") REFERENCES ciclo(" + KEY_idCiclo + "),"
+            + "FOREIGN KEY(" + KEY_idPropuestaEvento + ") REFERENCES propuesta(" + KEY_idPropuesta + "),"
+            + "FOREIGN KEY(" + KEY_idHorarioEvento + ") REFERENCES horario(" + KEY_idHorario + "),"
+            + "FOREIGN KEY(" + KEY_idPrioridadEvento + ") REFERENCES prioridad(" + KEY_idPrioridad + "))" ;
+
+    //--------------------------------------tabla disponibilidad-------------------------------------------//
+    private static final String CREATE_DISPONIBILIDAD_TABLA = "CREATE TABLE " + DISPONIBILIDAD_TABLA + " ("
+            + KEY_idDisponibilidad + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+            + KEY_detalleDisponibilidad + " TEXT,"
+            + KEY_idLocalDispo + " INTEGER,"
+            + KEY_idHorarioDisponibilidad + " INTEGER,"
+            + "FOREIGN KEY(" + KEY_idLocalDispo + ") REFERENCES local(" + KEY_idLocal + "),"
+            + "FOREIGN KEY(" + KEY_idHorarioDisponibilidad + ") REFERENCES horario(" + KEY_idHorario + "))" ;
+
+    //--------------------------------------tabla horario-------------------------------------------//
+    private static final String CREATE_HORARIO_TABLA = "CREATE TABLE " + HORARIO_TABLA + " ("
+            + KEY_idHorario + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+            + KEY_diaHorario + " TEXT,"
+            + KEY_horaInicioHorario + " DATE,"
+            + KEY_horaFinHorario + " DATE)" ;
+
+    //--------------------------------------tabla prioridad-------------------------------------------//
+    private static final String CREATE_PRIORIDAD_TABLA = "CREATE TABLE " + PRIORIDAD_TABLA + " ("
+            + KEY_idPrioridad + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+            + KEY_ordenPrioridad + " INTEGER)";
+
+
+    //--------------------------------------tabla GrupoAsignatura-------------------------------------------//
+    private static final String CREATE_GRUPOASIGNATURA_TABLA = "CREATE TABLE " + GRUPOASIGNATURA_TABLA + " ("
+            + KEY_idGrupo + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+            + KEY_idAsignaturaGrupo + " INTEGER,"
+            + KEY_idCoordinadorGrupo + " INTEGER,"
+            + KEY_totalIntegrantesGrupo + " TEXT,"
+            + "FOREIGN KEY(" + KEY_idAsignaturaGrupo + ") REFERENCES asignatura(" + KEY_idAsignatura + "),"
+            + "FOREIGN KEY(" + KEY_idCoordinadorGrupo + ") REFERENCES horario(" + KEY_idCoordinador + "))" ;
+
+    //--------------------------------------tabla asignaturaCiclo-------------------------------------------//
+    private static final String CREATE_ASIGNATURACICLO_TABLA = "CREATE TABLE " + ASIGNATURACICLO_TABLA + " ("
+            + KEY_idAsignaturaAsignaturaCiclo + " INTEGER,"
+            + KEY_idCicloAsignaturaCiclo + " INTEGER,"
+            + "FOREIGN KEY(" + KEY_idAsignaturaAsignaturaCiclo + ") REFERENCES asignatura(" + KEY_idAsignatura + "),"
+            + "FOREIGN KEY(" + KEY_idCicloAsignaturaCiclo + ") REFERENCES ciclo(" + KEY_idCiclo + "))" ;
 
 
     //Tabla de escuela
@@ -153,6 +322,12 @@ public class BaseDatosHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_COORDINADOR_TABLA);
         db.execSQL(CREATE_ENCARGADO_TABLA);
         db.execSQL(CREATE_LOCAL_TABLA);
+        db.execSQL(CREATE_ASIGNATURACICLO_TABLA);
+        db.execSQL(CREATE_GRUPOASIGNATURA_TABLA);
+        db.execSQL(CREATE_HORARIO_TABLA);
+        db.execSQL(CREATE_PRIORIDAD_TABLA);
+        db.execSQL(CREATE_DISPONIBILIDAD_TABLA);
+
 
     }
 
