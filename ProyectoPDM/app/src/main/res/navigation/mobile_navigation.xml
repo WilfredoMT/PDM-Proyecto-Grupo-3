@@ -32,15 +32,35 @@
         android:label="@string/menu_home"
         tools:layout="@layout/fragment_ciclo" />
     <fragment
-        android:id="@+id/nav_menuSolicitudes"
-        android:name="sv.edu.ues.fia.pdm.proyecto.grupo3.ui.solicitudes.SolicitudesFragment"
+        android:id="@+id/nav_menuAsignar"
+        android:name="sv.edu.ues.fia.pdm.proyecto.grupo3.ui.asignar.AsignarFragment"
         android:label="@string/menu_home"
-        tools:layout="@layout/fragment_ciclo" />
+        tools:layout="@layout/fragment_asignar" />
     <fragment
         android:id="@+id/nav_menuEncargados"
         android:name="sv.edu.ues.fia.pdm.proyecto.grupo3.ui.encargados.EncargadosFragment"
         android:label="@string/menu_home"
         tools:layout="@layout/fragment_ciclo" />
+    <fragment
+        android:id="@+id/nav_menuSolicitudesHorario"
+        android:name="sv.edu.ues.fia.pdm.proyecto.grupo3.ui.solicitudes.SolicitudesHorarioFragment"
+        android:label="@string/menu_home"
+        tools:layout="@layout/fragment_solicitudeshorario" />
+    <fragment
+        android:id="@+id/nav_menuRespuestaSolicitud"
+        android:name="sv.edu.ues.fia.pdm.proyecto.grupo3.ui.solicitudes.RespuestaSolicitudFragment"
+        android:label="@string/menu_home"
+        tools:layout="@layout/fragment_solicitudeshorario" />
+    <fragment
+        android:id="@+id/nav_menuSolicitudesAtendidas"
+        android:name="sv.edu.ues.fia.pdm.proyecto.grupo3.ui.solicitudes.SolicitudesAtendidasFragment"
+        android:label="@string/menu_home"
+        tools:layout="@layout/fragment_solicitudes_atendidas" />
+    <fragment
+        android:id="@+id/nav_menuPropuesta"
+        android:name="sv.edu.ues.fia.pdm.proyecto.grupo3.ui.solicitudes.SolicitudesPropuestasFragment"
+        android:label="@string/menu_home"
+        tools:layout="@layout/fragment_solicitudes_propuestas" />
     <fragment
         android:id="@+id/nav_menuHorarios"
         android:name="sv.edu.ues.fia.pdm.proyecto.grupo3.ui.horarios.HorariosFragment"

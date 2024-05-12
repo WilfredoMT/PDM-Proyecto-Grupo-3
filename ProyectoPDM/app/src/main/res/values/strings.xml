@@ -135,6 +135,10 @@
     <string name="encargado_registrado_correctamente">Encargado registrado correctamente</string>
     <string name="el_encargado_ya_esta_registrado">El encargado ya esta registrado</string>
     <string name="encargado_editado_correctamente">Encargado editado correctamente</string>
+    <string name="solicitar_horario">Solicitar Horario</string>
+    <string name="respuesta_a_solicitudes">Respuesta a solicitudes</string>
+    <string name="solicitudes_atendidas">Solicitudes Atendidas</string>
+    <string name="propuestas">Propuestas</string>
     <string-array name="years">
         <item>2022</item>
         <item>2023</item>
