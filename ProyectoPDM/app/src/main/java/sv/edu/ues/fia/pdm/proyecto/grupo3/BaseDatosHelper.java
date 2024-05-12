@@ -1113,51 +1113,6 @@ public class BaseDatosHelper extends SQLiteOpenHelper {
         return rowsAffected > 0;
     }
 
-    //Ver si ya existe Horario registrado
-    /*public boolean existeHorario(String dia) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = null;
-        try {
-            // Query para ver si ya existe el mismo nombre
-            String query = "SELECT * FROM " + HORARIO_TABLA + " WHERE " + KEY_diaHorario + "=?";
-            cursor = db.rawQuery(query, new String[]{dia});
-
-
-            // si cursor tiene al menos una row, Horario ya existe
-            return cursor.getCount() > 0;
-        } finally {
-            // cerrar cursor y db
-            if (cursor != null)
-                cursor.close();
-            db.close();
-        }
-    }*/
-    //Sobrecargado para EditarCicloActivity
-    /*public boolean existeCiclo(String nombre, String id) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = null;
-
-        // Query para ver si ya existe el mismo nombre
-        String query = "SELECT * FROM " + CICLO_TABLA + " WHERE " + KEY_nombreCiclo + "=?";
-        cursor = db.rawQuery(query, new String[]{nombre});
-
-        // si cursor tiene al menos una row, ciclo ya existe
-        boolean rowHay = cursor.getCount() > 0;
-        if(rowHay == true) {
-            cursor.moveToFirst();
-            @SuppressLint("Range") int idEncontrado = cursor.getInt(cursor.getColumnIndex(KEY_idCiclo));
-            if (idEncontrado == Integer.parseInt(id)) {
-                //el id es el mismo asi que se solo editando el mismo ciclo
-                return false;
-            } else {
-                cursor.close();
-                db.close();
-                return rowHay;
-            }
-
-        }
-        return rowHay;
-    }*/
 
     //Insertar Datos iniciales
     public void insertarDatosInicialesHorario() {
@@ -1176,8 +1131,154 @@ public class BaseDatosHelper extends SQLiteOpenHelper {
         }
     }
 
+    //Tabla propuesta//
+
+    //agregar propuesta
+    public boolean agregarPropuesta(String idCambio, String idEncargadoHorario, String idEvento , String idDocenteCoordinador) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(KEY_idCambioPropuesta, idCambio);
+        values.put(KEY_idEncargadoHorarioPropuesta, idEncargadoHorario);
+        values.put(KEY_idEventoPropuesta, idEvento);
+        values.put(KEY_idCoordinadorPropuesta, idDocenteCoordinador);
+        long result = db.insert(PROPUESTA_TABLA, null, values);
+        return result != -1;
+    }
+
+    //Get Propuesta
+    public Cursor getPropuesta(String id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.query(PROPUESTA_TABLA, new String[]{KEY_idPropuesta,
+                        KEY_idCambioPropuesta, KEY_idEncargadoLocalPropuesta, KEY_idEventoPropuesta, KEY_idCoordinadorPropuesta}, KEY_idCiclo + "=?",
+                new String[]{id}, null, null, null, null);
+
+        if (cursor != null)
+            cursor.moveToFirst();
+
+        return cursor;
+    }
+
+    //Actualizar Propuesta
+    public boolean actualizarPropuesta(String idPropuesta) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        int rowsAffected = db.update(PROPUESTA_TABLA, values, KEY_idPropuesta + " = ?", new String[]{idPropuesta});
+        return rowsAffected > 0;
+    }
+
+    //Eliminar Ciclo
+    public boolean eliminarPropuesta(String id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int rowsAffected = db.delete(PROPUESTA_TABLA, KEY_idPropuesta + " = ?", new String[]{id});
+        return rowsAffected > 0;
+    }
+
+    //Insertar Datos iniciales
+    public void insertarDatosInicialesPropuesta() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM " + CICLO_TABLA, null);
+        cursor.moveToFirst();
+        int count = cursor.getInt(0);
+        cursor.close();
+
+        if (count == 0) {
+            agregarPropuesta("01", "01", "01", "01");
+            agregarPropuesta("01", "01", "02", "01");
+            agregarPropuesta("01", "01", "03", "01");
+            agregarPropuesta("01", "01", "04", "01");
+
+        }
+    }
+
+    //Tabla DetallePropuesta//
+
+    //agregar DetallePropuesta
+    public boolean agregarDetallePropuesta(String idCambio, String descripcion, String horaInicio, String horaFin) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(KEY_idCambioDetallePropuesta, idCambio);
+        values.put(KEY_descripcionDetallePropuesta, descripcion);
+        values.put(KEY_horaInicioDetallePropuesta, horaInicio);
+        values.put(KEY_horaFinDetallePropuesta, horaFin);
+        long result = db.insert(DETALLEPROPUESTA_TABLA, null, values);
+        return result != -1;
+    }
+
+    //Get DetallePropuesta
+    public Cursor getDetallePropuesta(String id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.query(DETALLEPROPUESTA_TABLA, new String[]{KEY_idDetalle,
+                        KEY_idCambioDetallePropuesta, KEY_descripcionDetallePropuesta, KEY_horaInicioDetallePropuesta, KEY_horaFinDetallePropuesta}, KEY_idDetalle + "=?",
+                new String[]{id}, null, null, null, null);
+
+        if (cursor != null)
+            cursor.moveToFirst();
+
+        return cursor;
+    }
+
+    //Actualizar DetallePropuesta
+    public boolean actualizarDetallePropuesta(String idDetalle,  String descripcion, String horaInicio, String horaFin) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(KEY_descripcionDetallePropuesta, descripcion);
+        values.put(KEY_horaInicioDetallePropuesta, horaInicio);
+        values.put(KEY_horaFinDetallePropuesta, horaFin);
+        int rowsAffected = db.update(DETALLEPROPUESTA_TABLA, values, KEY_idDetalle + " = ?", new String[]{idDetalle});
+        return rowsAffected > 0;
+    }
+
+    //Eliminar DetallePropuesta
+    public boolean eliminarDetallePropuesta(String id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int rowsAffected = db.delete(DETALLEPROPUESTA_TABLA, KEY_idDetalle + " = ?", new String[]{id});
+        return rowsAffected > 0;
+    }
+
+    //Insertar Datos iniciales
+    public void insertarDatosInicialesDetallePropuesta() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM " + DETALLEPROPUESTA_TABLA, null);
+        cursor.moveToFirst();
+        int count = cursor.getInt(0);
+        cursor.close();
+
+        if (count == 0) {
+            agregarDetallePropuesta("01","Es unca clase Terorica de PDM115","06:20:00","8:00:00");
+            agregarDetallePropuesta("01","Es unca clase de Discucion de PDM115","06:20:00","8:00:00");
+
+        }
+    }
+//Tabla ciclo//
+
+    //agregar ciclo
+    public boolean agregarAsociacionPropuesta(String idPropuesta, String idDetalle) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(KEY_idPropuestaAsociacionPropuesta, idPropuesta);
+        values.put(KEY_idDetalleAsociacionPropuesta, idDetalle);
+
+        long result = db.insert(ASOCIACIONPROPUESTA_TABLA, null, values);
+        return result != -1;
+    }
+
+    //Insertar Datos iniciales
+    public void insertarDatosInicialesAsociacionPropuesta() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM " + ASOCIACIONPROPUESTA_TABLA, null);
+        cursor.moveToFirst();
+        int count = cursor.getInt(0);
+        cursor.close();
+
+        if (count == 0) {
+            agregarAsociacionPropuesta("01", "01");
+            agregarAsociacionPropuesta("02", "02");
 
 
+        }
+    }
 
 
     //Tabla de Evento//
