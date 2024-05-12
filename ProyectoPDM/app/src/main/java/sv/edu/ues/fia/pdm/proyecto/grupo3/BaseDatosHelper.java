@@ -826,6 +826,121 @@ public class BaseDatosHelper extends SQLiteOpenHelper {
         }
     }
 
+    //Tabla de Evento//
+    //agregar evento
+    public boolean agregarEvento(String nomEvento, String tipoEvento, String idCiclo, String idPropuesta, String idHorario, String idPripridad){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(KEY_nomEvento, nomEvento);
+        values.put(KEY_tipoEvento, tipoEvento);
+        values.put(KEY_idCicloEvento, idCiclo);
+        values.put(KEY_idPropuestaEvento, idPropuesta);
+        values.put(KEY_idHorarioEvento, idHorario);
+        values.put(KEY_idPrioridadEvento, idPripridad);
+        long result = db.insert(EVENTO_TABLA, null, values);
+        return result != -1;
+    }
+    //Get Evento
+    public Cursor getEvento(String id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.query(EVENTO_TABLA, new String[]{KEY_idEvento,
+                        KEY_nomEvento, KEY_tipoEvento, KEY_idCicloEvento, KEY_idPropuestaEvento,
+                        KEY_idHorarioEvento, KEY_idPrioridadEvento}, KEY_idEvento + "=?",
+                new String[]{id}, null, null, null, null);
+
+        if (cursor != null)
+            cursor.moveToFirst();
+
+        return cursor;
+    }
+
+    //Actualizar Evento
+    public boolean actualizarEvento(String idEvento, String nomEvento, String tipoEvento) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(KEY_nomEvento, nomEvento);
+        values.put(KEY_tipoEvento, tipoEvento);
+        int rowsAffected = db.update(EVENTO_TABLA, values, KEY_idEvento + " = ?", new String[]{idEvento});
+        return rowsAffected > 0;
+    }
+
+    //Eliminar Evento
+    public boolean eliminarEvento(String id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int rowsAffected = db.delete(EVENTO_TABLA, KEY_idEvento + " = ?", new String[]{id});
+        return rowsAffected > 0;
+    }
+
+    //Ver si ya existe Evento registrado
+    public boolean existeEvento(String nomEvento) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+        try {
+            // Query para ver si ya existe el mismo nombre
+            String query = "SELECT * FROM " + EVENTO_TABLA + " WHERE " + KEY_nomEvento + "=?";
+            cursor = db.rawQuery(query, new String[]{nomEvento});
+
+
+            // si cursor tiene al menos una row, evento ya existe
+            return cursor.getCount() > 0;
+        } finally {
+            // cerrar cursor y db
+            if (cursor != null)
+                cursor.close();
+            db.close();
+        }
+    }
+
+    //Sobrecargado para EditarEventoActivity
+    public boolean existeEvento(String nomEvento, String id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+
+        // Query para ver si ya existe el mismo nombre
+        String query = "SELECT * FROM " + EVENTO_TABLA + " WHERE " + KEY_nomEvento + "=?";
+        cursor = db.rawQuery(query, new String[]{nomEvento});
+
+        // si cursor tiene al menos una row, ciclo ya existe
+        boolean rowHay = cursor.getCount() > 0;
+        if(rowHay == true) {
+            cursor.moveToFirst();
+            @SuppressLint("Range") int idEncontrado = cursor.getInt(cursor.getColumnIndex(KEY_idEvento));
+            if (idEncontrado == Integer.parseInt(id)) {
+                //el id es el mismo asi que se solo editando el mismo ciclo
+                return false;
+            } else {
+                cursor.close();
+                db.close();
+                return rowHay;
+            }
+
+        }
+        return rowHay;
+
+    }
+
+    //Insertar Datos iniciales
+    public void insertarDatosInicialesEvento() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM " + EVENTO_TABLA, null);
+        cursor.moveToFirst();
+        int count = cursor.getInt(0);
+        cursor.close();
+
+        if (count == 0) {
+            agregarEvento("PDM115 GT 01", "Clase teorica de PDM", "01", "01", "01", "01");
+            agregarEvento("PDM115 GD 01", "Clase de grupo de discucion #01", "01", "02", "06", "02");
+            agregarEvento("PDM115 GD 02", "Clase de grupo de discucion #02","01", "03", "05", "03");
+            agregarEvento("PDM115 GD 03", "Clase de grupo de discucion #03", "01", "04", "09", "04");
+        }
+    }
+
+
+
+
+
+
 
     //Tabla asignatura//
 

@@ -1,6 +1,4 @@
-package sv.edu.ues.fia.pdm.proyecto.grupo3.ui.ciclo;
-
-import static androidx.core.content.ContextCompat.startActivity;
+package sv.edu.ues.fia.pdm.proyecto.grupo3.ui.solicitudes;
 
 import android.content.Context;
 import android.content.Intent;
@@ -18,41 +16,44 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import sv.edu.ues.fia.pdm.proyecto.grupo3.BaseDatosHelper;
 import sv.edu.ues.fia.pdm.proyecto.grupo3.R;
+import sv.edu.ues.fia.pdm.proyecto.grupo3.ui.ciclo.CicloAdapter;
+import sv.edu.ues.fia.pdm.proyecto.grupo3.ui.ciclo.CicloFragment;
+import sv.edu.ues.fia.pdm.proyecto.grupo3.ui.ciclo.EditarCicloActivity;
+
 import android.widget.Toast;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-
-public class CicloAdapter extends RecyclerView.Adapter<CicloAdapter.CicloViewHolder> {
-
+public class SolicitudesHorarioAdapter extends RecyclerView.Adapter<SolicitudesHorarioAdapter.SolicitudesHorarioViewHolder>{
     private Cursor mCursor;
     private Context mContext;
 
     private BaseDatosHelper baseDatosHelper;
 
-    public CicloAdapter(Context context, Cursor cursor) {
+    public SolicitudesHorarioAdapter(Context context, Cursor cursor) {
         mContext = context;
         mCursor = cursor;
     }
 
     @NonNull
     @Override
-    public CicloViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public SolicitudesHorarioAdapter.SolicitudesHorarioViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(mContext);
         View view = inflater.inflate(R.layout.ciclo_items, parent, false);
-        return new CicloViewHolder(view);
+        return new CicloAdapter.SolicitudesHorarioViewHolder(view);
     }
 
+
     @Override
-    public void onBindViewHolder(@NonNull CicloViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull SolicitudesHorarioAdapter.SolicitudesAdapterViewHolder holder, int position) {
         if (!mCursor.moveToPosition(position))
             return;
 
         baseDatosHelper = new BaseDatosHelper(mContext.getApplicationContext());
 
-        String nombre = mCursor.getString(mCursor.getColumnIndexOrThrow(BaseDatosHelper.KEY_nombreCiclo));
-        String id = mCursor.getString(mCursor.getColumnIndexOrThrow(BaseDatosHelper.KEY_idCiclo));
+        String nomEvento = mCursor.getString(mCursor.getColumnIndexOrThrow(BaseDatosHelper.KEY_nomEvento));
+        String id = mCursor.getString(mCursor.getColumnIndexOrThrow(BaseDatosHelper.KEY_idEvento));
 
-        holder.textViewCicloNombre.setText(nombre);
+        holder.textViewCicloNombre.setText(nomEvento);
 
         // Set click listeners for buttons
         holder.buttonEdit.setOnClickListener(v -> {
@@ -101,7 +102,6 @@ public class CicloAdapter extends RecyclerView.Adapter<CicloAdapter.CicloViewHol
         });
     }
 
-
     @Override
     public int getItemCount() {
         return mCursor.getCount();
@@ -129,5 +129,4 @@ public class CicloAdapter extends RecyclerView.Adapter<CicloAdapter.CicloViewHol
             buttonDelete = itemView.findViewById(R.id.buttonDelete);
         }
     }
-
 }
