@@ -379,7 +379,120 @@ public class BaseDatosHelper extends SQLiteOpenHelper {
     //                    Helpers para CRUDs                  //
 
 
-                       //Tabla Escuela//
+    //Tabla  GrupoAsignatura //
+
+    //agregar grupoAsignatura
+    public boolean agregarGrupoAsignatura(String idAsignatura, String idCoordinador, String totalIntegrantes) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(KEY_idAsignaturaGrupo, idAsignatura);
+        values.put(KEY_idCoordinadorGrupo, idCoordinador);
+        values.put(KEY_totalIntegrantesGrupo, totalIntegrantes);
+        long result = db.insert(GRUPOASIGNATURA_TABLA, null, values);
+        return result != -1;
+    }
+
+    //Get grupoAsignatura
+    public Cursor getGrupoAsignatura(String id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.query(GRUPOASIGNATURA_TABLA, new String[]{KEY_idGrupo,
+                        KEY_idAsignaturaGrupo, KEY_idCoordinadorGrupo, KEY_totalIntegrantesGrupo}, KEY_idGrupo + "=?",
+                new String[]{id}, null, null, null, null);
+
+        if (cursor != null)
+            cursor.moveToFirst();
+
+        return cursor;
+    }
+
+    //Actualizar grupoAsigntura
+    public boolean actualizarGrupoAsignatura(String idGrupo, String idAsignaturaGrupo, String idCoordinadorGrupo, String totalIntegrantes) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(KEY_idAsignaturaGrupo, idAsignaturaGrupo);
+        values.put(KEY_idCoordinadorGrupo, idCoordinadorGrupo);
+        values.put(KEY_totalIntegrantesGrupo, totalIntegrantes);
+        int rowsAffected = db.update(GRUPOASIGNATURA_TABLA, values, KEY_idGrupo + " = ?", new String[]{idGrupo});
+        return rowsAffected > 0;
+    }
+
+    //Eliminar grupoAsignatura
+    public boolean eliminarGrupoAsignatura(String id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int rowsAffected = db.delete(GRUPOASIGNATURA_TABLA, KEY_idGrupo + " = ?", new String[]{id});
+        return rowsAffected > 0;
+    }
+
+    /*
+    //Ver si ya existe coordinador registrado
+    public boolean existeCoordinador(String nombre) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+        try {
+            // Query para ver si ya existe el mismo codigo
+            String query = "SELECT * FROM " + COORDINADOR_TABLA + " WHERE " + KEY_nombreCoordinador + "=?";
+            cursor = db.rawQuery(query, new String[]{nombre});
+            // si cursor tiene al menos una row, asignatura ya existe
+            return cursor.getCount() > 0;
+        } finally {
+            // cerrar cursor y db
+            if (cursor != null)
+                cursor.close();
+            db.close();
+        }
+    }
+    //Sobrecargar metodo
+    public boolean existeCoordinador(String nombre, String id) {
+
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+
+        // Query para ver si ya existe el mismo nombre
+        String query = "SELECT * FROM " + COORDINADOR_TABLA + " WHERE " + KEY_nombreCoordinador + "=?";
+        cursor = db.rawQuery(query, new String[]{nombre});
+
+        // si cursor tiene al menos una row, ciclo ya existe
+        boolean rowHay = cursor.getCount() > 0;
+        if(rowHay == true) {
+            cursor.moveToFirst();
+            @SuppressLint("Range") int idEncontrado = cursor.getInt(cursor.getColumnIndex(KEY_idCoordinador));
+            if (idEncontrado == Integer.parseInt(id)) {
+                //el id es el mismo asi que se solo editando el mismo ciclo
+                return false;
+            } else {
+                cursor.close();
+                db.close();
+                return rowHay;
+            }
+
+        }
+        return rowHay;
+    }
+
+     */
+
+
+
+    //Insertar Datos iniciales de GrupoAsignatura
+    public void insertarDatosInicialesGrupoAsignatura() {
+
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM " + GRUPOASIGNATURA_TABLA, null);
+        cursor.moveToFirst();
+        int count = cursor.getInt(0);
+        cursor.close();
+
+        if (count == 0) {
+            agregarGrupoAsignatura("5", "1", "20");
+        }
+    }
+
+
+
+    //Tabla Escuela//
 
     //agregar local
     public boolean agregarEscuela(String nombre, String descripcion) {
@@ -631,6 +744,19 @@ public class BaseDatosHelper extends SQLiteOpenHelper {
 
         return cursor;
     }
+    //sobrecargado
+    public Cursor getCoordinador(String nombreCoordinador, String nulll) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.query(COORDINADOR_TABLA, new String[]{KEY_idCoordinador,
+                        KEY_nombreCoordinador, KEY_apellidoCoordinador,KEY_emailCoordinador, KEY_idUsuarioCoordinador}, KEY_nombreCoordinador + "=?",
+                new String[]{nombreCoordinador}, null, null, null, null);
+
+        if (cursor != null)
+            cursor.moveToFirst();
+
+        return cursor;
+    }
 
     //Actualizar coordinador
     public boolean actualizarCoordinador(String idCoordinador, String nombre, String apellido, String email) {
@@ -847,6 +973,18 @@ public class BaseDatosHelper extends SQLiteOpenHelper {
         Cursor cursor = db.query(ASIGNATURA_TABLA, new String[]{KEY_idAsignatura,
                         KEY_nombreAsignatura, KEY_codigoAsignatura, KEY_numeroCicloAsignatura}, KEY_idAsignatura + "=?",
                 new String[]{id}, null, null, null, null);
+
+        if (cursor != null)
+            cursor.moveToFirst();
+
+        return cursor;
+    }
+    public Cursor getAsignatura(String codigo, String nulll) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.query(ASIGNATURA_TABLA, new String[]{KEY_idAsignatura,
+                        KEY_nombreAsignatura, KEY_codigoAsignatura, KEY_numeroCicloAsignatura}, KEY_codigoAsignatura + "=?",
+                new String[]{codigo}, null, null, null, null);
 
         if (cursor != null)
             cursor.moveToFirst();

@@ -139,6 +139,19 @@
     <string name="respuesta_a_solicitudes">Respuesta a solicitudes</string>
     <string name="solicitudes_atendidas">Solicitudes Atendidas</string>
     <string name="propuestas">Propuestas</string>
+    <string name="seleccioneCoord">Seleccione el coordinador a asignar \n</string>
+    <string name="seleccionemateria">Seleccione la materia a asignar</string>
+    <string name="asignarCoord">Todas las asignaturas asignadas a coordinadores:</string>
+    <string name="coordinador">Coordinador</string>
+    <string name="materia">Materia</string>
+    <string name="agregar_asignacion_de_coordinador">Agregar asignacion de coordinador</string>
+    <string name="estas_seguro_de_borrar_el_grupo">"Estas seguro de borrar el grupo: "</string>
+    <string name="grupo_borrado_correctamente">Grupo borrado correctamente</string>
+    <string name="editandogrupo">Editando grupo:</string>
+    <string name="seleccionecoordinador">Seleccione el coordinador</string>
+    <string name="numero_de_integrantes_del_grupo">Numero de integrantes del grupo</string>
+    <string name="editar_asignacion">Editar Asignacion</string>
+    <string name="grupo_editado_correctamente">Grupo editado correctamente</string>
     <string-array name="years">
         <item>2022</item>
         <item>2023</item>
