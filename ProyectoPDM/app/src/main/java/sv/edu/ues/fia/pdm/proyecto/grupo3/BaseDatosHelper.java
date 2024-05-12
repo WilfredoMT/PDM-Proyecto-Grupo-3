@@ -378,6 +378,122 @@ public class BaseDatosHelper extends SQLiteOpenHelper {
 
     //                    Helpers para CRUDs                  //
 
+//Tabla Prioridad//
+
+    //agregar prioridad
+    public long agregarPrioridad(String orden) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(KEY_ordenPrioridad, orden);
+        long id = db.insert(PRIORIDAD_TABLA, null, values);
+        db.close();
+        return id;
+    }
+
+    //Get Escuela
+    public Cursor getPrioridad(String id, String nulll) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.query(PRIORIDAD_TABLA, new String[]{KEY_idPrioridad,
+                        KEY_ordenPrioridad}, KEY_idPrioridad + "=?",
+                new String[]{id}, null, null, null, null);
+
+        if (cursor != null)
+            cursor.moveToFirst();
+
+        return cursor;
+    }
+    //sobrecargar para usar nombre
+    public Cursor getPrioridad(String orden) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.query(PRIORIDAD_TABLA, new String[]{KEY_idPrioridad,
+                        KEY_ordenPrioridad}, KEY_ordenPrioridad + "=?",
+                new String[]{orden}, null, null, null, null);
+
+        if (cursor != null)
+            cursor.moveToFirst();
+
+        return cursor;
+    }
+
+    //Actualizar prioridad
+    public boolean actualizarPrioridad(String idPrioridad, String orden) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(KEY_ordenPrioridad, orden);
+        int rowsAffected = db.update(PRIORIDAD_TABLA, values, KEY_idPrioridad + " = ?", new String[]{idPrioridad});
+        return rowsAffected > 0;
+    }
+
+    //Eliminar prioridad
+    public boolean eliminarPrioridad(String id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int rowsAffected = db.delete(PRIORIDAD_TABLA, KEY_idPrioridad + " = ?", new String[]{id});
+        return rowsAffected > 0;
+    }
+
+    //Ver si ya existe prioridad
+
+    /*
+    public boolean existePrioridad(String nombre) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+        try {
+            // Query para ver si ya existe el mismo codigo
+            String query = "SELECT * FROM " + ESCUELA_TABLA + " WHERE " + KEY_nombreEscuela + "=?";
+            cursor = db.rawQuery(query, new String[]{nombre});
+            // si cursor tiene al menos una row, asignatura ya existe
+            return cursor.getCount() > 0;
+        } finally {
+            // cerrar cursor y db
+            if (cursor != null)
+                cursor.close();
+            db.close();
+        }
+    }
+    //Sobrecargar metodo
+    public boolean existePrioridad(String nombre, String id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+
+        // Query para ver si ya existe el mismo nombre
+        String query = "SELECT * FROM " + ESCUELA_TABLA + " WHERE " + KEY_nombreEscuela + "=?";
+        cursor = db.rawQuery(query, new String[]{nombre});
+
+        // si cursor tiene al menos una row, ciclo ya existe
+        boolean rowHay = cursor.getCount() > 0;
+        if(rowHay == true) {
+            cursor.moveToFirst();
+            @SuppressLint("Range") int idEncontrado = cursor.getInt(cursor.getColumnIndex(KEY_idEscuela));
+            if (idEncontrado == Integer.parseInt(id)) {
+                //el id es el mismo asi que se solo editando el mismo ciclo
+                return false;
+            } else {
+                cursor.close();
+                db.close();
+                return rowHay;
+            }
+
+        }
+        return rowHay;
+    }
+
+     */
+
+    //Insertar Datos iniciales de Prioridad
+    public void insertarDatosInicialesPrioridad() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM " + PRIORIDAD_TABLA, null);
+        cursor.moveToFirst();
+        int count = cursor.getInt(0);
+        cursor.close();
+
+        if (count == 0) {
+            agregarPrioridad("1");
+        }
+    }
+
 
     //Tabla  GrupoAsignatura //
 
@@ -489,7 +605,6 @@ public class BaseDatosHelper extends SQLiteOpenHelper {
             agregarGrupoAsignatura("5", "1", "20");
         }
     }
-
 
 
     //Tabla Escuela//
