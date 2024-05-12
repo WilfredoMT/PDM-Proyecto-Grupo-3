@@ -1,0 +1,123 @@
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.eventos.EventosFragment">
+
+    <!-- Input field for name -->
+
+
+    <!-- Spinner for selecting a number from 1 to 8 -->
+
+    <!-- Calendar picker for start date -->
+
+    <!-- Calendar picker for end date -->
+
+    <!-- Spinner for selecting a year -->
+
+
+    <EditText
+        android:id="@+id/EditTextEditarNombreMateria"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="136dp"
+        android:entries="@array/numbers"
+        android:hint="@string/escribe_el_nombre_de_la_materia"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.494"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+    <EditText
+        android:id="@+id/EditTextEditarCodigoMateria"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="224dp"
+        android:entries="@array/numbers"
+        android:hint="@string/escribe_el_codigo_de_la_materia"
+        app:layout_constraintBottom_toTopOf="@+id/SpinnerEditarNumeroCicloEditar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.505"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView"
+        app:layout_constraintVertical_bias="0.264" />
+
+    <Spinner
+        android:id="@+id/SpinnerEditarNumeroCicloEditar"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:entries="@array/numbers"
+        android:prompt="@string/choose_number"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.494"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/EditTextEditarNombreMateria"
+        app:layout_constraintVertical_bias="0.336" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:text="@string/editando_materia"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.51"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:text="@string/ciclonumero"
+        app:layout_constraintBottom_toTopOf="@+id/SpinnerEditarNumeroCicloEditar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.205"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/EditTextEditarCodigoMateria"
+        app:layout_constraintVertical_bias="0.923" />
+
+    <Button
+        android:id="@+id/buttonEditarMateria"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/editar"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/EditTextEditarCodigoMateria"
+        app:layout_constraintVertical_bias="0.823" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:text="@string/nombremateria"
+        app:layout_constraintBottom_toTopOf="@+id/EditTextEditarNombreMateria"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.182"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:text="@string/codigomateria"
+        app:layout_constraintBottom_toTopOf="@+id/EditTextEditarCodigoMateria"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.174"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/EditTextEditarNombreMateria"
+        app:layout_constraintVertical_bias="1.0" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

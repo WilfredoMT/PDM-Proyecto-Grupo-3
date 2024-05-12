@@ -3,11 +3,14 @@ package sv.edu.ues.fia.pdm.proyecto.grupo3;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 import android.os.Bundle;
@@ -16,6 +19,8 @@ import android.util.Log;
 public class LoginActivity extends AppCompatActivity {
     private EditText editTextUsuario, editTextClave;
     private Button buttonLogin;
+    private CheckBox checkBoxRecordar;
+    private SharedPreferences sharedPreferences;
     private BaseDatosHelper baseDatosHelper;
 
     @Override
@@ -26,6 +31,16 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         baseDatosHelper = new BaseDatosHelper(this);
+        sharedPreferences = getSharedPreferences("loginPrefs", Context.MODE_PRIVATE);
+
+        //checkear si ya esta logueado
+        if (sharedPreferences.getBoolean("loggedIn", false)) {
+            String usuario = sharedPreferences.getString("username", "");
+            String rol = sharedPreferences.getString("rol", "");
+            int imagenIndex = sharedPreferences.getInt("imagenIndex", 0);
+            irMainActivity(usuario, rol, imagenIndex);
+        }
+
 
         //Valores iniciales
         baseDatosHelper.insertarDatosInicialesUsuarios();
@@ -33,6 +48,8 @@ public class LoginActivity extends AppCompatActivity {
         editTextUsuario = findViewById(R.id.editTextUsuario);
         editTextClave = findViewById(R.id.editTextClave);
         buttonLogin = findViewById(R.id.buttonLogin);
+        checkBoxRecordar = findViewById(R.id.checkBox);
+
 
         buttonLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,16 +77,22 @@ public class LoginActivity extends AppCompatActivity {
                             if (clave.equals(storedPassword)) {
                                 // Login correcto
                                 Toast.makeText(LoginActivity.this, "Login Correcto", Toast.LENGTH_SHORT).show();
+
+                                //Recordar el checkbox
+                                if (checkBoxRecordar.isChecked()) {
+                                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                                    editor.putBoolean("loggedIn", true);
+                                    editor.putString("username", usuario);
+                                    editor.putString("rol", rol);
+                                    editor.putInt("imagenIndex", imagenIndex);
+                                    editor.apply();
+                                }
+
+
                                 //Ir a actividades
-                                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                irMainActivity(usuario, rol, imagenIndex);
 
-                                intent.putExtra("Usuario", usuario);
 
-                                intent.putExtra("Rol", rol);
-
-                                intent.putExtra("Imagen", imagenIndex);
-                                startActivity(intent);
-                                 // Close LoginActivity
 
 
                             } else {
@@ -99,5 +122,16 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
+    private void irMainActivity(String usuario, String rol, int imagenIndex) {
+        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+        intent.putExtra("Usuario", usuario);
+        intent.putExtra("Rol", rol);
+        intent.putExtra("Imagen", imagenIndex);
+        startActivity(intent);
+        finish();
+    }
+
 }
+
+
 

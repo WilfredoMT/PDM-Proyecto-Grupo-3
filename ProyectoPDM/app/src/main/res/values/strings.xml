@@ -27,5 +27,147 @@
     <string name="menu_locales">Locales</string>
     <string name="menu_materias">Materias\n</string>
     <string name="menu_ciclo">Ciclos\n</string>
+    <string name="bienvenido">"Bienvenido/a "</string>
+    <string name="sistema_reserva"> al sistema de Reserva de Locales de la FIA</string>
+    <string name="ayuda">Selecciona una funcion en el menu para continuar</string>
+    <string name="contraseña">Contraseña</string>
+    <string name="usuario">Usuario</string>
+    <string name="recordarusuario">Recordar usuario y contraseña</string>
+    <string name="cerrarsesion">Cerrar Sesión</string>
+    <string name="ciclostodos">Todos los Ciclos registrados:</string>
+    <string name="editar">Editar</string>
+    <string name="borrar">Borrar</string>
+    <string name="presiona">Presiona el boton para agregar un ciclo</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="agregarciclo">Registrar un nuevo ciclo</string>
+
+    <string name="choose_number">Elegir numero de ciclo</string>
+    <string-array name="numbers">
+        <item>01</item>
+        <item>02</item>
+
+    </string-array>
+    <string name="choose_year">Elegir el año</string>
+    <string name="agregar_ciclo">Agregar Ciclo</string>
+    <string name="seleccionarvalores">Selecciona los datos correspondientes</string>
+    <string name="ciclonumero">Numero de ciclo en el año</string>
+    <string name="cicloanio">Año</string>
+    <string name="fechainicio">Fecha de inicio</string>
+    <string name="fechafin">Fecha de finalizacion</string>
+    <string name="registrar">Agregar</string>
+    <string name="confirmacion">Confirmacion</string>
+    <string name="estas_seguro_de_borrar">Estas seguro de borrar</string>
+    <string name="si">Si</string>
+    <string name="no">No</string>
+    <string name="ciclo_borrado_correctamente">Ciclo Borrado correctamente</string>
+    <string name="accion_cancelada">Accion cancelada</string>
+    <string name="estas_seguro_de_borrar_el_ciclo">"Estas seguro de borrar el ciclo: "</string>
+    <string name="editar_ciclo">Editar Ciclo</string>
+    <string name="editando_el_ciclo">"Editando el ciclo: "</string>
+    <string name="editando_el_ciclos">"Editando el ciclo: "</string>
+    <string name="todas_las_materias_registradas">Todas las materias registradas</string>
+    <string name="presiona_el_boton_para_agregar_una_materia">Presiona el boton para agregar una materia</string>
+    <string name="estas_seguro_de_borrar_la_materia">"Estas seguro de borrar la materia: "</string>
+    <string name="materia_borrada_correctamente">"Materia borrada correctamente "</string>
+    <string name="ciclo_editado_correctamente">Ciclo editado correctamente</string>
+    <string name="el_ciclo_ya_existe_en_la_base_de_datos">El ciclo ya existe en la base de datos</string>
+    <string name="ciclo_agregado_correctamente">Ciclo agregado correctamente</string>
+    <string name="ingresa_datos">Ingresa los datos correspondientes</string>
+    <string name="escribe_el_nombre_de_la_materia">Escribe el nombre de la materia</string>
+    <string name="escribe_el_codigo_de_la_materia">Escribe el codigo de la materia</string>
+    <string name="nombremateria">Nombre de la materia</string>
+    <string name="codigomateria">Codigo de la materia</string>
+    <string name="agregar_materia">Agregar Materia</string>
+    <string name="materia_agregada_correctamente">Materia agregada correctamente</string>
+    <string name="la_materia_ya_existe">La materia ya existe</string>
+    <string name="editando_materia">Editando materia:</string>
+    <string name="editar_materia">Editar Materia</string>
+    <string name="materia_editada_correctamente">Materia editada correctamente</string>
+    <string name="todos_los_locales_registrados">"Todos los locales registrados: "</string>
+    <string name="presiona_agregar_local">Presiona el boton para agregar un Local</string>
+    <string name="estas_seguro_que_deseas_borrar_el_local">Estas seguro que deseas borrar el Local</string>
+    <string name="local_borrado_correctamente">Local borrado correctamente</string>
+    <string name="nombreLocal">Nombre del local</string>
+    <string name="capMaxima">Capacidad maxima (Personas)</string>
+    <string name="nombrelocal">Escriba el nombre del local</string>
+    <string name="maxpersonas">Escribe la capacidad del local</string>
+    <string name="TipoLocal">Selecciona el tipo del local</string>
+    <string name="agregar_local">Agregar Local</string>
+    <string name="local_agregado_correctamente">Local agregado correctamente</string>
+    <string name="el_local_ya_existe_en_la_base_de_datos">El local ya existe en la base de datos</string>
+    <string name="editandolocal">Editando Local:</string>
+    <string name="editar_local">Editar Local</string>
+    <string name="local_editado_correctamente">Local editado correctamente</string>
+    <string name="todos_los_coordinadores_registrados">Todos los coordinadores registrados:</string>
+    <string name="estas_seguro_de_borrar_el_coordinador">Estas seguro de borrar el coordinador</string>
+    <string name="coordinador_borrando_correctamente">Coordinador borrando correctamente</string>
+    <string name="agregar_coordinador">Agregar Coordinador</string>
+    <string name="nombreCoord">Nombre del Coordinador</string>
+    <string name="escribanombrecoord">Escriba el nombre del coordinador</string>
+    <string name="appelidoCoord">Apellido del coordinador</string>
+    <string name="escribapecoord">Escriba el apellido del coordinador</string>
+    <string name="email">Email del coordinador</string>
+    <string name="Nombreusuario">Nombre de usuario</string>
+    <string name="contraCoord">Contraseña de Coordinador</string>
+    <string name="presionaImagen">Toca la imagen para agregar foto de perfil</string>
+    <string name="coordinador_agregado_correctamente">Coordinador agregado correctamente</string>
+    <string name="el_coordinador_ya_esta_registrado">El coordinador ya esta registrado</string>
+    <string name="editarcoordinador">Editando Coordinador:</string>
+    <string name="fotoperfilcambiar">Toca la imagen para cambiar la foto de perfil</string>
+    <string name="editar_coordinador">Editar Coordinador</string>
+    <string name="coordinador_editado_correctamente">Coordinador editado correctamente</string>
+    <string name="escuela">Escuela</string>
+    <string name="encargados">Encargados</string>
+    <string name="todos_los_encargados_de_horario_registrados">Todos los encargados de horario registrados</string>
+    <string name="presiona_el_boton_para_registar_un_nuevo_encargado">Presiona el boton para registar un nuevo encargado</string>
+    <string name="contrase_a_de_encargado_de_horario">Contraseña de encargado de horario</string>
+    <string name="email_del_encargado_de_horario">Email del encargado de horario</string>
+    <string name="nombre_del_encargado_de_horario">Nombre del encargado de horario</string>
+    <string name="apellido_del_encargado_de_horario">Apellido del encargado de horario</string>
+    <string name="escriba_el_nombre_del_encargado_de_horario">Escriba el nombre del encargado de horario</string>
+    <string name="escribaNombre">Escriba el nombre\n</string>
+    <string name="apellidoEscriba">Escriba el apellido</string>
+    <string name="editandoencargado">Editando el encargado de horario:</string>
+    <string name="estas_seguro_de_que_quieres_borrar_el_encargado_de_horario">Estas seguro de que quieres borrar el encargado de horario</string>
+    <string name="encargado_de_horario_borrado_correctamente">Encargado de horario borrado correctamente</string>
+    <string name="agregar_encargado_de_horario">Agregar encargado de horario</string>
+    <string name="encargado_registrado_correctamente">Encargado registrado correctamente</string>
+    <string name="el_encargado_ya_esta_registrado">El encargado ya esta registrado</string>
+    <string name="encargado_editado_correctamente">Encargado editado correctamente</string>
+    <string name="solicitar_horario">Solicitar Horario</string>
+    <string name="respuesta_a_solicitudes">Respuesta a solicitudes</string>
+    <string name="solicitudes_atendidas">Solicitudes Atendidas</string>
+    <string name="propuestas">Propuestas</string>
+    <string name="seleccioneCoord">Seleccione el coordinador a asignar \n</string>
+    <string name="seleccionemateria">Seleccione la materia a asignar</string>
+    <string name="asignarCoord">Todas las asignaturas asignadas a coordinadores:</string>
+    <string name="coordinador">Coordinador</string>
+    <string name="materia">Materia</string>
+    <string name="agregar_asignacion_de_coordinador">Agregar asignacion de coordinador</string>
+    <string name="estas_seguro_de_borrar_el_grupo">"Estas seguro de borrar el grupo: "</string>
+    <string name="grupo_borrado_correctamente">Grupo borrado correctamente</string>
+    <string name="editandogrupo">Editando grupo:</string>
+    <string name="seleccionecoordinador">Seleccione el coordinador</string>
+    <string name="numero_de_integrantes_del_grupo">Numero de integrantes del grupo</string>
+    <string name="editar_asignacion">Editar Asignacion</string>
+    <string name="grupo_editado_correctamente">Grupo editado correctamente</string>
+    <string name="solicitudes_de_horario">Solicitudes de Horario</string>
+    <string-array name="years">
+        <item>2022</item>
+        <item>2023</item>
+        <item>2024</item>
+        <item>2025</item>
+        <item>2026</item>
+
+    </string-array>
+    <string-array name="tipoLocales">
+        <item>Auditorio</item>
+        <item>Biblioteca</item>
+        <item>Salon</item>
+        <item>Edificio</item>
+        <item>Otro</item>
+
+    </string-array>
 
 </resources>
