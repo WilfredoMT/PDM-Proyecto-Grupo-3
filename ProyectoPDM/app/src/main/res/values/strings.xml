@@ -152,6 +152,7 @@
     <string name="numero_de_integrantes_del_grupo">Numero de integrantes del grupo</string>
     <string name="editar_asignacion">Editar Asignacion</string>
     <string name="grupo_editado_correctamente">Grupo editado correctamente</string>
+    <string name="solicitudes_de_horario">Solicitudes de Horario</string>
     <string-array name="years">
         <item>2022</item>
         <item>2023</item>

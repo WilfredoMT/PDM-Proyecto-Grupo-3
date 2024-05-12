@@ -66,13 +66,18 @@ public class SolicitudesHorarioFragment extends Fragment {
         baseDatosHelper = new BaseDatosHelper(getContext());
         baseDatosHelper.insertarDatosInicialesEvento();
 
+        String usuariooordinador = act.infoUsuario[0];
+        Cursor cursor = baseDatosHelper.getUsuario(usuariooordinador);
+        String idUsuario = cursor.getString(0);
+        String nombreCoordindo = cursor.getString(1);
+
 
         final TextView textView = binding.textSolicitudhorario;
         solicitudesHorarioViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
 
         solicitudesHorarioViewModel.getText().observe(getViewLifecycleOwner(), newText -> {
             // texto para la texview
-            textView.setText(getString(R.string.ciclostodos));
+            textView.setText(R.string.solicitudes_de_horario);
         });
 
         //Llenar RecyclerView
@@ -82,7 +87,7 @@ public class SolicitudesHorarioFragment extends Fragment {
         mRecyclerView.setAdapter(mAdapter);
 
         mDbHelper = new BaseDatosHelper(getContext());
-        Cursor cursor = mDbHelper.getReadableDatabase().query(
+        cursor = mDbHelper.getReadableDatabase().query(
                 BaseDatosHelper.EVENTO_TABLA,
                 null,
                 null,
