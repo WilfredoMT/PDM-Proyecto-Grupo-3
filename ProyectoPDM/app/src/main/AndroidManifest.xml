@@ -19,7 +19,6 @@
             android:name=".ui.asignar.EditarAsignacionActivity"
             android:exported="false" />
         <activity
-        <activity
             android:name=".ui.asignar.AgregarAsignacionActivity"
             android:exported="false" />
         <activity
