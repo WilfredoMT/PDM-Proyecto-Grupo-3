@@ -26,13 +26,29 @@
             android:icon="@drawable/coordinador"
             android:title="@string/menu_coordindor" />
         <item
-            android:id="@+id/nav_menuSolicitudes"
+            android:id="@+id/nav_menuAsignar"
             android:icon="@drawable/prupuesta"
-            android:title="@string/menu_solicitudes" />
+            android:title="Asignar Asignatura" />
         <item
             android:id="@+id/nav_menuEncargados"
             android:icon="@drawable/docentes"
             android:title="@string/encargados" />
+        <item
+            android:id="@+id/nav_menuSolicitudesHorario"
+            android:icon="@drawable/prupuesta"
+            android:title="@string/solicitar_horario" />
+        <item
+            android:id="@+id/nav_menuRespuestaSolicitud"
+            android:icon="@drawable/menu"
+            android:title="@string/respuesta_a_solicitudes" />
+        <item
+            android:id="@+id/nav_menuSolicitudesAtendidas"
+            android:icon="@drawable/menu"
+            android:title="@string/solicitudes_atendidas" />
+        <item
+            android:id="@+id/nav_menuPropuesta"
+            android:icon="@drawable/evento"
+            android:title="@string/propuestas" />
         <item
             android:id="@+id/nav_menuHorarios"
             android:icon="@drawable/horarios"
@@ -42,6 +58,7 @@
             android:id="@+id/nav_menuEventos"
             android:icon="@drawable/evento"
             android:title="@string/menu_eventos" />
+
 
     </group>
 </menu>

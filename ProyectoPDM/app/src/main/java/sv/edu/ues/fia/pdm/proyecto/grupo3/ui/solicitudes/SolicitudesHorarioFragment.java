@@ -12,26 +12,27 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import sv.edu.ues.fia.pdm.proyecto.grupo3.databinding.FragmentSolicitudesBinding;
 
-public class SolicitudesFragment extends Fragment {
+import sv.edu.ues.fia.pdm.proyecto.grupo3.databinding.FragmentSolicitudeshorarioBinding;
 
-    private FragmentSolicitudesBinding binding;
+public class SolicitudesHorarioFragment extends Fragment {
+
+    private FragmentSolicitudeshorarioBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        sv.edu.ues.fia.pdm.proyecto.grupo3.ui.solicitudes.SolicitudesViewModel solicitudesViewModel =
-                new ViewModelProvider(this).get(sv.edu.ues.fia.pdm.proyecto.grupo3.ui.solicitudes.SolicitudesViewModel.class);
+        SolicitudesHorarioViewModel solicitudesHorarioViewModel =
+                new ViewModelProvider(this).get(SolicitudesHorarioViewModel.class);
         ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
         if (actionBar != null) {
             actionBar.setTitle("Solicitudes");
         }
 
-        binding = FragmentSolicitudesBinding.inflate(inflater, container, false);
+        binding = FragmentSolicitudeshorarioBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
 
         final TextView textView = binding.textSlideshow;
-        solicitudesViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+        solicitudesHorarioViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
         return root;
     }
 

@@ -105,18 +105,26 @@ public class MainActivity extends AppCompatActivity {
         MenuItem menuMaterias = navigationView.getMenu().findItem(R.id.nav_menuMaterias);
         MenuItem menuLocales = navigationView.getMenu().findItem(R.id.nav_menuLocales);
         MenuItem menuCoordinador = navigationView.getMenu().findItem(R.id.nav_menuCoordinador);
-        MenuItem menuSolicitudes = navigationView.getMenu().findItem(R.id.nav_menuSolicitudes);
+        MenuItem menuAsignar = navigationView.getMenu().findItem(R.id.nav_menuAsignar);
         MenuItem menuEncargados = navigationView.getMenu().findItem(R.id.nav_menuEncargados);
+        MenuItem menuSolicitudesHorario = navigationView.getMenu().findItem(R.id.nav_menuSolicitudesHorario);
+        MenuItem menuRespuestaSolicitude = navigationView.getMenu().findItem(R.id.nav_menuRespuestaSolicitud);
+        MenuItem menuSolicitudesAtendidas = navigationView.getMenu().findItem(R.id.nav_menuSolicitudesAtendidas);
+        MenuItem menuPropuestas = navigationView.getMenu().findItem(R.id.nav_menuPropuesta);
         MenuItem menuHorarios = navigationView.getMenu().findItem(R.id.nav_menuHorarios);
         MenuItem menuEventos = navigationView.getMenu().findItem(R.id.nav_menuEventos);
         menuCiclo.setVisible(false);
         menuMaterias.setVisible(false);
         menuLocales.setVisible(false);
         menuCoordinador.setVisible(false);
-        menuSolicitudes.setVisible(false);
+        menuAsignar.setVisible(false);
         menuEncargados.setVisible(false);
+        menuSolicitudesHorario.setVisible(false);
+        menuRespuestaSolicitude.setVisible(false);
+        menuPropuestas.setVisible(false);
         menuHorarios.setVisible(false);
         menuEventos.setVisible(false);
+        menuSolicitudesAtendidas.setVisible(false);
 
         //usuario admin
         if (rolLogeado.equals("Administrador")) {
@@ -125,19 +133,23 @@ public class MainActivity extends AppCompatActivity {
             menuLocales.setVisible(true);
             menuCoordinador.setVisible(true);
             menuEncargados.setVisible(true);
+            menuAsignar.setVisible(true);
+
 
 
         }
         if (rolLogeado.equals("Encargado de Horario")) {
 
             menuHorarios.setVisible(true);
-            menuEventos.setVisible(true);
+            menuPropuestas.setVisible(true);
+            menuSolicitudesAtendidas.setVisible(true);
 
 
         }
-        if (rolLogeado.equals("Docente")) {
+        if (rolLogeado.equals("Coordinador")) {
             menuHorarios.setVisible(true);
-            menuEventos.setVisible(true);
+            menuSolicitudesHorario.setVisible(true);
+            menuRespuestaSolicitude.setVisible(true);
 
         }
 
@@ -149,7 +161,7 @@ public class MainActivity extends AppCompatActivity {
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
                 //Añadir los otros fragments
-                R.id.nav_home, R.id.nav_menuCiclo, R.id.nav_menuMaterias, R.id.nav_menuLocales, R.id.nav_menuCoordinador, R.id.nav_menuSolicitudes, R.id.nav_menuEncargados, R.id.nav_menuHorarios, R.id.nav_menuEventos )
+                R.id.nav_home, R.id.nav_menuCiclo, R.id.nav_menuMaterias, R.id.nav_menuLocales, R.id.nav_menuCoordinador, R.id.nav_menuAsignar, R.id.nav_menuEncargados, R.id.nav_menuSolicitudesHorario, R.id.nav_menuHorarios, R.id.nav_menuRespuestaSolicitud, R.id.nav_menuSolicitudesAtendidas, R.id.nav_menuPropuesta, R.id.nav_menuEventos )
 
                 .setOpenableLayout(drawer)
                 .build();
