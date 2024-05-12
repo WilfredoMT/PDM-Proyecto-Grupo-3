@@ -16,55 +16,54 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import sv.edu.ues.fia.pdm.proyecto.grupo3.BaseDatosHelper;
 import sv.edu.ues.fia.pdm.proyecto.grupo3.R;
-import sv.edu.ues.fia.pdm.proyecto.grupo3.ui.solicitudes.SolicitudesHorarioAdapter;
+import sv.edu.ues.fia.pdm.proyecto.grupo3.ui.solicitudes.SolicitudesPropuestasAdapter;
 import sv.edu.ues.fia.pdm.proyecto.grupo3.ui.solicitudes.SolicitudesPropuestasFragment;
 import sv.edu.ues.fia.pdm.proyecto.grupo3.ui.ciclo.EditarCicloActivity;
 
 import android.widget.Toast;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-public class SolicitudesHorarioAdapter extends RecyclerView.Adapter<SolicitudesHorarioAdapter.SolicitudesHorarioViewHolder>{
+public class SolicitudesPropuestasAdapter extends RecyclerView.Adapter<SolicitudesPropuestasAdapter.SolicitudesPropuestasViewHolder>{
+
     private Cursor mCursor;
     private Context mContext;
-
     private BaseDatosHelper baseDatosHelper;
 
-    public SolicitudesHorarioAdapter(Context context, Cursor cursor) {
+    public SolicitudesPropuestasAdapter(Context context, Cursor cursor) {
         mContext = context;
         mCursor = cursor;
     }
 
     @NonNull
     @Override
-    public SolicitudesHorarioAdapter.SolicitudesHorarioViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public SolicitudesPropuestasAdapter.SolicitudesPropuestasViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(mContext);
-        View view = inflater.inflate(R.layout.solicitudes_horario_items, parent, false);
-        return new SolicitudesHorarioAdapter.SolicitudesHorarioViewHolder(view);
+        View view = inflater.inflate(R.layout.ciclo_items, parent, false);
+        return new SolicitudesPropuestasAdapter.SolicitudesPropuestasViewHolder(view);
     }
 
-
     @Override
-    public void onBindViewHolder(@NonNull SolicitudesHorarioAdapter.SolicitudesHorarioViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull SolicitudesPropuestasAdapter.SolicitudesPropuestasViewHolder holder, int position) {
         if (!mCursor.moveToPosition(position))
             return;
 
         baseDatosHelper = new BaseDatosHelper(mContext.getApplicationContext());
 
-        String nomEvento = mCursor.getString(mCursor.getColumnIndexOrThrow(BaseDatosHelper.KEY_nomEvento));
-        String id = mCursor.getString(mCursor.getColumnIndexOrThrow(BaseDatosHelper.KEY_idEvento));
+        String idEvento = mCursor.getString(mCursor.getColumnIndexOrThrow(BaseDatosHelper.KEY_idEventoPropuesta));
+        String id = mCursor.getString(mCursor.getColumnIndexOrThrow(BaseDatosHelper.KEY_idPropuesta));
 
-        holder.textViewSolicitudesHorario.setText(nomEvento);
+        holder.textViewSolicitudesPropuestas.setText(idEvento);
 
         // Set click listeners for buttons
-        holder.buttonEdit.setOnClickListener(v -> {
+        /*holder.buttonEdit.setOnClickListener(v -> {
 
-           /* Intent intent = new Intent(mContext, EditarCicloActivity.class);
+            Intent intent = new Intent(mContext, EditarCicloActivity.class);
             intent.putExtra("idEditar", id);
-            mContext.startActivity(intent);*/
+            mContext.startActivity(intent);
 
 
             // Handle edit button click
-        });
+        });*/
 
         /*holder.buttonDelete.setOnClickListener(v -> {
 
@@ -74,7 +73,7 @@ public class SolicitudesHorarioAdapter extends RecyclerView.Adapter<SolicitudesH
 
             builder.setTitle(R.string.confirmacion);
             String mensaje = mContext.getString(R.string.estas_seguro_de_borrar_el_ciclo);
-            builder.setMessage(mensaje +"\n" + nomEvento);
+            builder.setMessage(mensaje +"\n" + nombre);
 
             builder.setPositiveButton(R.string.si, new DialogInterface.OnClickListener() {
 
@@ -101,7 +100,6 @@ public class SolicitudesHorarioAdapter extends RecyclerView.Adapter<SolicitudesH
             alert.show();
         });*/
     }
-
     @Override
     public int getItemCount() {
         return mCursor.getCount();
@@ -116,17 +114,16 @@ public class SolicitudesHorarioAdapter extends RecyclerView.Adapter<SolicitudesH
         if (newCursor != null)
             notifyDataSetChanged();
     }
+    static class SolicitudesPropuestasViewHolder extends RecyclerView.ViewHolder {
+        TextView textViewSolicitudesPropuestas;
+        /*Button buttonEdit;
+        Button buttonDelete;*/
 
-    static class SolicitudesHorarioViewHolder extends RecyclerView.ViewHolder {
-        TextView textViewSolicitudesHorario;
-        Button buttonEdit;
-        Button buttonDelete;
-
-        SolicitudesHorarioViewHolder(View itemView) {
+        SolicitudesPropuestasViewHolder(View itemView) {
             super(itemView);
-            textViewSolicitudesHorario = itemView.findViewById(R.id.textViewSolicitudesHorario);
-            buttonEdit = itemView.findViewById(R.id.buttonEdit);
-            buttonDelete = itemView.findViewById(R.id.buttonDelete);
+            textViewSolicitudesPropuestas = itemView.findViewById(R.id.textViewSolicitudesHorario);
+            /*buttonEdit = itemView.findViewById(R.id.buttonEdit);
+            buttonDelete = itemView.findViewById(R.id.buttonDelete);*/
         }
     }
 }
