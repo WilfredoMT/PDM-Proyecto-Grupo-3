@@ -50,6 +50,7 @@ public class SolicitudesHorarioAdapter extends RecyclerView.Adapter<SolicitudesH
 
         baseDatosHelper = new BaseDatosHelper(mContext.getApplicationContext());
 
+
         String nomEvento = mCursor.getString(mCursor.getColumnIndexOrThrow(BaseDatosHelper.KEY_nomEvento));
         String id = mCursor.getString(mCursor.getColumnIndexOrThrow(BaseDatosHelper.KEY_idEvento));
 

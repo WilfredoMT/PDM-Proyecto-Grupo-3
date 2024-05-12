@@ -16,6 +16,13 @@
             android:name=".ui.solicitudes.AgregarSolicitudesHorarioActivity"
             android:exported="false" />
         <activity
+            android:name=".ui.asignar.EditarAsignacionActivity"
+            android:exported="false" />
+        <activity
+        <activity
+            android:name=".ui.asignar.AgregarAsignacionActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.encargados.EditarEncargadosActivity"
             android:exported="false" />
         <activity
