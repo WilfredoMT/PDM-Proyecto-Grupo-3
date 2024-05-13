@@ -1290,8 +1290,8 @@ public class BaseDatosHelper extends SQLiteOpenHelper {
         cursor.close();
 
         if (count == 0) {
-            agregarDetallePropuesta("01","Es unca clase Terorica de PDM115","06:20:00","8:00:00");
-            agregarDetallePropuesta("01","Es unca clase de Discucion de PDM115","06:20:00","8:00:00");
+            agregarDetallePropuesta("01","Es una clase Terorica de PDM115","06:20:00","8:00:00");
+            agregarDetallePropuesta("01","Es una clase de Discucion de PDM115","06:20:00","8:00:00");
 
         }
     }
@@ -1436,7 +1436,7 @@ public class BaseDatosHelper extends SQLiteOpenHelper {
 
         if (count == 0) {
             agregarEvento("1", "1", "1", "1", "1", "Clase de grupo de discucion #01" , "Discusion");
-            agregarEvento("2", "2", "2", "1", "2", "Clase de grupo de discucion 02", "Clase");
+            agregarEvento("2", "2", "2", "1", "2", "Clase de grupo de discucion #02", "Clase");
             //agregarEvento("PDM115 GD 02", "Clase de grupo de discucion #02","1", "3", "5", "3");
             //agregarEvento("PDM115 GD 03", "Clase de grupo de discucion #03", "1", "4", "9", "4");
         }
