@@ -37,7 +37,9 @@
     <string name="ciclostodos">Todos los Ciclos registrados:</string>
     <string name="editar">Editar</string>
     <string name="borrar">Borrar</string>
+    <string name="ver">Ver</string>
     <string name="presiona">Presiona el boton para agregar un ciclo</string>
+    <string name="propuestastodos">Todas las solicitudes Propuestas</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="agregarciclo">Registrar un nuevo ciclo</string>
