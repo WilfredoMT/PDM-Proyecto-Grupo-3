@@ -4,10 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.horarios.HorariosFragment">
+    tools:context=".ui.solicitudes.SolicitudesHorarioFragment">
 
     <TextView
-        android:id="@+id/text_slideshow"
+        android:id="@+id/text_solicitudhorario"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -17,6 +17,26 @@
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.05"
+        tools:text="@string/menu_horarios" />
+
+    <TextView
+        android:id="@+id/schedule_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxLines="100"
+        android:scrollbarSize="8dp"
+        android:scrollbarStyle="insideInset"
+        android:scrollbars="vertical"
+        android:textColor="@android:color/black"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_solicitudhorario" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

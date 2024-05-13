@@ -81,6 +81,7 @@ public class SolicitudesHorarioFragment extends Fragment {
 
 
         final TextView textView = binding.textSolicitudhorario;
+
         solicitudesHorarioViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
 
         solicitudesHorarioViewModel.getText().observe(getViewLifecycleOwner(), newText -> {
