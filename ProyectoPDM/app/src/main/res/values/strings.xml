@@ -153,6 +153,21 @@
     <string name="editar_asignacion">Editar Asignacion</string>
     <string name="grupo_editado_correctamente">Grupo editado correctamente</string>
     <string name="solicitudes_de_horario">Solicitudes de Horario</string>
+    <string name="dias">Dias\n</string>
+    <string name="horainicio">Hora de inicio</string>
+    <string name="HoraFin">Hora de finalizacion</string>
+    <string name="ssss" />
+    <string name="local">Local</string>
+    <string name="descripcion">Descripcion de solicitud</string>
+    <string name="nombreDeEvento">Nombre de Evento</string>
+    <string name="tipoEvento">Tipo de evento</string>
+    <string name="agregar_solicitud">Agregar Solicitud</string>
+    <string name="solicitud_realizada_correctamente">"Solicitud realizada correctamente "</string>
+    <string name="editarSolicitudHorario">Editando solicitud de horario</string>
+    <string name="editar_solicitud">Editar Solicitud</string>
+    <string name="solicitud_editada_correctamete">Solicitud editada correctamete</string>
+    <string name="estas_seguro_que_deseas_borrar_la_solicitud">Estas seguro que deseas borrar la Solicitud</string>
+    <string name="solicitud_borrada_correctamente">Solicitud borrada correctamente</string>
     <string-array name="years">
         <item>2022</item>
         <item>2023</item>
@@ -168,6 +183,15 @@
         <item>Edificio</item>
         <item>Otro</item>
 
+    </string-array>
+    <string-array name="dias">
+        <item>Lunes</item>
+        <item>Martes</item>
+        <item>Miercoles</item>
+        <item>Jueves</item>
+        <item>Viernes</item>
+        <item>Sabado</item>
+        <item>Domingo</item>
     </string-array>
 
 </resources>
