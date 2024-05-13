@@ -395,6 +395,7 @@ public class BaseDatosHelper extends SQLiteOpenHelper {
 
     //Get Escuela
     public Cursor getPrioridad(String id, String nulll) {
+
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = db.query(PRIORIDAD_TABLA, new String[]{KEY_idPrioridad,

@@ -168,6 +168,23 @@
     <string name="solicitud_editada_correctamete">Solicitud editada correctamete</string>
     <string name="estas_seguro_que_deseas_borrar_la_solicitud">Estas seguro que deseas borrar la Solicitud</string>
     <string name="solicitud_borrada_correctamente">Solicitud borrada correctamente</string>
+    <string name="en_espera">En Espera</string>
+    <string name="aprovado">Aprovado</string>
+    <string name="rechazado">Rechazado</string>
+    <string name="PropuestasSolicitudes">Solicitudes de Horario\n</string>
+    <string name="aceptar">Aceptar</string>
+    <string name="rechazar">Rechazar</string>
+    <string name="estas_seguro_de_que_deseas_rechazar_la_propuesta">Estas seguro de que deseas rechazar la propuesta</string>
+    <string name="estas_seguro_de_aceptar_la_propuesta">Estas seguro de Aceptar la propuesta</string>
+    <string name="propuesta_aceptada_correctamente">Propuesta aceptada correctamente</string>
+    <string name="propuesta_rechazada_correctamente">Propuesta rechazada correctamente</string>
+    <string name="atendidas">Solicitudes Atendidas</string>
+    <string name="propuestas_atendidas">Propuestas Atendidas</string>
+    <string name="siestavacion">Si esta vacio, significa que no hay propuestas pendientes</string>
+    <string name="diasemana">"Dia de la semana: "</string>
+    <string name="nombreEvento">"Nombre de Evento: "</string>
+    <string name="horainicios">"Hora de Inicio: "</string>
+    <string name="horaFIn">"Hora de finalizacion: "</string>
     <string-array name="years">
         <item>2022</item>
         <item>2023</item>
