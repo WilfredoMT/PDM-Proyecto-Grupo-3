@@ -2,7 +2,9 @@ package sv.edu.ues.fia.pdm.proyecto.grupo3.ui.solicitudes;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -22,26 +24,26 @@ import sv.edu.ues.fia.pdm.proyecto.grupo3.R;
 import sv.edu.ues.fia.pdm.proyecto.grupo3.ui.asignar.AgregarAsignacionActivity;
 import sv.edu.ues.fia.pdm.proyecto.grupo3.ui.asignar.EditarAsignacionActivity;
 
-public class AgregarSolicitudesHorarioActivity extends AppCompatActivity {
+public class EditarSolicitudesHorarioActivity extends AppCompatActivity {
     private ArrayAdapter<String> adapter, adapter2;
     BaseDatosHelper baseDatosHelper;
-    private ArrayList<String> dataListMaterias, dataListLocales ;
+    private ArrayList<String> dataListMaterias, dataListLocales;
     private String idCoordinador;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_agregar_solicitudes_horario);
+        setContentView(R.layout.activity_editar_solicitudes_horario);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle(R.string.agregar_solicitud);
+        getSupportActionBar().setTitle(R.string.editar_solicitud);
 
-        String nombreCoordinadorLoguado, idUsuarioLoguado, idCoordinadorLoguado;
+        String idEventoEditar, nombreEvento, tipoEvento;
         Intent intent = getIntent();
-        nombreCoordinadorLoguado = intent.getStringExtra("nombreLogueadoCoordinador");
-        idUsuarioLoguado = intent.getStringExtra("idUsuarioLoguado");
-        idCoordinadorLoguado = intent.getStringExtra("idCoordinadorLoguado");
-        idCoordinador= idCoordinadorLoguado;
+
+        idEventoEditar = intent.getStringExtra("idEditar");
+        idCoordinador = intent.getStringExtra("idCoordinador");
+
 
         Spinner spinnerDias = findViewById(R.id.spinnerDias);
         Spinner spinnerMaterias = findViewById(R.id.SpinnerMaterias);
@@ -52,6 +54,55 @@ public class AgregarSolicitudesHorarioActivity extends AppCompatActivity {
 
         EditText editTextNombre = findViewById(R.id.editTextNombre);
         EditText editTextTipo = findViewById(R.id.editTextTipo);
+
+        baseDatosHelper = new BaseDatosHelper(getBaseContext());
+
+        Cursor cursor = baseDatosHelper.getEvento(idEventoEditar);
+
+        tipoEvento = cursor.getString(7);
+        nombreEvento = cursor.getString(6);
+        editTextNombre.setText(nombreEvento);
+        editTextTipo.setText(tipoEvento);
+        String idHorarioEditar = cursor.getString(3);
+        String idGrupo = cursor.getString(1);
+        String idLocal = cursor.getString(5);
+        String idPropuesta = cursor.getString(2);
+        String idEvento = cursor.getString(0);
+        String idPrioridad = cursor.getString(4);
+
+
+        //recuperar local
+        cursor = baseDatosHelper.getLocal(idLocal);
+        String local = cursor.getString(1);
+
+        //recuperar materias
+
+        cursor = baseDatosHelper.getGrupoAsignatura(idGrupo);
+        String idAsignatura = cursor.getString(1);
+        cursor = baseDatosHelper.getAsignatura(idAsignatura);
+        String codigoMateria = cursor.getString(2);
+
+
+        //recuperar dias
+        cursor = baseDatosHelper.getHorario(idHorarioEditar);
+        String dia = cursor.getString(1);
+        String HoraInicio = cursor.getString(2);
+        String HoraFin = cursor.getString(3);
+        //split datos de dia
+        String[] partesHoraInicio = HoraInicio.split(":");
+        String horasInicio = partesHoraInicio[0];
+        String minutosInicio = partesHoraInicio[1];
+
+        String[] partesHoraFin = HoraFin.split(":");
+        String horasFin = partesHoraFin[0];
+        String minutosFin = partesHoraFin[1];
+
+        //Setear timepickers
+        timePickerInicio.setHour(Integer.parseInt(horasInicio));
+        timePickerInicio.setMinute(Integer.parseInt(minutosInicio));
+        timePickerFin.setHour(Integer.parseInt(horasFin));
+        timePickerFin.setMinute(Integer.parseInt(minutosFin));
+
 
         //llenar spinner materia
         dataListMaterias = new ArrayList<>();
@@ -73,9 +124,63 @@ public class AgregarSolicitudesHorarioActivity extends AppCompatActivity {
         adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerLocal.setAdapter(adapter2);
 
+
+        //seleccionar spinners
+        if (adapter != null) {
+            // Iterar hasta encontrar la posicion
+            for (int i = 0; i < adapter.getCount(); i++) {
+                if (adapter.getItem(i).equals(codigoMateria)) {
+                    // Set la seleccion
+                    spinnerMaterias.setSelection(i);
+                    break;
+                }
+            }
+        }
+        if (adapter2 != null) {
+            // Iterar hasta encontrar la posicion
+            for (int i = 0; i < adapter2.getCount(); i++) {
+                if (adapter2.getItem(i).equals(local)) {
+                    // Set la seleccion
+                    spinnerLocal.setSelection(i);
+                    break;
+                }
+            }
+        }
+
+        //llenar spinner de dias
+
+        Context context = this;
+        Resources resources = context.getResources();
+
+        String Lunes = resources.getStringArray(R.array.dias)[0];
+        String Martes = resources.getStringArray(R.array.dias)[1];
+        String Miercoles = resources.getStringArray(R.array.dias)[2];
+        String Jueves = resources.getStringArray(R.array.dias)[3];
+        String Viernes = resources.getStringArray(R.array.dias)[4];
+        String Sabado = resources.getStringArray(R.array.dias)[5];
+        String Domingo = resources.getStringArray(R.array.dias)[6];
+
+        if (dia.equals(Lunes)) {
+            spinnerDias.setSelection(0);
+        } else if (dia.equals(Martes)) {
+            spinnerDias.setSelection(1);
+        } else if (dia.equals(Miercoles)) {
+            spinnerDias.setSelection(2);
+        } else if (dia.equals(Jueves)) {
+            spinnerDias.setSelection(3);
+        } else if (dia.equals(Viernes)) {
+            spinnerDias.setSelection(4);
+        }else if (dia.equals(Sabado)){
+            spinnerDias.setSelection(5);
+        } else if (dia.equals(Domingo)) {
+            spinnerDias.setSelection(6);
+        }
+
+
         buttonAgregar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
 
                 baseDatosHelper = new BaseDatosHelper(getBaseContext());
 
@@ -91,38 +196,27 @@ public class AgregarSolicitudesHorarioActivity extends AppCompatActivity {
                 nombreEvento = editTextNombre.getText().toString();
                 tipoEvento = editTextTipo.getText().toString();
 
-                Cursor cursor = baseDatosHelper.getAsignatura(Materia, null);
-                String idAsignatura = cursor.getString(0);
 
-                cursor = baseDatosHelper.getGrupoAsignatura(idAsignatura, null);
-                String idGrupo = cursor.getString(0);
+                String horaInicioHorario = "" + horaInicio + ":" + minutosInicio + ":00";
+                String horaFinHorario = "" + horaFin + ":" + minutosFin + ":00";
 
-                cursor = baseDatosHelper.getLocal(local, null);
-                String idLocal = cursor.getString(0);
+                //actualizar horario
+                baseDatosHelper.actualizarHorario(idHorarioEditar, dias, horaInicioHorario, horaFinHorario);
 
 
-
-                String horaInicioHorario = "" + horaInicio+":"+minutosInicio+":00";
-                String horaFinHorario = ""+horaFin+":"+minutosFin+":00";
-
-                //crear horario
-                String idHorario = baseDatosHelper.agregarHorario(dias, horaInicioHorario, horaFinHorario);
-
-
-                //crear propuesta, el valor idEvento solo es para crearlo
-                String idPropuesta = baseDatosHelper.agregarPropuesta("0", "1", "1", idCoordinador);
-
-                //crear prioridad
-                String idPrioridad = baseDatosHelper.agregarPrioridad("1");
-
-                //Crear evento
-                String idEvento = baseDatosHelper.agregarEvento(idGrupo, idPropuesta, idHorario, idPrioridad, idLocal, nombreEvento, tipoEvento );
-
-                //actualizar Propuesta para poner idEvento
+                //actualizar propuesta
                 baseDatosHelper.actualizarPropuesta(idPropuesta, "0", "1", idEvento, idCoordinador);
 
-                Toast.makeText(AgregarSolicitudesHorarioActivity.this, R.string.solicitud_realizada_correctamente, Toast.LENGTH_SHORT).show();
+                //actulizar prioridad NO
+                //baseDatosHelper.actualizarPrioridad(idPrioridad,"1");
+
+                //actulizar evento
+                baseDatosHelper.actualizarEvento(idEvento, idGrupo, idPropuesta, idHorarioEditar, idPrioridad, idLocal, nombreEvento, tipoEvento);
+
+                Toast.makeText(EditarSolicitudesHorarioActivity.this, R.string.solicitud_editada_correctamete, Toast.LENGTH_SHORT).show();
                 finish();
+
+
 
             }
 
@@ -130,13 +224,8 @@ public class AgregarSolicitudesHorarioActivity extends AppCompatActivity {
         });
 
 
-
-
-
-
-
-
     }
+
     private void fetchDatosDB() {
         // Assuming you have a SQLiteOpenHelper subclass named MyDbHelper
         baseDatosHelper = new BaseDatosHelper(getBaseContext());
@@ -173,7 +262,7 @@ public class AgregarSolicitudesHorarioActivity extends AppCompatActivity {
         // Iterate through the cursor and populate dataList
         while (cursor.moveToNext()) {
             String data = cursor.getString(cursor.getColumnIndexOrThrow(BaseDatosHelper.KEY_nombreLocal));
-            Log.e("AgregarAsignacionActivity - Materis" , data);
+            Log.e("AgregarAsignacionActivity - Materis", data);
             dataListLocales.add(data);
         }
 
@@ -187,6 +276,7 @@ public class AgregarSolicitudesHorarioActivity extends AppCompatActivity {
         cursor2.close();
         baseDatosHelper.close();
     }
+
     @Override
     public boolean onSupportNavigateUp() {
         onBackPressed();

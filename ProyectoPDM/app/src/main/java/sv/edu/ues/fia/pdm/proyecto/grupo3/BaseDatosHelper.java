@@ -118,10 +118,11 @@ public class BaseDatosHelper extends SQLiteOpenHelper {
 
     //------------------------------Atributos evento------------------------------------//
     public static final String KEY_idEvento = "idEvento";
-    public static final String KEY_idCicloEvento = "idCiclo";
+    public static final String KEY_idGrupoEvento = "idGrupo";
     public static final String KEY_idPropuestaEvento = "idPropuesta";
     public static final String KEY_idHorarioEvento = "idHorario";
     public static final String KEY_idPrioridadEvento = "idPrioridad";
+    public static final String KEY_idLocalEvento = "idLocal";
     public static final String KEY_nomEvento = "nomEvento";
     public static final String KEY_tipoEvento = "tipoEvento";
 
@@ -201,16 +202,18 @@ public class BaseDatosHelper extends SQLiteOpenHelper {
 
     private static final String CREATE_EVENTO_TABLA = "CREATE TABLE " + EVENTO_TABLA + " ("
             + KEY_idEvento + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-            + KEY_idCicloEvento + " INTEGER,"
+            + KEY_idGrupoEvento + " INTEGER,"
             + KEY_idPropuestaEvento + " INTEGER,"
             + KEY_idHorarioEvento + " INTEGER,"
             + KEY_idPrioridadEvento + " INTEGER,"
+            + KEY_idLocalEvento + " INTEGER,"
             + KEY_nomEvento + " TEXT,"
             + KEY_tipoEvento + " TEXT,"
-            + "FOREIGN KEY(" + KEY_idCicloEvento + ") REFERENCES ciclo(" + KEY_idCiclo + "),"
+            + "FOREIGN KEY(" + KEY_idGrupoEvento + ") REFERENCES grupoAsignatura(" + KEY_idGrupo + "),"
             + "FOREIGN KEY(" + KEY_idPropuestaEvento + ") REFERENCES propuesta(" + KEY_idPropuesta + "),"
             + "FOREIGN KEY(" + KEY_idHorarioEvento + ") REFERENCES horario(" + KEY_idHorario + "),"
-            + "FOREIGN KEY(" + KEY_idPrioridadEvento + ") REFERENCES prioridad(" + KEY_idPrioridad + "))" ;
+            + "FOREIGN KEY(" + KEY_idPrioridadEvento + ") REFERENCES prioridad(" + KEY_idPrioridad + ")," 
+            + "FOREIGN KEY(" + KEY_idLocalEvento + ") REFERENCES local (" + KEY_idLocal + "))" ;
 
     //--------------------------------------tabla disponibilidad-------------------------------------------//
     private static final String CREATE_DISPONIBILIDAD_TABLA = "CREATE TABLE " + DISPONIBILIDAD_TABLA + " ("
@@ -381,13 +384,13 @@ public class BaseDatosHelper extends SQLiteOpenHelper {
 //Tabla Prioridad//
 
     //agregar prioridad
-    public long agregarPrioridad(String orden) {
+    public String agregarPrioridad(String orden) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(KEY_ordenPrioridad, orden);
         long id = db.insert(PRIORIDAD_TABLA, null, values);
         db.close();
-        return id;
+        return String.valueOf(id);
     }
 
     //Get Escuela
@@ -515,6 +518,18 @@ public class BaseDatosHelper extends SQLiteOpenHelper {
         Cursor cursor = db.query(GRUPOASIGNATURA_TABLA, new String[]{KEY_idGrupo,
                         KEY_idAsignaturaGrupo, KEY_idCoordinadorGrupo, KEY_totalIntegrantesGrupo}, KEY_idGrupo + "=?",
                 new String[]{id}, null, null, null, null);
+
+        if (cursor != null)
+            cursor.moveToFirst();
+
+        return cursor;
+    }
+    public Cursor getGrupoAsignatura(String idAsignatura, String nulll) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.query(GRUPOASIGNATURA_TABLA, new String[]{KEY_idGrupo,
+                        KEY_idAsignaturaGrupo, KEY_idCoordinadorGrupo, KEY_totalIntegrantesGrupo}, KEY_idAsignaturaGrupo + "=?",
+                new String[]{idAsignatura}, null, null, null, null);
 
         if (cursor != null)
             cursor.moveToFirst();
@@ -859,13 +874,26 @@ public class BaseDatosHelper extends SQLiteOpenHelper {
 
         return cursor;
     }
-    //sobrecargado
+    //sobrecargado nombre
     public Cursor getCoordinador(String nombreCoordinador, String nulll) {
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = db.query(COORDINADOR_TABLA, new String[]{KEY_idCoordinador,
                         KEY_nombreCoordinador, KEY_apellidoCoordinador,KEY_emailCoordinador, KEY_idUsuarioCoordinador}, KEY_nombreCoordinador + "=?",
                 new String[]{nombreCoordinador}, null, null, null, null);
+
+        if (cursor != null)
+            cursor.moveToFirst();
+
+        return cursor;
+    }
+    //sobrecargado idusuario
+    public Cursor getCoordinador(String idUsuario, String nullll, String nulll) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.query(COORDINADOR_TABLA, new String[]{KEY_idCoordinador,
+                        KEY_nombreCoordinador, KEY_apellidoCoordinador,KEY_emailCoordinador, KEY_idUsuarioCoordinador}, KEY_idUsuarioCoordinador + "=?",
+                new String[]{idUsuario}, null, null, null, null);
 
         if (cursor != null)
             cursor.moveToFirst();
@@ -982,6 +1010,18 @@ public class BaseDatosHelper extends SQLiteOpenHelper {
 
         return cursor;
     }
+    public Cursor getLocal(String nombre, String nulll) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.query(LOCAL_TABLA, new String[]{KEY_idLocal,
+                        KEY_nombreLocal, KEY_tipoLocal, KEY_capacidadLocal, KEY_idEscuelaLocal}, KEY_nombreLocal + "=?",
+                new String[]{nombre}, null, null, null, null);
+
+        if (cursor != null)
+            cursor.moveToFirst();
+
+        return cursor;
+    }
 
     //Actualizar local
     public boolean actualizarLocal(String idLocal, String nombre, String tipo, String capacidad, String idEscuela) {
@@ -1071,18 +1111,18 @@ public class BaseDatosHelper extends SQLiteOpenHelper {
 //Tabla Horario//
 
     //agregar Horario
-    public boolean agregarHorario(String dia, String horaInicioHorario, String horaFinHorario) {
+    public String agregarHorario(String dia, String horaInicioHorario, String horaFinHorario) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(KEY_diaHorario, dia);
         values.put(KEY_horaInicioHorario, horaInicioHorario);
         values.put(KEY_horaFinHorario, horaFinHorario);
-        long result = db.insert(HORARIO_TABLA, null, values);
-        return result != -1;
+        long id = db.insert(HORARIO_TABLA, null, values);
+        return String.valueOf(id);
     }
 
     //Get Horario
-    public Cursor geHorario(String id) {
+    public Cursor getHorario(String id) {
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = db.query(HORARIO_TABLA, new String[]{KEY_idHorario,
@@ -1134,15 +1174,15 @@ public class BaseDatosHelper extends SQLiteOpenHelper {
     //Tabla propuesta//
 
     //agregar propuesta
-    public boolean agregarPropuesta(String idCambio, String idEncargadoHorario, String idEvento , String idDocenteCoordinador) {
+    public String agregarPropuesta(String idCambio, String idEncargadoHorario, String idEvento , String idDocenteCoordinador) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(KEY_idCambioPropuesta, idCambio);
         values.put(KEY_idEncargadoHorarioPropuesta, idEncargadoHorario);
         values.put(KEY_idEventoPropuesta, idEvento);
         values.put(KEY_idCoordinadorPropuesta, idDocenteCoordinador);
-        long result = db.insert(PROPUESTA_TABLA, null, values);
-        return result != -1;
+        long id = db.insert(PROPUESTA_TABLA, null, values);
+        return  String.valueOf(id);
     }
 
     //Get Propuesta
@@ -1150,7 +1190,7 @@ public class BaseDatosHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = db.query(PROPUESTA_TABLA, new String[]{KEY_idPropuesta,
-                        KEY_idCambioPropuesta, KEY_idEncargadoLocalPropuesta, KEY_idEventoPropuesta, KEY_idCoordinadorPropuesta}, KEY_idCiclo + "=?",
+                        KEY_idCambioPropuesta, KEY_idEncargadoLocalPropuesta, KEY_idEventoPropuesta, KEY_idCoordinadorPropuesta}, KEY_idPropuesta + "=?",
                 new String[]{id}, null, null, null, null);
 
         if (cursor != null)
@@ -1160,9 +1200,13 @@ public class BaseDatosHelper extends SQLiteOpenHelper {
     }
 
     //Actualizar Propuesta
-    public boolean actualizarPropuesta(String idPropuesta) {
+    public boolean actualizarPropuesta(String idPropuesta, String idCambio, String idEncargadoHorario, String idEvento , String idDocenteCoordinador) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
+        values.put(KEY_idCambioPropuesta, idCambio);
+        values.put(KEY_idEncargadoHorarioPropuesta, idEncargadoHorario);
+        values.put(KEY_idEventoPropuesta, idEvento);
+        values.put(KEY_idCoordinadorPropuesta, idDocenteCoordinador);
         int rowsAffected = db.update(PROPUESTA_TABLA, values, KEY_idPropuesta + " = ?", new String[]{idPropuesta});
         return rowsAffected > 0;
     }
@@ -1177,16 +1221,16 @@ public class BaseDatosHelper extends SQLiteOpenHelper {
     //Insertar Datos iniciales
     public void insertarDatosInicialesPropuesta() {
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM " + CICLO_TABLA, null);
+        Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM " + PROPUESTA_TABLA, null);
         cursor.moveToFirst();
         int count = cursor.getInt(0);
         cursor.close();
 
         if (count == 0) {
-            agregarPropuesta("01", "01", "01", "01");
-            agregarPropuesta("01", "01", "02", "01");
-            agregarPropuesta("01", "01", "03", "01");
-            agregarPropuesta("01", "01", "04", "01");
+            agregarPropuesta("1", "1", "1", "1");
+            agregarPropuesta("1", "1", "2", "2");
+            //agregarPropuesta("01", "01", "03", "01");
+            //agregarPropuesta("01", "01", "04", "01");
 
         }
     }
@@ -1283,25 +1327,27 @@ public class BaseDatosHelper extends SQLiteOpenHelper {
 
     //Tabla de Evento//
     //agregar evento
-    public boolean agregarEvento(String nomEvento, String tipoEvento, String idCiclo, String idPropuesta, String idHorario, String idPripridad){
+    public String agregarEvento(String idGrupo, String idPropuesta, String idHorario, String idPrioridad, String idLocal , String nomEvento, String tipoEvento){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(KEY_nomEvento, nomEvento);
         values.put(KEY_tipoEvento, tipoEvento);
-        values.put(KEY_idCicloEvento, idCiclo);
+        values.put(KEY_idGrupoEvento, idGrupo);
         values.put(KEY_idPropuestaEvento, idPropuesta);
         values.put(KEY_idHorarioEvento, idHorario);
-        values.put(KEY_idPrioridadEvento, idPripridad);
-        long result = db.insert(EVENTO_TABLA, null, values);
-        return result != -1;
+        values.put(KEY_idPrioridadEvento, idPrioridad);
+        values.put(KEY_idLocalEvento, idLocal);
+        long id = db.insert(EVENTO_TABLA, null, values);
+        return String.valueOf(id);
     }
     //Get Evento
     public Cursor getEvento(String id) {
         SQLiteDatabase db = this.getReadableDatabase();
 
-        Cursor cursor = db.query(EVENTO_TABLA, new String[]{KEY_idEvento,
-                        KEY_nomEvento, KEY_tipoEvento, KEY_idCicloEvento, KEY_idPropuestaEvento,
-                        KEY_idHorarioEvento, KEY_idPrioridadEvento}, KEY_idEvento + "=?",
+        Cursor cursor = db.query(EVENTO_TABLA, new String[]{KEY_idEvento, KEY_idGrupoEvento,
+                        KEY_idPropuestaEvento, KEY_idHorarioEvento, KEY_idPrioridadEvento,
+                        KEY_idLocalEvento , KEY_nomEvento, KEY_tipoEvento,
+                        }, KEY_idEvento + "=?",
                 new String[]{id}, null, null, null, null);
 
         if (cursor != null)
@@ -1311,9 +1357,14 @@ public class BaseDatosHelper extends SQLiteOpenHelper {
     }
 
     //Actualizar Evento
-    public boolean actualizarEvento(String idEvento, String nomEvento, String tipoEvento) {
+    public boolean actualizarEvento(String idEvento, String idGrupo, String idPropuesta, String idHorario, String idPrioridad, String idLocal , String nomEvento, String tipoEvento) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
+        values.put(KEY_idGrupoEvento, idGrupo);
+        values.put(KEY_idPropuestaEvento, idPropuesta);
+        values.put(KEY_idHorarioEvento, idHorario);
+        values.put(KEY_idPropuestaEvento, idPrioridad);
+        values.put(KEY_idLocalEvento, idLocal);
         values.put(KEY_nomEvento, nomEvento);
         values.put(KEY_tipoEvento, tipoEvento);
         int rowsAffected = db.update(EVENTO_TABLA, values, KEY_idEvento + " = ?", new String[]{idEvento});
@@ -1384,10 +1435,10 @@ public class BaseDatosHelper extends SQLiteOpenHelper {
         cursor.close();
 
         if (count == 0) {
-            agregarEvento("PDM115 GT 01", "Clase teorica de PDM", "01", "01", "01", "01");
-            agregarEvento("PDM115 GD 01", "Clase de grupo de discucion #01", "01", "02", "06", "02");
-            agregarEvento("PDM115 GD 02", "Clase de grupo de discucion #02","01", "03", "05", "03");
-            agregarEvento("PDM115 GD 03", "Clase de grupo de discucion #03", "01", "04", "09", "04");
+            agregarEvento("1", "1", "1", "1", "1", "Clase de grupo de discucion #01" , "Discusion");
+            agregarEvento("2", "2", "2", "1", "2", "Clase de grupo de discucion 02", "Clase");
+            //agregarEvento("PDM115 GD 02", "Clase de grupo de discucion #02","1", "3", "5", "3");
+            //agregarEvento("PDM115 GD 03", "Clase de grupo de discucion #03", "1", "4", "9", "4");
         }
     }
 

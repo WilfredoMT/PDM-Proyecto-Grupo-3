@@ -65,11 +65,19 @@ public class SolicitudesHorarioFragment extends Fragment {
         //Datos iniciales
         baseDatosHelper = new BaseDatosHelper(getContext());
         baseDatosHelper.insertarDatosInicialesEvento();
+        baseDatosHelper.insertarDatosInicialesPropuesta();
+        baseDatosHelper.insertarDatosInicialesHorario();
+        baseDatosHelper.insertarDatosInicialesPrioridad();
+
+
+
 
         String usuariooordinador = act.infoUsuario[0];
         Cursor cursor = baseDatosHelper.getUsuario(usuariooordinador);
         String idUsuario = cursor.getString(0);
         String nombreCoordindo = cursor.getString(1);
+        cursor = baseDatosHelper.getCoordinador(idUsuario,null, null);
+        String idCoordinador = cursor.getString(0);
 
 
         final TextView textView = binding.textSolicitudhorario;
@@ -77,13 +85,13 @@ public class SolicitudesHorarioFragment extends Fragment {
 
         solicitudesHorarioViewModel.getText().observe(getViewLifecycleOwner(), newText -> {
             // texto para la texview
-            textView.setText(R.string.solicitudes_de_horario);
+            textView.setText(getString(R.string.solicitudes_de_horario) +": " + nombreCoordindo);
         });
 
         //Llenar RecyclerView
         mRecyclerView = root.findViewById(R.id.recyclerView);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        mAdapter = new SolicitudesHorarioAdapter(getContext(), null);
+        mAdapter = new SolicitudesHorarioAdapter(getContext(), null, nombreCoordindo);
         mRecyclerView.setAdapter(mAdapter);
 
         mDbHelper = new BaseDatosHelper(getContext());
@@ -111,8 +119,10 @@ public class SolicitudesHorarioFragment extends Fragment {
 
                 // on below line creating a child fragment
 
-                Intent intent = new Intent(getActivity(), AgregarCicloActivity.class);
-
+                Intent intent = new Intent(getActivity(), AgregarSolicitudesHorarioActivity.class);
+                intent.putExtra("nombreLogueadoCoordinador", nombreCoordindo);
+                intent.putExtra("idUsuarioLoguado", idUsuario);
+                intent.putExtra("idCoordinadorLoguado", idCoordinador);
                 startActivity(intent);
 
 
