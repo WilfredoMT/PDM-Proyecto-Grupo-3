@@ -37,6 +37,7 @@ public class HorariosFragment extends Fragment {
 
         binding = FragmentHorariosBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+        TextView scheduleTextView = binding.textView;
 
         dbHelper = new BaseDatosHelper(requireContext()); // Use requireContext() or getActivity() based on your requirements
 
@@ -73,7 +74,7 @@ public class HorariosFragment extends Fragment {
 
             // Append the event details to the TextView
 
-            Log.e("Horario", getString(R.string.diasemana) + dayOfWeek + "\n");
+
             scheduleTextView.append(getString(R.string.nombreEvento) + eventName + "\n");
             scheduleTextView.append(getString(R.string.diasemana) + dayOfWeek + "\n");
             scheduleTextView.append(getString(R.string.horainicios) + startTime + "\n");
