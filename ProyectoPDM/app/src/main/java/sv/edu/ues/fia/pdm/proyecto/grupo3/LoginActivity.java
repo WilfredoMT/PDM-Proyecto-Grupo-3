@@ -7,14 +7,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 import android.os.Bundle;
-import android.util.Log;
 
 public class LoginActivity extends AppCompatActivity {
     private EditText editTextUsuario, editTextClave;
@@ -51,6 +49,63 @@ public class LoginActivity extends AppCompatActivity {
         checkBoxRecordar = findViewById(R.id.checkBox);
 
 
+        buttonLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String usuario = editTextUsuario.getText().toString();
+                String clave = editTextClave.getText().toString();
+
+                if (usuario.isEmpty() || clave.isEmpty()) {
+                    Toast.makeText(LoginActivity.this, "Por favor ingrese el Usuario y la Contraseña", Toast.LENGTH_SHORT).show();
+                } else {
+                    // Call DBHelper method to get user data
+                    baseDatosHelper.getUsuario(usuario, new BaseDatosHelper.Callback() {
+                        @Override
+                        public boolean onSuccess(Cursor cursor) {
+                            if (cursor != null && cursor.moveToFirst()) {
+                                @SuppressLint("Range") String storedPassword = cursor.getString(cursor.getColumnIndex("clave"));
+                                @SuppressLint("Range") String rol = cursor.getString(cursor.getColumnIndex("rol"));
+                                int imagenIndex = cursor.getColumnIndex(BaseDatosHelper.KEY_imagen_perfil);
+
+                                if (clave.equals(storedPassword)) {
+                                    // Login correcto
+                                    Toast.makeText(LoginActivity.this, "Login Correcto", Toast.LENGTH_SHORT).show();
+
+                                    // Recordar el checkbox
+                                    if (checkBoxRecordar.isChecked()) {
+                                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                                        editor.putBoolean("loggedIn", true);
+                                        editor.putString("username", usuario);
+                                        editor.putString("rol", rol);
+                                        editor.putInt("imagenIndex", imagenIndex);
+                                        editor.apply();
+                                    }
+
+                                    //Ir a actividades
+                                    irMainActivity(usuario, rol, imagenIndex);
+                                } else {
+                                    // Contraseña incorrecta
+                                    Toast.makeText(LoginActivity.this, "Contraseña incorrecta", Toast.LENGTH_SHORT).show();
+                                }
+                            } else {
+                                // Usuario no encontrado
+                                Toast.makeText(LoginActivity.this, "Usuario Incorrecto", Toast.LENGTH_SHORT).show();
+                            }
+                            return false;
+                        }
+
+                        @Override
+                        public void onError(String error) {
+                            // Handle error
+                            Toast.makeText(LoginActivity.this, "Error: " + error, Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            }
+        });
+
+
+        /*
         buttonLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -121,6 +176,8 @@ public class LoginActivity extends AppCompatActivity {
 
             }
         });
+
+         */
     }
     private void irMainActivity(String usuario, String rol, int imagenIndex) {
         Intent intent = new Intent(LoginActivity.this, MainActivity.class);

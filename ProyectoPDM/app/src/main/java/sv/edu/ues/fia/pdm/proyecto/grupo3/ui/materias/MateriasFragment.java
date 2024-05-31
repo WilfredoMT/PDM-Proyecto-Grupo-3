@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -58,7 +59,7 @@ public class MateriasFragment extends Fragment {
 
         //Datos iniciales
         baseDatosHelper = new BaseDatosHelper(getContext());
-        baseDatosHelper.insertarDatosInicialesAsignatura();
+        //baseDatosHelper.insertarDatosInicialesAsignatura();
 
         materiasViewModel.getText().observe(getViewLifecycleOwner(), newText -> {
             // texto para la texview
@@ -72,17 +73,22 @@ public class MateriasFragment extends Fragment {
         mRecyclerView.setAdapter(mAdapter);
 
         mDbHelper = new BaseDatosHelper(getContext());
-        Cursor cursor = mDbHelper.getReadableDatabase().query(
-                BaseDatosHelper.ASIGNATURA_TABLA,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null
-        );
+        mDbHelper.getAsignaturas(new BaseDatosHelper.Callback() {
+            @Override
+            public boolean onSuccess(Cursor cursor) {
+                mAdapter.swapCursor(cursor);
 
-        mAdapter.swapCursor(cursor);
+
+                return false;
+            }
+
+            @Override
+            public void onError(String error) {
+                Toast.makeText(getContext(), "Error: " + error, Toast.LENGTH_SHORT).show();
+
+
+            }
+        });
 
         //Acciones FAB
         //FaB visible
@@ -123,17 +129,17 @@ public class MateriasFragment extends Fragment {
     }
     public void refreshRecyclerView() {
         ((MainActivity) requireActivity()).binding.appBarMain.fab.setVisibility(View.VISIBLE);
-        Cursor cursor = mDbHelper.getReadableDatabase().query(
-                BaseDatosHelper.ASIGNATURA_TABLA,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null
-        );
-        mAdapter.swapCursor(cursor);
+        mDbHelper.getAsignaturas(new BaseDatosHelper.Callback() {
+            @Override
+            public boolean onSuccess(Cursor cursor) {
+                mAdapter.swapCursor(cursor);
+                return false;
+            }
 
-
+            @Override
+            public void onError(String error) {
+                Toast.makeText(getContext(), "Error: " + error, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

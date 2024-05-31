@@ -115,7 +115,7 @@ public class LocalesAdapter extends RecyclerView.Adapter<LocalesAdapter.LocalesV
 
     @Override
     public int getItemCount() {
-        return mCursor.getCount();
+        return mCursor != null ? mCursor.getCount() : 0;
     }
 
     public void swapCursor(Cursor newCursor) {

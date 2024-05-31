@@ -72,15 +72,40 @@ public class EditarSolicitudesHorarioActivity extends AppCompatActivity {
 
 
         //recuperar local
-        cursor = baseDatosHelper.getLocal(idLocal);
-        String local = cursor.getString(1);
+        final String[] local = new String[1];
+        baseDatosHelper.getLocal(idLocal, new BaseDatosHelper.Callback() {
+            @Override
+            public boolean onSuccess(Cursor cursor) {
+                local[0] = cursor.getString(1);
+                return false;
+            }
+
+            @Override
+            public void onError(String error) {
+
+            }
+        });
+
 
         //recuperar materias
 
         cursor = baseDatosHelper.getGrupoAsignatura(idGrupo);
         String idAsignatura = cursor.getString(1);
-        cursor = baseDatosHelper.getAsignatura(idAsignatura);
-        String codigoMateria = cursor.getString(2);
+
+        final String[] codigoMateria = new String[1];
+        baseDatosHelper.getAsignatura(idAsignatura, new BaseDatosHelper.Callback() {
+            @Override
+            public boolean onSuccess(Cursor cursor) {
+                codigoMateria[0] = cursor.getString(2);
+                return false;
+            }
+
+            @Override
+            public void onError(String error) {
+
+            }
+        });
+
 
 
         //recuperar dias
@@ -129,7 +154,7 @@ public class EditarSolicitudesHorarioActivity extends AppCompatActivity {
         if (adapter != null) {
             // Iterar hasta encontrar la posicion
             for (int i = 0; i < adapter.getCount(); i++) {
-                if (adapter.getItem(i).equals(codigoMateria)) {
+                if (adapter.getItem(i).equals(codigoMateria[0])) {
                     // Set la seleccion
                     spinnerMaterias.setSelection(i);
                     break;
@@ -139,7 +164,7 @@ public class EditarSolicitudesHorarioActivity extends AppCompatActivity {
         if (adapter2 != null) {
             // Iterar hasta encontrar la posicion
             for (int i = 0; i < adapter2.getCount(); i++) {
-                if (adapter2.getItem(i).equals(local)) {
+                if (adapter2.getItem(i).equals(local[0])) {
                     // Set la seleccion
                     spinnerLocal.setSelection(i);
                     break;

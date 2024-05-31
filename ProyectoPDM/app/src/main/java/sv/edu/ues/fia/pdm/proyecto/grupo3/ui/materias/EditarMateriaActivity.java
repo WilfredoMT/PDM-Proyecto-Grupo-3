@@ -41,33 +41,50 @@ public class EditarMateriaActivity extends AppCompatActivity {
         Intent intent = getIntent();
         String id = intent.getStringExtra("id");
 
-        String nombremateria, codigoMateria, numeroCiclo;
+        final String[] nombremateria = new String[1];
+        final String[] codigoMateria = new String[1];
+        final String[] numeroCiclo = new String[1];
 
         //recuperar datos
         baseDatosHelper = new BaseDatosHelper(getBaseContext());
-        Cursor cursor = baseDatosHelper.getAsignatura(id);
+        baseDatosHelper.getAsignatura(id, new BaseDatosHelper.Callback() {
+            @Override
+            public boolean onSuccess(Cursor cursor) {
 
-        nombremateria = cursor.getString(1);
-        codigoMateria = cursor.getString(2);
-        numeroCiclo = cursor.getString(3);
+                cursor.moveToFirst();
+                nombremateria[0] = cursor.getString(1);
+                codigoMateria[0] = cursor.getString(3);
+                numeroCiclo[0] = cursor.getString(2);
 
-        //LLenando Views
+                //LLenando Views
 
-        textViewEditando.setText(getString(R.string.editando_materia ) + " "+nombremateria);
+                textViewEditando.setText(getString(R.string.editando_materia ) + " "+ nombremateria[0]);
 
-        switch (Integer.parseInt(numeroCiclo))
-        {
-            case 1:
-                spinnerNumeroCiclo.setSelection(0);
-                break;
+                switch (Integer.parseInt(numeroCiclo[0]))
+                {
+                    case 1:
+                        spinnerNumeroCiclo.setSelection(0);
+                        break;
 
-            case 2:
-                spinnerNumeroCiclo.setSelection(1);
-                break;
-        }
+                    case 2:
+                        spinnerNumeroCiclo.setSelection(1);
+                        break;
+                }
 
-        editTextNombre.setText(nombremateria);
-        editTextCodigo.setText(codigoMateria);
+                editTextNombre.setText(nombremateria[0]);
+                editTextCodigo.setText(codigoMateria[0]);
+                return false;
+            }
+
+            @Override
+            public void onError(String error) {
+                Toast.makeText(getBaseContext(), "Error: " + error, Toast.LENGTH_SHORT).show();
+
+
+            }
+        });
+
+
 
 
         buttonEditar.setOnClickListener(new View.OnClickListener() {
@@ -84,16 +101,26 @@ public class EditarMateriaActivity extends AppCompatActivity {
 
 
                 baseDatosHelper = new BaseDatosHelper(getBaseContext());
-                if (!baseDatosHelper.existeAsignatura(nombreMateriaEditado, codigoMateriaEditado, id) ) {
-                    // Si no existe permitir editar ciclo
-                    baseDatosHelper.actualizarAsignatura(id, nombreMateriaEditado, codigoMateriaEditado, numeroCicloEditado);
-                    Toast.makeText(EditarMateriaActivity.this, R.string.materia_editada_correctamente, Toast.LENGTH_SHORT).show();
-                    finish();
+                baseDatosHelper.existeAsignatura(codigoMateriaEditado, id, new BaseDatosHelper.ExisteCallback() {
+                    @Override
+                    public void onResult(boolean existe) {
+                        if (existe) {
+                            // Si existe mostrar error
+                            Toast.makeText(EditarMateriaActivity.this, R.string.la_materia_ya_existe, Toast.LENGTH_SHORT).show();
 
-                } else {
-                    // Si existe mostrar error
-                    Toast.makeText(EditarMateriaActivity.this, R.string.la_materia_ya_existe, Toast.LENGTH_SHORT).show();
-                }
+
+                        } else {
+                            // Si no existe permitir editar materia
+                            baseDatosHelper.actualizarAsignatura(id, nombreMateriaEditado, numeroCicloEditado, codigoMateriaEditado);
+                            Toast.makeText(EditarMateriaActivity.this, R.string.materia_editada_correctamente, Toast.LENGTH_SHORT).show();
+                            finish();
+
+
+                        }
+
+                    }
+                });
+
 
 
             }

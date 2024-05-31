@@ -68,7 +68,11 @@ public class AgregarAsignacionActivity extends AppCompatActivity {
 
                 baseDatosHelper = new BaseDatosHelper(getBaseContext());
 
-                String idCoordinador, idAsignatura, totalIntegrantes, nombreCoord, codigoMateria;
+                String idCoordinador;
+                final String[] idAsignatura = new String[1];
+                String totalIntegrantes;
+                String nombreCoord;
+                String codigoMateria;
 
                 nombreCoord = spinnnerCoordinador.getSelectedItem().toString();
                 codigoMateria = spinnerMateria.getSelectedItem().toString();
@@ -79,14 +83,25 @@ public class AgregarAsignacionActivity extends AppCompatActivity {
                 int idCoordIndex = cursor.getColumnIndex(BaseDatosHelper.KEY_idCoordinador);
                 idCoordinador = cursor.getString(idCoordIndex);
 
-                cursor = baseDatosHelper.getAsignatura(codigoMateria, null);
-                int idMateriaIndex = cursor.getColumnIndex(BaseDatosHelper.KEY_idAsignatura);
-                idAsignatura = cursor.getString(idMateriaIndex);
+                baseDatosHelper.getAsignatura(codigoMateria, new BaseDatosHelper.Callback() {
+                    @Override
+                    public boolean onSuccess(Cursor cursor) {
+                        int idMateriaIndex = cursor.getColumnIndex(BaseDatosHelper.KEY_idAsignatura);
+                        idAsignatura[0] = cursor.getString(idMateriaIndex);
+                        return false;
+                    }
+
+                    @Override
+                    public void onError(String error) {
+
+                    }
+                });
+
 
 
                 //crear grupo
 
-                baseDatosHelper.agregarGrupoAsignatura(idAsignatura, idCoordinador, totalIntegrantes);
+                baseDatosHelper.agregarGrupoAsignatura(idAsignatura[0], idCoordinador, totalIntegrantes);
                 Toast.makeText(AgregarAsignacionActivity.this, "Materia asignada correctamente", Toast.LENGTH_SHORT).show();
                 finish();
 

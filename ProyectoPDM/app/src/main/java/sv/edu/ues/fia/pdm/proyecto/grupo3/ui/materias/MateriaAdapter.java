@@ -108,7 +108,7 @@ public class MateriaAdapter extends RecyclerView.Adapter<MateriaAdapter.MateriaV
 
     @Override
     public int getItemCount() {
-        return mCursor.getCount();
+        return mCursor != null ? mCursor.getCount() : 0;
     }
 
     public void swapCursor(Cursor newCursor) {

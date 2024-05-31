@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -56,8 +57,8 @@ public class LocalesFragment extends Fragment {
 
         //Datos iniciales
         baseDatosHelper = new BaseDatosHelper(getContext());
-        baseDatosHelper.insertarDatosInicialesLocal();
-        baseDatosHelper.insertarDatosInicialesEscuela();
+        //baseDatosHelper.insertarDatosInicialesLocal();
+        //baseDatosHelper.insertarDatosInicialesEscuela();
 
 
         final TextView textView = binding.textLocales;
@@ -74,20 +75,19 @@ public class LocalesFragment extends Fragment {
         mRecyclerView.setAdapter(mAdapter);
 
         baseDatosHelper = new BaseDatosHelper(getContext());
-        Cursor cursor = baseDatosHelper.getReadableDatabase().query(
-                BaseDatosHelper.LOCAL_TABLA,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null
-        );
+        baseDatosHelper.getLocales(new BaseDatosHelper.Callback() {
+            @Override
+            public boolean onSuccess(Cursor cursor) {
+                mAdapter.swapCursor(cursor);
+                return false;
+            }
 
-        mAdapter.swapCursor(cursor);
+            @Override
+            public void onError(String error) {
+                Toast.makeText(getContext(), "Error: " + error, Toast.LENGTH_SHORT).show();
 
-
-
+            }
+        });
         //Acciones FAB
         //FaB visible
         ((MainActivity) requireActivity()).binding.appBarMain.fab.setVisibility(View.VISIBLE);
@@ -134,15 +134,17 @@ public class LocalesFragment extends Fragment {
 
         ((MainActivity) requireActivity()).binding.appBarMain.fab.setVisibility(View.VISIBLE);
 
-        Cursor cursor = baseDatosHelper.getReadableDatabase().query(
-                BaseDatosHelper.LOCAL_TABLA,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null
-        );
-        mAdapter.swapCursor(cursor);
+        baseDatosHelper.getLocales(new BaseDatosHelper.Callback() {
+            @Override
+            public boolean onSuccess(Cursor cursor) {
+                mAdapter.swapCursor(cursor);
+                return false;
+            }
+
+            @Override
+            public void onError(String error) {
+                Toast.makeText(getContext(), "Error: " + error, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

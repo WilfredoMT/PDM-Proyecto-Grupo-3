@@ -5,14 +5,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.database.AbstractCursor;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -30,6 +27,7 @@ public class EditarLocalesActivity extends AppCompatActivity {
     private ArrayAdapter<String> adapter;
     private ArrayList<String> dataList;
     BaseDatosHelper baseDatosHelper;
+    private Spinner SpinnerEscuela;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,81 +43,121 @@ public class EditarLocalesActivity extends AppCompatActivity {
         EditText editTextNombre = findViewById(R.id.EditTextNombreLocal);
         EditText editTextCapacidad = findViewById(R.id.EditTextCapacidadLocales);
         Spinner spinnerTipo = findViewById(R.id.SpinnerTipoLocales);
-        Spinner SpinnerEscuela = findViewById(R.id.spinnerEscuela);
+        SpinnerEscuela = findViewById(R.id.spinnerEscuela);
+
+        // inicializar adapter y datalist
+        dataList = new ArrayList<>();
+        adapter = new ArrayAdapter<>(getBaseContext(), android.R.layout.simple_spinner_item, dataList);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        SpinnerEscuela.setAdapter(adapter);
 
         //recuperar info de intent
         Intent intent = getIntent();
         String id = intent.getStringExtra("idEditar");
         Log.i("EditarLocalesActivity", id);
 
-        String nombreLocal, capacidadLocal, tipoLocal, idEscuela;
+        final String[] nombreLocal = new String[1];
+        final String[] capacidadLocal = new String[1];
+        final String[] tipoLocal = new String[1];
+        final String[] idEscuela = new String[1];
 
         //recuperar datos
         baseDatosHelper = new BaseDatosHelper(getBaseContext());
-        Cursor cursor = baseDatosHelper.getLocal(id);
+        baseDatosHelper.getLocal(id, new BaseDatosHelper.Callback() {
+            @Override
+            public boolean onSuccess(Cursor cursor) {
+                cursor.moveToFirst();
+                nombreLocal[0] = cursor.getString(1);
+                tipoLocal[0] = cursor.getString(2);
+                capacidadLocal[0] = cursor.getString(3);
+                idEscuela[0] = cursor.getString(4);
 
-        nombreLocal = cursor.getString(1);
-        tipoLocal = cursor.getString(2);
-        capacidadLocal = cursor.getString(3);
-        idEscuela = cursor.getString(4);
 
-        //Info de escuela
-        cursor = baseDatosHelper.getEscuela(idEscuela, null);
-        String nombreEscuela = cursor.getString(1);
 
-        //LLenando Views
-        textViewEditando.setText(getString(R.string.editar_local) + ": " + nombreLocal);
+                //LLenando Views
+                textViewEditando.setText(getString(R.string.editar_local) + ": " + nombreLocal[0]);
 
-        //llenar spinner escuela con datos de la tabla escuela
-        baseDatosHelper = new BaseDatosHelper(getBaseContext());
-        dataList = new ArrayList<>();
-        fetchDatosDB();
-        // Crear un ArrayAdapter usando el dataList
-        adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, dataList);
-        //  set el layout que usar en el spinner
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        // Usar el adapter
-        SpinnerEscuela.setAdapter(adapter);
+                baseDatosHelper = new BaseDatosHelper(getBaseContext());
 
-        if (adapter != null) {
-            // Iterar hasta encontrar la posicion del nombreEscuela
-            for (int i = 0; i < adapter.getCount(); i++) {
-                if (adapter.getItem(i).equals(nombreEscuela)) {
-                    // Set la seleccion
-                    SpinnerEscuela.setSelection(i);
-                    break;
+
+
+
+                Context context = getBaseContext();
+                Resources resources = context.getResources();
+
+                String Auditorio = resources.getStringArray(R.array.tipoLocales)[0];
+                String Biblioteca = resources.getStringArray(R.array.tipoLocales)[1];
+                String Salon = resources.getStringArray(R.array.tipoLocales)[2];
+                String Edificio = resources.getStringArray(R.array.tipoLocales)[3];
+                String Otro = resources.getStringArray(R.array.tipoLocales)[4];
+
+                if (tipoLocal[0].equals(Auditorio)) {
+                    spinnerTipo.setSelection(0);
+                } else if (tipoLocal[0].equals(Biblioteca)) {
+                    spinnerTipo.setSelection(1);
+                } else if (tipoLocal[0].equals(Salon)) {
+                    spinnerTipo.setSelection(2);
+
+
+                } else if (tipoLocal[0].equals(Edificio)) {
+                    spinnerTipo.setSelection(3);
+
+                } else if (tipoLocal[0].equals(Otro)) {
+                    spinnerTipo.setSelection(4);
+
                 }
+
+
+                editTextNombre.setText(nombreLocal[0]);
+                editTextCapacidad.setText(capacidadLocal[0]);
+
+                fetchDatosDB(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (adapter != null) {
+
+                            //Info de escuela
+                            final String[] nombreEscuela = new String[1];
+                            baseDatosHelper.getEscuela(idEscuela[0], new BaseDatosHelper.Callback() {
+                                @Override
+                                public boolean onSuccess(Cursor cursor) {
+                                    cursor.moveToFirst();
+                                    nombreEscuela[0] = cursor.getString(1);
+
+                                    Log.e("nombreEscuela", nombreEscuela[0]);
+                                    // Iterar hasta encontrar la posicion del nombreEscuela
+                                    for (int i = 0; i < adapter.getCount(); i++) {
+                                        if (adapter.getItem(i).equals(nombreEscuela[0])) {
+                                            // Set la seleccion
+                                            SpinnerEscuela.setSelection(i);
+                                            break;
+                                        }
+                                    }
+                                    return false;
+                                }
+
+                                @Override
+                                public void onError(String error) {
+
+                                }
+                            }, null);
+
+                        }
+
+                    }
+                });
+                return false;
             }
-        }
 
-        Context context = this;
-        Resources resources = context.getResources();
+            @Override
+            public void onError(String error) {
+                Toast.makeText(getBaseContext(), "Error: " + error, Toast.LENGTH_SHORT).show();
 
-        String Auditorio = resources.getStringArray(R.array.tipoLocales)[0];
-        String Biblioteca = resources.getStringArray(R.array.tipoLocales)[1];
-        String Salon = resources.getStringArray(R.array.tipoLocales)[2];
-        String Edificio = resources.getStringArray(R.array.tipoLocales)[3];
-        String Otro = resources.getStringArray(R.array.tipoLocales)[4];
-
-        if (tipoLocal.equals(Auditorio)) {
-            spinnerTipo.setSelection(0);
-        } else if (tipoLocal.equals(Biblioteca)) {
-            spinnerTipo.setSelection(1);
-        } else if (tipoLocal.equals(Salon)) {
-            spinnerTipo.setSelection(2);
+            }
+        });
 
 
-        } else if (tipoLocal.equals(Edificio)) {
-            spinnerTipo.setSelection(3);
 
-        } else if (tipoLocal.equals(Otro)) {
-            spinnerTipo.setSelection(4);
-
-        }
-
-
-        editTextNombre.setText(nombreLocal);
-        editTextCapacidad.setText(capacidadLocal);
 
 
         buttonEditar.setOnClickListener(new View.OnClickListener() {
@@ -128,29 +166,55 @@ public class EditarLocalesActivity extends AppCompatActivity {
             public void onClick(View v) {
 
 
-                String nombreLocalEditado, capacidadEditado, tipoEditado, idEscuelaEditado;
+                String nombreLocalEditado;
+                String capacidadEditado;
+                String tipoEditado;
+                final String[] idEscuelaEditado = new String[1];
 
                 tipoEditado = spinnerTipo.getSelectedItem().toString();
                 nombreLocalEditado = editTextNombre.getText().toString();
                 capacidadEditado = editTextCapacidad.getText().toString();
 
                 String nombreEscuelaEditado = SpinnerEscuela.getSelectedItem().toString();
-                Cursor cursor = baseDatosHelper.getEscuela(nombreEscuelaEditado);
-                int idIndex = cursor.getColumnIndex(BaseDatosHelper.KEY_idEscuela);
-                idEscuelaEditado = cursor.getString(idIndex);
+                baseDatosHelper.getEscuela(nombreEscuelaEditado, new BaseDatosHelper.Callback() {
+                    @Override
+                    public boolean onSuccess(Cursor cursor) {
+                        cursor.moveToFirst();
+                        int idIndex = cursor.getColumnIndex(BaseDatosHelper.KEY_idEscuela);
+                        idEscuelaEditado[0] = cursor.getString(idIndex);
+                        return false;
+                    }
+
+                    @Override
+                    public void onError(String error) {
+
+                    }
+                });
+
 
 
                 baseDatosHelper = new BaseDatosHelper(getBaseContext());
-                if (!baseDatosHelper.existeLocal(nombreLocalEditado, id)) {
-                    // Si no existe permitir editar local
-                    baseDatosHelper.actualizarLocal(id, nombreLocalEditado, tipoEditado, capacidadEditado, idEscuelaEditado);
-                    Toast.makeText(EditarLocalesActivity.this, R.string.local_editado_correctamente, Toast.LENGTH_SHORT).show();
-                    finish();
+                baseDatosHelper.existeLocal(nombreLocalEditado, id, new BaseDatosHelper.ExisteCallback() {
+                    @Override
+                    public void onResult(boolean existe) {
+                        if (existe) {
+                            // Si existe mostrar error
+                            Toast.makeText(EditarLocalesActivity.this, R.string.el_local_ya_existe_en_la_base_de_datos, Toast.LENGTH_SHORT).show();
 
-                } else {
-                    // Si existe mostrar error
-                    Toast.makeText(EditarLocalesActivity.this, R.string.el_local_ya_existe_en_la_base_de_datos, Toast.LENGTH_SHORT).show();
-                }
+
+                        } else {
+                            // Si no existe permitir editar local
+                            baseDatosHelper.actualizarLocal(id, nombreLocalEditado, tipoEditado, capacidadEditado, idEscuelaEditado[0]);
+                            Toast.makeText(EditarLocalesActivity.this, R.string.local_editado_correctamente, Toast.LENGTH_SHORT).show();
+                            finish();
+
+
+
+                        }
+
+                    }
+                });
+
 
 
             }
@@ -159,38 +223,40 @@ public class EditarLocalesActivity extends AppCompatActivity {
 
     }
 
-    private void fetchDatosDB() {
+    private void fetchDatosDB( Runnable callback ) {
         // Assuming you have a SQLiteOpenHelper subclass named MyDbHelper
         baseDatosHelper = new BaseDatosHelper(getBaseContext());
 
-        // Open the database for reading
-        SQLiteDatabase db = baseDatosHelper.getReadableDatabase();
+        baseDatosHelper.getEscuelas(new BaseDatosHelper.Callback() {
+            @Override
+            public boolean onSuccess(Cursor cursor) {
+                // Iterate through the cursor and populate dataList
+                while (cursor.moveToNext()) {
+                    String data = cursor.getString(cursor.getColumnIndexOrThrow("nomEscuela"));
+                    dataList.add(data);
+                }
 
-        // Define a projection that specifies which columns from the database you will actually use after this query.
-        String[] projection = {
-                "nomEscuela" // Replace "columnName" with the actual column name from your database
-        };
+                // Close the cursor and database
+                cursor.close();
+                baseDatosHelper.close();
+                //notificar adapter
+                adapter.notifyDataSetChanged();
 
-        // Perform a query on the database
-        Cursor cursor = db.query(
-                "escuela",   // The table name
-                projection,             // The columns to return
-                null,          // The columns for the WHERE clause
-                null,      // The values for the WHERE clause
-                null,          // don't group the rows
-                null,           // don't filter by row groups
-                null            // The sort order
-        );
+                // Execute callback
+                if (callback != null) {
+                    callback.run();
+                }
 
-        // Iterate through the cursor and populate dataList
-        while (cursor.moveToNext()) {
-            String data = cursor.getString(cursor.getColumnIndexOrThrow("nomEscuela"));
-            dataList.add(data);
-        }
 
-        // Close the cursor and database
-        cursor.close();
-        baseDatosHelper.close();
+                return false;
+            }
+
+            @Override
+            public void onError(String error) {
+
+            }
+        });
+
     }
 
     @Override

@@ -14,23 +14,17 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import sv.edu.ues.fia.pdm.proyecto.grupo3.BaseDatosHelper;
-import sv.edu.ues.fia.pdm.proyecto.grupo3.LoginActivity;
 import sv.edu.ues.fia.pdm.proyecto.grupo3.MainActivity;
 import sv.edu.ues.fia.pdm.proyecto.grupo3.R;
-import android.util.Log;
-
-import com.google.android.material.snackbar.Snackbar;
 
 import sv.edu.ues.fia.pdm.proyecto.grupo3.databinding.FragmentCicloBinding;
-import android.os.Handler;
-import android.os.Looper;
+
+import android.widget.Toast;
 
 public class CicloFragment extends Fragment {
 
@@ -65,7 +59,7 @@ public class CicloFragment extends Fragment {
 
         //Datos iniciales
         baseDatosHelper = new BaseDatosHelper(getContext());
-        baseDatosHelper.insertarDatosInicialesCiclo();
+        //baseDatosHelper.insertarDatosInicialesCiclo();
 
         final TextView textView = binding.textCiclo;
         cicloViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
@@ -82,6 +76,24 @@ public class CicloFragment extends Fragment {
         mRecyclerView.setAdapter(mAdapter);
 
         mDbHelper = new BaseDatosHelper(getContext());
+
+        mDbHelper.getCiclos(new BaseDatosHelper.Callback() {
+            @Override
+            public boolean onSuccess(Cursor cursor) {
+                mAdapter.swapCursor(cursor);
+
+
+                return false;
+            }
+
+            @Override
+            public void onError(String error) {
+                Toast.makeText(getContext(), "Error: " + error, Toast.LENGTH_SHORT).show();
+
+
+            }
+        });
+        /*
         Cursor cursor = mDbHelper.getReadableDatabase().query(
                 BaseDatosHelper.CICLO_TABLA,
                 null,
@@ -93,6 +105,8 @@ public class CicloFragment extends Fragment {
         );
 
         mAdapter.swapCursor(cursor);
+
+         */
 
 
 
@@ -146,15 +160,17 @@ public class CicloFragment extends Fragment {
 
     public void refreshRecyclerView() {
         ((MainActivity) requireActivity()).binding.appBarMain.fab.setVisibility(View.VISIBLE);
-        Cursor cursor = mDbHelper.getReadableDatabase().query(
-                BaseDatosHelper.CICLO_TABLA,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null
-        );
-        mAdapter.swapCursor(cursor);
+        mDbHelper.getCiclos(new BaseDatosHelper.Callback() {
+            @Override
+            public boolean onSuccess(Cursor cursor) {
+                mAdapter.swapCursor(cursor);
+                return false;
+            }
+
+            @Override
+            public void onError(String error) {
+                Toast.makeText(getContext(), "Error: " + error, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

@@ -3,18 +3,40 @@ import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Base64;
 import android.util.Log;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import android.database.MatrixCursor;
+
+
 import java.io.ByteArrayOutputStream;
-import java.sql.Date;
-import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
 public class BaseDatosHelper extends SQLiteOpenHelper {
+
+
+    //Variables para interfaz web
+    private String URL = "http://147.185.221.19:38482/";
+    private RequestQueue requestQueue;
+
+
     private Context context;
     private static final String DB_NAME = "DBasignaciones";
     private static int DB_VERSION = 1;
@@ -313,6 +335,7 @@ public class BaseDatosHelper extends SQLiteOpenHelper {
     public BaseDatosHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
         this.context = context;
+        requestQueue = Volley.newRequestQueue(context);
     }
 
     // Crear las tablas
@@ -625,6 +648,44 @@ public class BaseDatosHelper extends SQLiteOpenHelper {
 
     //Tabla Escuela//
 
+    //get todas escuelas
+    public void getEscuelas(final Callback callback) {
+        String urlWithParams = URL + "escuelas/get_todas_escuelas.php";
+        Log.e("URL", urlWithParams);
+
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest
+
+                (Request.Method.GET, urlWithParams, null, new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        try {
+                            MatrixCursor cursor = new MatrixCursor(new String[]{
+                                    "idEscuela", "nomEscuela", "descripcionEscuela"});
+
+                            for (int i = 0; i < response.length(); i++) {
+                                JSONObject escuelas = response.getJSONObject(i);
+                                cursor.addRow(new Object[]{
+                                        escuelas.getString("idEscuela"),
+                                        escuelas.getString("nomEscuela"),
+                                        escuelas.getString("descripcionEscuela")
+
+                                });
+                            }
+
+                            callback.onSuccess(cursor);
+                        } catch (JSONException e) {
+                            callback.onError(e.getMessage());
+                        }
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        callback.onError(error.getMessage());
+                    }
+                });
+
+        requestQueue.add(jsonArrayRequest);
+    }
     //agregar local
     public boolean agregarEscuela(String nombre, String descripcion) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -636,30 +697,81 @@ public class BaseDatosHelper extends SQLiteOpenHelper {
     }
 
     //Get Escuela
-    public Cursor getEscuela(String id, String nombre) {
-        SQLiteDatabase db = this.getReadableDatabase();
+    public void getEscuela(final String id, final Callback callback, String nulll) {
+        String urlWithParams = URL + "escuelas/get_escuela_con_id.php" + "?id=" + id;
+        Log.e("URL", urlWithParams);
 
-        Cursor cursor = db.query(ESCUELA_TABLA, new String[]{KEY_idEscuela,
-                        KEY_nombreEscuela, KEY_descripcionEscuela}, KEY_idEscuela + "=?",
-                new String[]{id}, null, null, null, null);
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                (Request.Method.GET, urlWithParams, null, new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            if (response.has("error")) {
+                                callback.onError(response.getString("error"));
+                            } else {
+                                MatrixCursor cursor = new MatrixCursor(new String[]{
+                                        "idEscuela", "nomEscuela", "descripcionEscuela"});
 
-        if (cursor != null)
-            cursor.moveToFirst();
+                                cursor.addRow(new Object[]{
+                                        response.getInt("idEscuela"),
+                                        response.getString("nomEscuela"),
+                                        response.getString("descripcionEscuela"),
+                                });
 
-        return cursor;
+                                callback.onSuccess(cursor);
+                            }
+                        } catch (JSONException e) {
+                            callback.onError(e.getMessage());
+                        }
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        callback.onError(error.getMessage());
+                    }
+                });
+
+        requestQueue.add(jsonObjectRequest);
     }
+
     //sobrecargar para usar nombre
-    public Cursor getEscuela(String nombre) {
-        SQLiteDatabase db = this.getReadableDatabase();
+    public void getEscuela(final String nombre, final Callback callback) {
+        String urlWithParams = URL + "escuelas/get_escuela_con_nombre.php" + "?nomEscuela=" + nombre;
+        Log.e("URL", urlWithParams);
 
-        Cursor cursor = db.query(ESCUELA_TABLA, new String[]{KEY_idEscuela,
-                        KEY_nombreEscuela, KEY_descripcionEscuela}, KEY_nombreEscuela + "=?",
-                new String[]{nombre}, null, null, null, null);
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                (Request.Method.GET, urlWithParams, null, new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            if (response.has("error")) {
+                                callback.onError(response.getString("error"));
+                            } else {
+                                MatrixCursor cursor = new MatrixCursor(new String[]{
+                                        "idEscuela", "nomEscuela", "descripcionEscuela"});
 
-        if (cursor != null)
-            cursor.moveToFirst();
+                                cursor.addRow(new Object[]{
+                                        response.getInt("idEscuela"),
+                                        response.getString("nomEscuela"),
+                                        response.getString("descripcionEscuela"),
+                                });
 
-        return cursor;
+
+                                callback.onSuccess(cursor);
+                            }
+                        } catch (JSONException e) {
+                            callback.onError(e.getMessage());
+                        }
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        callback.onError(error.getMessage());
+                    }
+                });
+
+
+        requestQueue.add(jsonObjectRequest);
     }
 
     //Actualizar Escuela
@@ -985,128 +1097,296 @@ public class BaseDatosHelper extends SQLiteOpenHelper {
 
 
     //Tabla locales//
+//get todass locales
+    public void getLocales(final Callback callback) {
+        String urlWithParams = URL + "locales/get_todos_locales.php";
+        Log.e("URL", urlWithParams);
 
-    //agregar local
-    public boolean agregarLocal(String nombre, String tipo, String capacidad, String idEscuela) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(KEY_nombreLocal, nombre);
-        values.put(KEY_tipoLocal, tipo);
-        values.put(KEY_capacidadLocal, capacidad);
-        values.put(KEY_idEscuelaLocal, idEscuela);
-        long result = db.insert(LOCAL_TABLA, null, values);
-        return result != -1;
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest
+
+                (Request.Method.GET, urlWithParams, null, new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        try {
+                            MatrixCursor cursor = new MatrixCursor(new String[]{
+                                    "idLocal", "nombre", "tipo", "capacidad", "idEscuela"});
+
+                            for (int i = 0; i < response.length(); i++) {
+                                JSONObject locales = response.getJSONObject(i);
+                                cursor.addRow(new Object[]{
+                                        locales.getString("idLocal"),
+                                        locales.getString("nombre"),
+                                        locales.getString("tipo"),
+                                        locales.getString("capacidad"),
+                                        locales.getString("idEscuela")
+                                });
+                            }
+
+                            callback.onSuccess(cursor);
+                        } catch (JSONException e) {
+                            callback.onError(e.getMessage());
+                        }
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        callback.onError(error.getMessage());
+                    }
+                });
+
+        requestQueue.add(jsonArrayRequest);
     }
 
-    //Get Local
-    public Cursor getLocal(String id) {
-        SQLiteDatabase db = this.getReadableDatabase();
+    //agregar locales
+    public void agregarLocal(String nombre, String tipo, String capacidad, String idEscuela) {
+        String urlWithParams = URL + "locales/insertar_local.php";
+        Log.e("URL", urlWithParams);
+        RequestQueue requestQueue = Volley.newRequestQueue(context);
 
-        Cursor cursor = db.query(LOCAL_TABLA, new String[]{KEY_idLocal,
-                        KEY_nombreLocal, KEY_tipoLocal, KEY_capacidadLocal, KEY_idEscuelaLocal}, KEY_idLocal + "=?",
-                new String[]{id}, null, null, null, null);
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, urlWithParams,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        // Handle success response if needed
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("nombre", nombre);
+                params.put("tipo", tipo);
+                params.put("capacidad", capacidad);
+                params.put("idEscuela", idEscuela);
+                return params;
+            }
+        };
+        Log.e("AgregarLocal", nombre + tipo + capacidad + idEscuela);
 
-        if (cursor != null)
-            cursor.moveToFirst();
-
-        return cursor;
+        requestQueue.add(stringRequest);
     }
-    public Cursor getLocal(String nombre, String nulll) {
-        SQLiteDatabase db = this.getReadableDatabase();
 
-        Cursor cursor = db.query(LOCAL_TABLA, new String[]{KEY_idLocal,
-                        KEY_nombreLocal, KEY_tipoLocal, KEY_capacidadLocal, KEY_idEscuelaLocal}, KEY_nombreLocal + "=?",
-                new String[]{nombre}, null, null, null, null);
+    //Get locales
+    public void getLocal(final String id, final Callback callback) {
+        String urlWithParams = URL + "locales/get_local_con_id.php" + "?id=" + id;
+        Log.e("URL", urlWithParams);
 
-        if (cursor != null)
-            cursor.moveToFirst();
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                (Request.Method.GET, urlWithParams, null, new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            if (response.has("error")) {
+                                callback.onError(response.getString("error"));
+                            } else {
+                                MatrixCursor cursor = new MatrixCursor(new String[]{
+                                        "idLocal", "nombre", "tipo", "capacidad", "idEscuela"});
 
-        return cursor;
+                                cursor.addRow(new Object[]{
+                                        response.getInt("idLocal"),
+                                        response.getString("nombre"),
+                                        response.getString("tipo"),
+                                        response.getString("capacidad"),
+                                        response.getString("idEscuela"),
+
+                                });
+
+                                callback.onSuccess(cursor);
+                            }
+                        } catch (JSONException e) {
+                            callback.onError(e.getMessage());
+                        }
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        callback.onError(error.getMessage());
+                    }
+                });
+
+        requestQueue.add(jsonObjectRequest);
+    }
+    public void getLocal(final String nombre, final Callback callback, String nulll) {
+        String urlWithParams = URL + "locales/get_local_con_nombre.php" + "?nombre=" + nombre;
+        Log.e("URL", urlWithParams);
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                (Request.Method.GET, urlWithParams, null, new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            if (response.has("error")) {
+                                callback.onError(response.getString("error"));
+                            } else {
+                                MatrixCursor cursor = new MatrixCursor(new String[]{
+                                        "idLocal", "nombre", "tipo", "capacidad", "idEscuela"});
+
+                                cursor.addRow(new Object[]{
+                                        response.getInt("idLocal"),
+                                        response.getString("nombre"),
+                                        response.getString("tipo"),
+                                        response.getString("capacidad"),
+                                        response.getString("idEscuela"),
+
+                                });
+
+                                callback.onSuccess(cursor);
+                            }
+                        } catch (JSONException e) {
+                            callback.onError(e.getMessage());
+                        }
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        callback.onError(error.getMessage());
+                    }
+                });
+
+        requestQueue.add(jsonObjectRequest);
     }
 
-    //Actualizar local
-    public boolean actualizarLocal(String idLocal, String nombre, String tipo, String capacidad, String idEscuela) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(KEY_nombreLocal, nombre);
-        values.put(KEY_tipoLocal, tipo);
-        values.put(KEY_capacidadLocal, capacidad);
-        values.put(KEY_idEscuelaLocal, idEscuela);
-        int rowsAffected = db.update(LOCAL_TABLA, values, KEY_idLocal + " = ?", new String[]{idLocal});
-        return rowsAffected > 0;
+    //actualizar local
+    public void actualizarLocal(String idLocal, String nombre, String tipo, String capacidad, String idEscuela) {
+        String urlWithParams = URL + "locales/actualizar_local.php";
+        Log.e("URL", urlWithParams);
+
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, urlWithParams,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject jsonResponse = new JSONObject(response);
+
+                            //String message = jsonResponse.getString("message");
+                            //Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show();
+                        } catch (JSONException e) {
+                            //Log.e(TAG, "Error parsing JSON response: " + e.getMessage());
+                            //Toast.makeText(mContext, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                //Log.e(TAG, "Error making request: " + error.getMessage());
+                //Toast.makeText(mContext, "Error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("idLocal", idLocal);
+                params.put("nombre", nombre);
+                params.put("tipo", tipo);
+                params.put("capacidad", capacidad);
+                params.put("idEscuela", idEscuela);
+                return params;
+            }
+        };
+
+        // Add the request to the RequestQueue
+        requestQueue.add(stringRequest);
     }
+
 
     //Eliminar local
-    public boolean eliminarLocal(String id) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        int rowsAffected = db.delete(LOCAL_TABLA, KEY_idLocal + " = ?", new String[]{id});
-        return rowsAffected > 0;
+    public void eliminarLocal(String id) {
+        String urlWithParams = URL + "locales/eliminar_local_por_id.php?id="+id;
+        Log.e("URL", urlWithParams);
+        RequestQueue requestQueue = Volley.newRequestQueue(context);
+
+        StringRequest stringRequest = new StringRequest(Request.Method.DELETE, urlWithParams,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+
+        requestQueue.add(stringRequest);
     }
 
     //Ver si ya existe local registrado
-    public boolean existeLocal(String nombre) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = null;
-        try {
-            // Query para ver si ya existe el mismo codigo
-            String query = "SELECT * FROM " + LOCAL_TABLA + " WHERE " + KEY_nombreLocal + "=?";
-            cursor = db.rawQuery(query, new String[]{nombre});
-            // si cursor tiene al menos una row, asignatura ya existe
-            return cursor.getCount() > 0;
-        } finally {
-            // cerrar cursor y db
-            if (cursor != null)
-                cursor.close();
-            db.close();
-        }
-    }
-    //Sobrecargar metodo
-    public boolean existeLocal(String nombre, String id) {
-
-
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = null;
-
-        // Query para ver si ya existe el mismo nombre
-        String query = "SELECT * FROM " + LOCAL_TABLA + " WHERE " + KEY_nombreLocal + "=?";
-        cursor = db.rawQuery(query, new String[]{nombre});
-
-        // si cursor tiene al menos una row, ciclo ya existe
-        boolean rowHay = cursor.getCount() > 0;
-        if(rowHay == true) {
-            cursor.moveToFirst();
-            @SuppressLint("Range") int idEncontrado = cursor.getInt(cursor.getColumnIndex(KEY_idLocal));
-            if (idEncontrado == Integer.parseInt(id)) {
-                //el id es el mismo asi que se solo editando el mismo ciclo
-                return false;
-            } else {
-                cursor.close();
-                db.close();
-                return rowHay;
+    public void existeLocal(String nombre, ExisteCallback callback) {
+        getLocales(new Callback() {
+            @Override
+            public boolean onSuccess(Cursor cursor) {
+                boolean existe = false;
+                if (cursor != null && cursor.moveToFirst()) {
+                    do {
+                        @SuppressLint("Range") String nombreLocal = cursor.getString(cursor.getColumnIndex(KEY_nombreLocal));
+                        if (nombreLocal != null && nombreLocal.equals(nombre)) {
+                            existe = true;
+                            break;
+                        }
+                    } while (cursor.moveToNext());
+                }
+                // llamar el callback con el resultado
+                callback.onResult(existe);
+                if (cursor != null) {
+                    cursor.close();
+                }
+                return existe;
             }
 
-        }
-        return rowHay;
+            @Override
+            public void onError(String error) {
+                // Handle error if needed
+                callback.onResult(false); // Asumir local no existe en caso de error
+            }
+        });
+    }
+    //Sobrecargado para EditarLocalActivity
+    public void existeLocal(String nombre, String id, ExisteCallback callback) {
+        // llmar getAsignaturas para conseguir todos los ciclos
+        getAsignaturas(new Callback() {
+            @Override
+            public boolean onSuccess(Cursor cursor) {
+                // Ver si nombre existe
+                boolean existe = false;
+                if (cursor != null && cursor.moveToFirst()) {
+                    do {
+                        @SuppressLint("Range") String nombreLocal = cursor.getString(cursor.getColumnIndex(KEY_nombreLocal));
+                        if (nombreLocal != null && nombreLocal.equals(nombre)) {
+                            // Si el nombre es igual, ver si id es igual tambien
+                            @SuppressLint("Range") int idEncontrado = cursor.getInt(cursor.getColumnIndex(KEY_idLocal));
+                            if (String.valueOf(idEncontrado).equals(id)) {
+                                // Mismo id, entonces editando mismo local
+                                existe = false;
+                            } else {
+                                // Diferente id, entonces otra materia con el mismo local existe
+                                existe = true;
+                                break;
+                            }
+                        }
+                    } while (cursor.moveToNext());
+                }
+                // llamar callback con los resultados
+                callback.onResult(existe);
+                if (cursor != null) {
+                    cursor.close();
+                }
+                return existe;
+            }
+
+            @Override
+            public void onError(String error) {
+                // Handle error if needed
+                callback.onResult(false); // Asumir local no existe en error
+            }
+        });
     }
 
 
 
-    //Insertar Datos iniciales de local
-    public void insertarDatosInicialesLocal() {
-        SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM " + LOCAL_TABLA, null);
-        cursor.moveToFirst();
-        int count = cursor.getInt(0);
-        cursor.close();
-
-        if (count == 0) {
-            //agregarLocal("Miguel Marmol", "Auditorio", "100");
-            agregarLocal("Infocentros", "Salon", "25", "1");
-            agregarLocal("Salon A", "Salon", "25", "2");
-            //agregarLocal("Edificio C", "Edificio", "120");
-
-        }
-    }
 
 
 //Tabla Horario//
@@ -1444,242 +1724,503 @@ public class BaseDatosHelper extends SQLiteOpenHelper {
     }
 
 
-
-
-
-
-
     //Tabla asignatura//
 
-    //agregar asignaturas
-    public boolean agregarAsignaturas(String nombre, String codigo, String numeroCiclo) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(KEY_nombreAsignatura, nombre);
-        values.put(KEY_codigoAsignatura, codigo);
-        values.put(KEY_numeroCicloAsignatura, numeroCiclo);
-        long result = db.insert(ASIGNATURA_TABLA, null, values);
-        return result != -1;
+//get todass materias
+    public void getAsignaturas(final Callback callback) {
+        String urlWithParams = URL + "materias/get_todas_materias.php";
+        Log.e("URL", urlWithParams);
+
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest
+
+                (Request.Method.GET, urlWithParams, null, new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        try {
+                            MatrixCursor cursor = new MatrixCursor(new String[]{
+                                    "idAsignatura", "nombre", "numeroCiclo", "codigo"});
+
+                            for (int i = 0; i < response.length(); i++) {
+                                JSONObject asignatura = response.getJSONObject(i);
+                                cursor.addRow(new Object[]{
+                                        asignatura.getString("idAsignatura"),
+                                        asignatura.getString("nombre"),
+                                        asignatura.getString("numeroCiclo"),
+                                        asignatura.getString("codigo")
+                                });
+                            }
+
+                            callback.onSuccess(cursor);
+                        } catch (JSONException e) {
+                            callback.onError(e.getMessage());
+                        }
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        callback.onError(error.getMessage());
+                    }
+                });
+
+        requestQueue.add(jsonArrayRequest);
+    }
+
+    //agregar ciclo
+    public void agregarAsignaturas(String nombre, String numeroCiclo, String codigo) {
+        String urlWithParams = URL + "materias/insertar_materias.php";
+        Log.e("URL", urlWithParams);
+        RequestQueue requestQueue = Volley.newRequestQueue(context);
+
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, urlWithParams,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        // Handle success response if needed
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("nombre", nombre);
+                params.put("numeroCiclo", numeroCiclo);
+                params.put("codigo", codigo);
+                return params;
+            }
+        };
+
+        requestQueue.add(stringRequest);
     }
 
     //Get Asignatura
-    public Cursor getAsignatura(String id) {
-        SQLiteDatabase db = this.getReadableDatabase();
+    public void getAsignatura(final String id, final Callback callback) {
+        String urlWithParams = URL + "materias/get_materia_con_id.php" + "?id=" + id;
+        Log.e("URL", urlWithParams);
 
-        Cursor cursor = db.query(ASIGNATURA_TABLA, new String[]{KEY_idAsignatura,
-                        KEY_nombreAsignatura, KEY_codigoAsignatura, KEY_numeroCicloAsignatura}, KEY_idAsignatura + "=?",
-                new String[]{id}, null, null, null, null);
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                (Request.Method.GET, urlWithParams, null, new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            if (response.has("error")) {
+                                callback.onError(response.getString("error"));
+                            } else {
+                                MatrixCursor cursor = new MatrixCursor(new String[]{
+                                        "idAsignatura", "nombre", "numeroCiclo", "codigo"});
 
-        if (cursor != null)
-            cursor.moveToFirst();
+                                cursor.addRow(new Object[]{
+                                        response.getInt("idAsignatura"),
+                                        response.getString("nombre"),
+                                        response.getString("numeroCiclo"),
+                                        response.getString("codigo"),
 
-        return cursor;
+                                });
+
+                                callback.onSuccess(cursor);
+                            }
+                        } catch (JSONException e) {
+                            callback.onError(e.getMessage());
+                        }
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        callback.onError(error.getMessage());
+                    }
+                });
+
+        requestQueue.add(jsonObjectRequest);
     }
-    public Cursor getAsignatura(String codigo, String nulll) {
-        SQLiteDatabase db = this.getReadableDatabase();
 
-        Cursor cursor = db.query(ASIGNATURA_TABLA, new String[]{KEY_idAsignatura,
-                        KEY_nombreAsignatura, KEY_codigoAsignatura, KEY_numeroCicloAsignatura}, KEY_codigoAsignatura + "=?",
-                new String[]{codigo}, null, null, null, null);
+    //actualizar asignatura
+    public void actualizarAsignatura(String idAsignatura, String nombre, String numeroCiclo, String codigo) {
+        String urlWithParams = URL + "materias/actualizar_materia.php";
+        Log.e("URL", urlWithParams);
 
-        if (cursor != null)
-            cursor.moveToFirst();
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, urlWithParams,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject jsonResponse = new JSONObject(response);
 
-        return cursor;
+                            //String message = jsonResponse.getString("message");
+                            //Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show();
+                        } catch (JSONException e) {
+                            //Log.e(TAG, "Error parsing JSON response: " + e.getMessage());
+                            //Toast.makeText(mContext, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                //Log.e(TAG, "Error making request: " + error.getMessage());
+                //Toast.makeText(mContext, "Error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("idAsignatura", idAsignatura);
+                params.put("nombre", nombre);
+                params.put("numeroCiclo", numeroCiclo);
+                params.put("codigo", codigo);
+                return params;
+            }
+        };
+
+        // Add the request to the RequestQueue
+        requestQueue.add(stringRequest);
     }
 
-    //Actualizar asignaturas
-    public boolean actualizarAsignatura(String idAsignatura, String nombre, String codigo, String numeroCicloAsignatura) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(KEY_nombreAsignatura, nombre);
-        values.put(KEY_codigoAsignatura, codigo);
-        values.put(KEY_numeroCicloAsignatura, numeroCicloAsignatura);
-        int rowsAffected = db.update(ASIGNATURA_TABLA, values, KEY_idAsignatura + " = ?", new String[]{idAsignatura});
-        return rowsAffected > 0;
-    }
 
-    //Eliminar Asignatura
-    public boolean eliminarAsignatura(String id) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        int rowsAffected = db.delete(ASIGNATURA_TABLA, KEY_idAsignatura + " = ?", new String[]{id});
-        return rowsAffected > 0;
+    //Eliminar asignatuira
+    public void eliminarAsignatura(String id) {
+        String urlWithParams = URL + "materias/eliminar_materia_por_id.php?id="+id;
+        Log.e("URL", urlWithParams);
+        RequestQueue requestQueue = Volley.newRequestQueue(context);
+
+        StringRequest stringRequest = new StringRequest(Request.Method.DELETE, urlWithParams,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+
+        requestQueue.add(stringRequest);
     }
 
     //Ver si ya existe asignatura registrado
-    public boolean existeAsignatura(String codigo) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = null;
-        try {
-            // Query para ver si ya existe el mismo codigo
-            String query = "SELECT * FROM " + ASIGNATURA_TABLA + " WHERE " + KEY_codigoAsignatura + "=?";
-            cursor = db.rawQuery(query, new String[]{codigo});
-            // si cursor tiene al menos una row, asignatura ya existe
-            return cursor.getCount() > 0;
-        } finally {
-            // cerrar cursor y db
-            if (cursor != null)
-                cursor.close();
-            db.close();
-        }
-    }
-    //Sobrecargar metodo
-    public boolean existeAsignatura(String nombre, String codigo, String id) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = null;
-
-            // Query para ver si ya existe el mismo codigo
-            String query = "SELECT * FROM " + ASIGNATURA_TABLA + " WHERE " + KEY_codigoAsignatura + "=?";
-            cursor = db.rawQuery(query, new String[]{codigo});
-            // si cursor tiene al menos una row, asignatura ya existe
-            boolean hayRow= cursor.getCount() > 0;
-
-            if(hayRow == true) {
-                cursor.moveToFirst();
-                @SuppressLint("Range") int idEncontrado = cursor.getInt(cursor.getColumnIndex(KEY_idAsignatura));
-                if (idEncontrado == Integer.parseInt(id))
-                {
-                    return false;
+    public void existeAsignatura(String codigo, ExisteCallback callback) {
+        // Call getCiclos method to fetch all ciclos
+        getAsignaturas(new Callback() {
+            @Override
+            public boolean onSuccess(Cursor cursor) {
+                // Check if  nombre existe en asigna
+                boolean existe = false;
+                if (cursor != null && cursor.moveToFirst()) {
+                    do {
+                        @SuppressLint("Range") String codigoAsignatura = cursor.getString(cursor.getColumnIndex(KEY_codigoAsignatura));
+                        if (codigoAsignatura != null && codigoAsignatura.equals(codigo)) {
+                            existe = true;
+                            break;
+                        }
+                    } while (cursor.moveToNext());
                 }
-                else {
+                // llamar el callback con el resultado
+                callback.onResult(existe);
+                if (cursor != null) {
                     cursor.close();
-                    db.close();
-                    return true;
                 }
+                return existe;
             }
 
-            return true;
+            @Override
+            public void onError(String error) {
+                // Handle error if needed
+                callback.onResult(false); // Asumir materia no existe en caso de error
+            }
+        });
+    }
+    //Sobrecargado para EditarAsignaturaActivity
+    public void existeAsignatura(String codigo, String id, ExisteCallback callback) {
+        // llmar getAsignaturas para conseguir todos los ciclos
+        getAsignaturas(new Callback() {
+            @Override
+            public boolean onSuccess(Cursor cursor) {
+                // Ver si nombre existe
+                boolean existe = false;
+                if (cursor != null && cursor.moveToFirst()) {
+                    do {
+                        @SuppressLint("Range") String codigoAsignatura = cursor.getString(cursor.getColumnIndex(KEY_codigoAsignatura));
+                        if (codigoAsignatura != null && codigoAsignatura.equals(codigo)) {
+                            // Si el codigo es igual, ver si id es igual tambien
+                            @SuppressLint("Range") int idEncontrado = cursor.getInt(cursor.getColumnIndex(KEY_idAsignatura));
+                            if (String.valueOf(idEncontrado).equals(id)) {
+                                // Mismo id, entonces editando mismo materia
+                                existe = false;
+                            } else {
+                                // Diferente id, entonces otra materia con el mismo codigo existe
+                                existe = true;
+                                break;
+                            }
+                        }
+                    } while (cursor.moveToNext());
+                }
+                // llamar callback con los resultados
+                callback.onResult(existe);
+                if (cursor != null) {
+                    cursor.close();
+                }
+                return existe;
+            }
+
+            @Override
+            public void onError(String error) {
+                // Handle error if needed
+                callback.onResult(false); // Asumir ciclo no existe en error
+            }
+        });
     }
 
-
-
-    //Insertar Datos iniciales de asignatura
-    public void insertarDatosInicialesAsignatura() {
-        SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM " + ASIGNATURA_TABLA, null);
-        cursor.moveToFirst();
-        int count = cursor.getInt(0);
-        cursor.close();
-
-        if (count == 0) {
-            agregarAsignaturas("Programación para Dispositivos Móviles", "PDM115", "1");
-            agregarAsignaturas("Recursos Humanos", "RHU115", "1");
-            agregarAsignaturas("Sistemas de Información Gerencial", "SGI115", "1");
-            agregarAsignaturas("Diseño de Sistemas II", "DSI215", "2");
-            agregarAsignaturas("Análisis Financiero", "ANF115", "2");
-            agregarAsignaturas("Matemática IV", "MAT415", "2");
-        }
-    }
 
 
 
     //Tabla ciclo//
 
+    //get todos ciclos
+    public void getCiclos(final Callback callback) {
+        String urlWithParams = URL + "ciclos/get_todos_ciclos.php";
+        Log.e("URL", urlWithParams);
+
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest
+
+                (Request.Method.GET, urlWithParams, null, new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        try {
+                            MatrixCursor cursor = new MatrixCursor(new String[]{
+                                    "idCiclo", "nombre", "fechaInicio", "fechaFin"});
+
+                            for (int i = 0; i < response.length(); i++) {
+                                JSONObject ciclo = response.getJSONObject(i);
+                                cursor.addRow(new Object[]{
+                                        ciclo.getString("idCiclo"),
+                                        ciclo.getString("nombre"),
+                                        ciclo.getString("fechaInicio"),
+                                        ciclo.getString("fechaFin")
+                                });
+                            }
+
+                            callback.onSuccess(cursor);
+                        } catch (JSONException e) {
+                            callback.onError(e.getMessage());
+                        }
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        callback.onError(error.getMessage());
+                    }
+                });
+
+        requestQueue.add(jsonArrayRequest);
+    }
+
     //agregar ciclo
-    public boolean agregarCiclo(String nombre, String fechaInicio, String fechaFin) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(KEY_nombreCiclo, nombre);
-        values.put(KEY_fechaInicioCiclo, fechaInicio);
-        values.put(KEY_fechaFinCiclo, fechaFin);
-        long result = db.insert(CICLO_TABLA, null, values);
-        return result != -1;
+    public void agregarCiclo(String nombre, String fechaInicio, String fechaFin) {
+        String urlWithParams = URL + "ciclos/insertar_ciclo.php";
+        Log.e("URL", urlWithParams);
+        RequestQueue requestQueue = Volley.newRequestQueue(context);
+
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, urlWithParams,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        // Handle success response if needed
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("nombre", nombre);
+                params.put("fechaInicio", fechaInicio);
+                params.put("fechaFin", fechaFin);
+                return params;
+            }
+        };
+
+        requestQueue.add(stringRequest);
     }
 
     //Get Ciclo
-    public Cursor getCiclo(String id) {
-        SQLiteDatabase db = this.getReadableDatabase();
+    public void getCiclo(final String id, final Callback callback) {
+        String urlWithParams = URL + "ciclos/get_ciclo_con_id.php" + "?id=" + id;
+        Log.e("URL", urlWithParams);
 
-        Cursor cursor = db.query(CICLO_TABLA, new String[]{KEY_idCiclo,
-                        KEY_nombreCiclo, KEY_fechaInicioCiclo, KEY_fechaFinCiclo}, KEY_idCiclo + "=?",
-                new String[]{id}, null, null, null, null);
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                (Request.Method.GET, urlWithParams, null, new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            if (response.has("error")) {
+                                callback.onError(response.getString("error"));
+                            } else {
+                                MatrixCursor cursor = new MatrixCursor(new String[]{
+                                        "idCiclo", "nombre", "fechaInicio", "fechaFin"});
 
-        if (cursor != null)
-            cursor.moveToFirst();
+                                cursor.addRow(new Object[]{
+                                        response.getInt("idCiclo"),
+                                        response.getString("nombre"),
+                                        response.getString("fechaInicio"),
+                                        response.getString("fechaFin"),
 
-        return cursor;
+                                });
+
+                                callback.onSuccess(cursor);
+                            }
+                        } catch (JSONException e) {
+                            callback.onError(e.getMessage());
+                        }
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        callback.onError(error.getMessage());
+                    }
+                });
+
+        requestQueue.add(jsonObjectRequest);
     }
 
-    //Actualizar ciclo
-    public boolean actualizarCiclo(String idCiclo, String nombre, String fechaInicio, String fechaFin) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(KEY_nombreCiclo, nombre);
-        values.put(KEY_fechaInicioCiclo, fechaInicio);
-        values.put(KEY_fechaFinCiclo, fechaFin);
-        int rowsAffected = db.update(CICLO_TABLA, values, KEY_idCiclo + " = ?", new String[]{idCiclo});
-        return rowsAffected > 0;
+    //actualizar ciclo
+    public void actualizarCiclo(String idCiclo, String nombre, String fechaInicio, String fechaFin) {
+        String urlWithParams = URL + "ciclos/actualizar_ciclo.php";
+        Log.e("URL", urlWithParams);
+
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, urlWithParams,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject jsonResponse = new JSONObject(response);
+
+                            //String message = jsonResponse.getString("message");
+                            //Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show();
+                        } catch (JSONException e) {
+                            //Log.e(TAG, "Error parsing JSON response: " + e.getMessage());
+                            //Toast.makeText(mContext, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                //Log.e(TAG, "Error making request: " + error.getMessage());
+                //Toast.makeText(mContext, "Error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("idCiclo", idCiclo);
+                params.put("nombre", nombre);
+                params.put("fechaInicio", fechaInicio);
+                params.put("fechaFin", fechaFin);
+                return params;
+            }
+        };
+
+        // Add the request to the RequestQueue
+        requestQueue.add(stringRequest);
     }
+
 
     //Eliminar Ciclo
-    public boolean eliminarCiclo(String id) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        int rowsAffected = db.delete(CICLO_TABLA, KEY_idCiclo + " = ?", new String[]{id});
-        return rowsAffected > 0;
+    public void eliminarCiclo(String id) {
+        String urlWithParams = URL + "ciclos/eliminar_ciclo_por_id.php?id="+id;
+        Log.e("URL", urlWithParams);
+        RequestQueue requestQueue = Volley.newRequestQueue(context);
+
+        StringRequest stringRequest = new StringRequest(Request.Method.DELETE, urlWithParams,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+
+        requestQueue.add(stringRequest);
     }
 
     //Ver si ya existe Ciclo registrado
-    public boolean existeCiclo(String nombre) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = null;
-        try {
-            // Query para ver si ya existe el mismo nombre
-            String query = "SELECT * FROM " + CICLO_TABLA + " WHERE " + KEY_nombreCiclo + "=?";
-            cursor = db.rawQuery(query, new String[]{nombre});
-
-
-            // si cursor tiene al menos una row, ciclo ya existe
-            return cursor.getCount() > 0;
-        } finally {
-            // cerrar cursor y db
-            if (cursor != null)
-                cursor.close();
-            db.close();
-        }
-    }
-    //Sobrecargado para EditarCicloActivity
-    public boolean existeCiclo(String nombre, String id) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = null;
-
-        // Query para ver si ya existe el mismo nombre
-        String query = "SELECT * FROM " + CICLO_TABLA + " WHERE " + KEY_nombreCiclo + "=?";
-        cursor = db.rawQuery(query, new String[]{nombre});
-
-        // si cursor tiene al menos una row, ciclo ya existe
-        boolean rowHay = cursor.getCount() > 0;
-        if(rowHay == true) {
-            cursor.moveToFirst();
-            @SuppressLint("Range") int idEncontrado = cursor.getInt(cursor.getColumnIndex(KEY_idCiclo));
-            if (idEncontrado == Integer.parseInt(id)) {
-                //el id es el mismo asi que se solo editando el mismo ciclo
-                return false;
-            } else {
-                cursor.close();
-                db.close();
-                return rowHay;
+    public void existeCiclo(String nombre, ExisteCallback callback) {
+        // Call getCiclos method to fetch all ciclos
+        getCiclos(new Callback() {
+            @Override
+            public boolean onSuccess(Cursor cursor) {
+                // Check if the provided nombre exists in the fetched ciclos
+                boolean existe = false;
+                if (cursor != null && cursor.moveToFirst()) {
+                    do {
+                        @SuppressLint("Range") String nombreCiclo = cursor.getString(cursor.getColumnIndex(KEY_nombreCiclo));
+                        if (nombreCiclo != null && nombreCiclo.equals(nombre)) {
+                            existe = true;
+                            break;
+                        }
+                    } while (cursor.moveToNext());
+                }
+                // llamar el callback con el resultado
+                callback.onResult(existe);
+                if (cursor != null) {
+                    cursor.close();
+                }
+                return existe;
             }
 
-        }
-        return rowHay;
-
+            @Override
+            public void onError(String error) {
+                // Handle error if needed
+                callback.onResult(false); // Asumir ciclo no existe en caso de error
+            }
+        });
     }
+    //Sobrecargado para EditarCicloActivity
+    public void existeCiclo(String nombre, String id, ExisteCallback callback) {
+        // llmar getCiclos para conseguir todos los ciclos
+        getCiclos(new Callback() {
+            @Override
+            public boolean onSuccess(Cursor cursor) {
+                // Ver si nombre existe
+                boolean existe = false;
+                if (cursor != null && cursor.moveToFirst()) {
+                    do {
+                        @SuppressLint("Range") String nombreCiclo = cursor.getString(cursor.getColumnIndex(KEY_nombreCiclo));
+                        if (nombreCiclo != null && nombreCiclo.equals(nombre)) {
+                            // Si el nombre es igual, ver si id es igual tambien
+                            @SuppressLint("Range") int idEncontrado = cursor.getInt(cursor.getColumnIndex(KEY_idCiclo));
+                            if (String.valueOf(idEncontrado).equals(id)) {
+                                // Mismo id, entonces editando mismo ciclo
+                                existe = false;
+                            } else {
+                                // Diferente id, entonces otro ciclo con el mismo nombre existe
+                                existe = true;
+                                break;
+                            }
+                        }
+                    } while (cursor.moveToNext());
+                }
+                // llamar callback con los resultados
+                callback.onResult(existe);
+                if (cursor != null) {
+                    cursor.close();
+                }
+                return existe;
+            }
 
-
-    //Insertar Datos iniciales
-    public void insertarDatosInicialesCiclo() {
-        SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM " + CICLO_TABLA, null);
-        cursor.moveToFirst();
-        int count = cursor.getInt(0);
-        cursor.close();
-
-        if (count == 0) {
-            agregarCiclo("Ciclo 01 2023", "2023-03-05", "2023-07-10");
-            agregarCiclo("Ciclo 02 2023", "2023-07-20", "2023-12-10");
-            agregarCiclo("Ciclo 01 2024", "2024-03-05", "2024-07-10");
-            agregarCiclo("Ciclo 02 2024", "2024-07-20", "2024-12-10");
-        }
+            @Override
+            public void onError(String error) {
+                // Handle error if needed
+                callback.onResult(false); // Asumir ciclo no existe en error
+            }
+        });
     }
 
 
@@ -1712,6 +2253,7 @@ public class BaseDatosHelper extends SQLiteOpenHelper {
     }
 
     //Get Usuario
+
     public Cursor getUsuario(String id, String nombre) {
         SQLiteDatabase db = this.getReadableDatabase();
 
@@ -1725,6 +2267,8 @@ public class BaseDatosHelper extends SQLiteOpenHelper {
         return cursor;
     }
     //Sobrecargar
+
+
     public Cursor getUsuario(String nombre) {
         SQLiteDatabase db = this.getReadableDatabase();
 
@@ -1737,6 +2281,49 @@ public class BaseDatosHelper extends SQLiteOpenHelper {
 
         return cursor;
     }
+
+
+
+    public void getUsuario(final String nombre, final Callback callback) {
+        String urlWithParams = URL + "usuarios/get_usuario_con_nombre.php" + "?nombre=" + nombre;
+        Log.e("URL", urlWithParams);
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                (Request.Method.GET, urlWithParams, null, new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            if (response.has("error")) {
+                                callback.onError(response.getString("error"));
+                            } else {
+                                MatrixCursor cursor = new MatrixCursor(new String[]{
+                                        "idUsuario", "nombreUsuario", "clave", "rol", "imagenPerfil"});
+                                byte[] imagenPerfilBytes = Base64.decode(response.getString("imagenPerfil"), Base64.DEFAULT);
+
+                                cursor.addRow(new Object[]{
+                                        response.getInt("idUsuario"),
+                                        response.getString("nombreUsuario"),
+                                        response.getString("clave"),
+                                        response.getString("rol"),
+                                        imagenPerfilBytes
+                                });
+
+                                callback.onSuccess(cursor);
+                            }
+                        } catch (JSONException e) {
+                            callback.onError(e.getMessage());
+                        }
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        callback.onError(error.getMessage());
+                    }
+                });
+
+        requestQueue.add(jsonObjectRequest);
+    }
+
 
     //Actualizar Usuario
     public boolean actualizarUsuario(String idUsuario, String nombreusuario, String clave, String rol, Bitmap perfil) {
@@ -1770,6 +2357,21 @@ public class BaseDatosHelper extends SQLiteOpenHelper {
             agregarUsuario("UsuarioCoordinador", "PDM115", "Coordinador", BitmapFactory.decodeResource(context.getResources(), R.drawable.coordinacion));
             agregarUsuario("UsuarioEncargado", "PDM115", "Encargado de Horario", BitmapFactory.decodeResource(context.getResources(), R.drawable.docente));
         }
+
+
+    }
+
+    //Callbacks para hacer un thread asincrono para llamadas de red
+    public interface Callback {
+        boolean onSuccess(Cursor cursor);
+        void onError(String error);
+    }
+    public interface Callback2 {
+        boolean onSuccess(Cursor cursor);
+        void onError(String error);
+    }
+    public interface ExisteCallback {
+        void onResult(boolean exists);
     }
 
 

@@ -91,38 +91,60 @@ public class AgregarSolicitudesHorarioActivity extends AppCompatActivity {
                 nombreEvento = editTextNombre.getText().toString();
                 tipoEvento = editTextTipo.getText().toString();
 
-                Cursor cursor = baseDatosHelper.getAsignatura(Materia, null);
-                String idAsignatura = cursor.getString(0);
+                baseDatosHelper.getAsignatura(Materia, new BaseDatosHelper.Callback() {
+                    @Override
+                    public boolean onSuccess(Cursor cursor) {
+                        String idAsignatura = cursor.getString(0);
 
-                cursor = baseDatosHelper.getGrupoAsignatura(idAsignatura, null);
-                String idGrupo = cursor.getString(0);
-
-                cursor = baseDatosHelper.getLocal(local, null);
-                String idLocal = cursor.getString(0);
-
+                        cursor = baseDatosHelper.getGrupoAsignatura(idAsignatura, null);
+                        String idGrupo = cursor.getString(0);
 
 
-                String horaInicioHorario = "" + horaInicio+":"+minutosInicio+":00";
-                String horaFinHorario = ""+horaFin+":"+minutosFin+":00";
+                        final String[] idLocal = new String[1];
+                        baseDatosHelper.getLocal(local, new BaseDatosHelper.Callback() {
+                            @Override
+                            public boolean onSuccess(Cursor cursor) {
+                                idLocal[0] = cursor.getString(0);
+                                return false;
+                            }
 
-                //crear horario
-                String idHorario = baseDatosHelper.agregarHorario(dias, horaInicioHorario, horaFinHorario);
+                            @Override
+                            public void onError(String error) {
+
+                            }
+                        }, null);
 
 
-                //crear propuesta, el valor idEvento solo es para crearlo
-                String idPropuesta = baseDatosHelper.agregarPropuesta("0", "1", "1", idCoordinador);
+                        String horaInicioHorario = "" + horaInicio+":"+minutosInicio+":00";
+                        String horaFinHorario = ""+horaFin+":"+minutosFin+":00";
 
-                //crear prioridad
-                String idPrioridad = baseDatosHelper.agregarPrioridad("1");
+                        //crear horario
+                        String idHorario = baseDatosHelper.agregarHorario(dias, horaInicioHorario, horaFinHorario);
 
-                //Crear evento
-                String idEvento = baseDatosHelper.agregarEvento(idGrupo, idPropuesta, idHorario, idPrioridad, idLocal, nombreEvento, tipoEvento );
 
-                //actualizar Propuesta para poner idEvento
-                baseDatosHelper.actualizarPropuesta(idPropuesta, "0", "1", idEvento, idCoordinador);
+                        //crear propuesta, el valor idEvento solo es para crearlo
+                        String idPropuesta = baseDatosHelper.agregarPropuesta("0", "1", "1", idCoordinador);
 
-                Toast.makeText(AgregarSolicitudesHorarioActivity.this, R.string.solicitud_realizada_correctamente, Toast.LENGTH_SHORT).show();
-                finish();
+                        //crear prioridad
+                        String idPrioridad = baseDatosHelper.agregarPrioridad("1");
+
+                        //Crear evento
+                        String idEvento = baseDatosHelper.agregarEvento(idGrupo, idPropuesta, idHorario, idPrioridad, idLocal[0], nombreEvento, tipoEvento );
+
+                        //actualizar Propuesta para poner idEvento
+                        baseDatosHelper.actualizarPropuesta(idPropuesta, "0", "1", idEvento, idCoordinador);
+
+                        Toast.makeText(AgregarSolicitudesHorarioActivity.this, R.string.solicitud_realizada_correctamente, Toast.LENGTH_SHORT).show();
+                        finish();
+                        return false;
+                    }
+
+                    @Override
+                    public void onError(String error) {
+
+                    }
+                });
+
 
             }
 

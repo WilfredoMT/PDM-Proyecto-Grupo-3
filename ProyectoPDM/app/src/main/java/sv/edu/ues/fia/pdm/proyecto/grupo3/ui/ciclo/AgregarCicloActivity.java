@@ -48,16 +48,25 @@ public class AgregarCicloActivity extends AppCompatActivity {
 
 
                 baseDatosHelper = new BaseDatosHelper(getBaseContext());
-                if (!baseDatosHelper.existeCiclo(nombre)) {
-                    // Si no existe agregar ciclo
-                    baseDatosHelper.agregarCiclo(nombre, fechaInicio, fechaFin);
-                    Toast.makeText(AgregarCicloActivity.this, R.string.ciclo_agregado_correctamente, Toast.LENGTH_SHORT).show();
-                    finish();
+                baseDatosHelper.existeCiclo(nombre, new BaseDatosHelper.ExisteCallback() {
+                    @Override
+                    public void onResult(boolean existe) {
+                        if (existe) {
+                            // Si existe mostrar error
+                            Toast.makeText(AgregarCicloActivity.this, R.string.el_ciclo_ya_existe_en_la_base_de_datos, Toast.LENGTH_SHORT).show();
 
-                } else {
-                    // Si existe mostrar error
-                    Toast.makeText(AgregarCicloActivity.this, R.string.el_ciclo_ya_existe_en_la_base_de_datos, Toast.LENGTH_SHORT).show();
-                }
+
+                        } else {
+                            // Si no existe agregar ciclo
+                            baseDatosHelper.agregarCiclo(nombre, fechaInicio, fechaFin);
+                            Toast.makeText(AgregarCicloActivity.this, R.string.ciclo_agregado_correctamente, Toast.LENGTH_SHORT).show();
+                            finish();
+
+                        }
+
+                    }
+                });
+
 
             }
         });

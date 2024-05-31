@@ -62,16 +62,28 @@ public class AsignarAdapter extends RecyclerView.Adapter<AsignarAdapter.AsignarV
         //cursor coordinador
         Cursor cursorCoord = baseDatosHelper.getCoordinador(idCoordinador);
         //cursor materia
-        Cursor cursorMateria = baseDatosHelper.getAsignatura(idAsignatura);
+        final String[] materia = new String[1];
+        baseDatosHelper.getAsignatura(idAsignatura, new BaseDatosHelper.Callback() {
+            @Override
+            public boolean onSuccess(Cursor cursor) {
+                int indexCodigoMateria = cursor.getColumnIndex(BaseDatosHelper.KEY_codigoAsignatura);
+                materia[0] = cursor.getString(indexCodigoMateria);
+                return false;
+            }
 
-        int indexCodigoMateria = cursorMateria.getColumnIndex(BaseDatosHelper.KEY_codigoAsignatura);
-        String materia = cursorMateria.getString(indexCodigoMateria);
+            @Override
+            public void onError(String error) {
+
+            }
+        });
+
+
 
         int indexNombreCoordinador = cursorCoord.getColumnIndex(BaseDatosHelper.KEY_nombreCoordinador);
         String nombre = cursorCoord.getString(indexNombreCoordinador);
 
         holder.textViewCoordinadoresNombre.setText(nombre);
-        holder.textViewMaterias.setText(materia);
+        holder.textViewMaterias.setText(materia[0]);
 
         // Set click listeners for buttons
 
@@ -82,7 +94,7 @@ public class AsignarAdapter extends RecyclerView.Adapter<AsignarAdapter.AsignarV
             Intent intent = new Intent(mContext, EditarAsignacionActivity.class);
             intent.putExtra("id", id);
             intent.putExtra("nombre", nombre);
-            intent.putExtra("materia", materia);
+            intent.putExtra("materia", materia[0]);
             mContext.startActivity(intent);
 
 

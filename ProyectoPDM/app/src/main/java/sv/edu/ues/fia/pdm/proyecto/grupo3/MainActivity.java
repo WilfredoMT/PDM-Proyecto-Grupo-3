@@ -13,7 +13,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.view.Menu;
 
-import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 
 import androidx.core.view.GravityCompat;
@@ -27,9 +26,6 @@ import android.util.Log;
 import android.content.Intent;
 
 import sv.edu.ues.fia.pdm.proyecto.grupo3.databinding.ActivityMainBinding;
-import sv.edu.ues.fia.pdm.proyecto.grupo3.ui.home.HomeFragment;
-import sv.edu.ues.fia.pdm.proyecto.grupo3.R;
-
 
 
 public class MainActivity extends AppCompatActivity {
@@ -180,11 +176,31 @@ public class MainActivity extends AppCompatActivity {
         TextView textViewRol = header.findViewById(R.id.textViewRol);
         textViewRol.setText(rolLogeado);
         ImageView imageViewperfil = header.findViewById(R.id.imageView);
-        Cursor cursor = baseDatosHelper.getUsuario(usuarioLogeado);
-        byte[] imagenUsuario = cursor.getBlob(imagenLogeadoId);
-        Bitmap imagen = baseDatosHelper.getBitmapFromBytes(imagenUsuario);
-        Bitmap imagenReducida = Bitmap.createScaledBitmap(imagen, 140, 140, false);
-        imageViewperfil.setImageBitmap(imagenReducida);
+
+
+        //
+        baseDatosHelper.getUsuario(usuarioLogeado, new BaseDatosHelper.Callback() {
+            @Override
+            public boolean onSuccess(Cursor cursor) {
+                if (cursor != null && cursor.moveToFirst()) {
+                    byte[] imagenUsuario = cursor.getBlob(imagenLogeadoId);
+                    Bitmap imagen = baseDatosHelper.getBitmapFromBytes(imagenUsuario);
+                    Bitmap imagenReducida = Bitmap.createScaledBitmap(imagen, 140, 140, false);
+                    imageViewperfil.setImageBitmap(imagenReducida);
+
+                }
+
+                return false;
+            }
+
+            @Override
+            public void onError(String error) {
+                Toast.makeText(MainActivity.this, "Error: " + error, Toast.LENGTH_SHORT).show();
+
+            }
+        });
+        //Cursor cursor = baseDatosHelper.getUsuario(usuarioLogeado);
+
 
 
     }

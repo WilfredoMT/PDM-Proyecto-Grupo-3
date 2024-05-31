@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -18,6 +19,7 @@ import java.util.ArrayList;
 
 import sv.edu.ues.fia.pdm.proyecto.grupo3.BaseDatosHelper;
 import sv.edu.ues.fia.pdm.proyecto.grupo3.R;
+import sv.edu.ues.fia.pdm.proyecto.grupo3.ui.materias.AgregarMateriaActivity;
 
 public class AgregarLocalesActivity extends AppCompatActivity {
     BaseDatosHelper baseDatosHelper;
@@ -41,6 +43,10 @@ public class AgregarLocalesActivity extends AppCompatActivity {
         //llenar spinner escuela con datos de la tabla escuela
         baseDatosHelper = new BaseDatosHelper(getBaseContext());
         dataList = new ArrayList<>();
+        adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, dataList);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        SpinnerEscuela.setAdapter(adapter);
+
         fetchDatosDB();
         // Crear un ArrayAdapter usando el dataList
         adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, dataList);
@@ -54,12 +60,24 @@ public class AgregarLocalesActivity extends AppCompatActivity {
         buttonAgregar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String idEscuela;
+                final String[] idEscuela = new String[1];
 
                 String nombreEscuela = SpinnerEscuela.getSelectedItem().toString();
-                Cursor cursor = baseDatosHelper.getEscuela(nombreEscuela);
-                int idIndex = cursor.getColumnIndex(BaseDatosHelper.KEY_idEscuela);
-                idEscuela = cursor.getString(idIndex);
+                baseDatosHelper.getEscuela(nombreEscuela, new BaseDatosHelper.Callback() {
+                    @Override
+                    public boolean onSuccess(Cursor cursor) {
+                        cursor.moveToFirst();
+                        int idIndex = cursor.getColumnIndex(BaseDatosHelper.KEY_idEscuela);
+                        idEscuela[0] = cursor.getString(idIndex);
+                        return false;
+                    }
+
+                    @Override
+                    public void onError(String error) {
+
+                    }
+                });
+
 
 
                 String nombreLocal, tipoLocal, capacidad;
@@ -70,16 +88,27 @@ public class AgregarLocalesActivity extends AppCompatActivity {
 
 
                 baseDatosHelper = new BaseDatosHelper(getBaseContext());
-                if (!baseDatosHelper.existeLocal(nombreLocal)) {
-                    // Si no existe agregar ciclo
-                    baseDatosHelper.agregarLocal(nombreLocal, tipoLocal, capacidad, idEscuela);
-                    Toast.makeText(AgregarLocalesActivity.this, R.string.local_agregado_correctamente, Toast.LENGTH_SHORT).show();
-                    finish();
+                baseDatosHelper.existeLocal(nombreLocal, new BaseDatosHelper.ExisteCallback() {
+                    @Override
+                    public void onResult(boolean existe) {
+                        if (existe) {
+                            // Si existe mostrar error
+                            Toast.makeText(AgregarLocalesActivity.this, R.string.el_local_ya_existe_en_la_base_de_datos, Toast.LENGTH_SHORT).show();
 
-                } else {
-                    // Si existe mostrar error
-                    Toast.makeText(AgregarLocalesActivity.this, R.string.el_local_ya_existe_en_la_base_de_datos, Toast.LENGTH_SHORT).show();
-                }
+
+
+                        } else {
+                            // Si no existe agregar local
+                            baseDatosHelper.agregarLocal(nombreLocal, tipoLocal, capacidad, idEscuela[0]);
+                            Toast.makeText(AgregarLocalesActivity.this, R.string.local_agregado_correctamente, Toast.LENGTH_SHORT).show();
+                            finish();
+
+
+                        }
+
+                    }
+                });
+
 
             }
         });
@@ -89,34 +118,33 @@ public class AgregarLocalesActivity extends AppCompatActivity {
         // Assuming you have a SQLiteOpenHelper subclass named MyDbHelper
         baseDatosHelper = new BaseDatosHelper(getBaseContext());
 
-        // Open the database for reading
-        SQLiteDatabase db = baseDatosHelper.getReadableDatabase();
+        baseDatosHelper.getEscuelas(new BaseDatosHelper.Callback() {
+            @Override
+            public boolean onSuccess(Cursor cursor) {
+                // Iterate through the cursor and populate dataList
+                while (cursor.moveToNext()) {
+                    String data = cursor.getString(cursor.getColumnIndexOrThrow("nomEscuela"));
+                    Log.e("Escuelas", data);
+                    dataList.add(data);
+                }
 
-        // Define a projection that specifies which columns from the database you will actually use after this query.
-        String[] projection = {
-                "nomEscuela" // Replace "columnName" with the actual column name from your database
-        };
+                // Close the cursor and database
+                cursor.close();
+                baseDatosHelper.close();
+                //notificar adapter
+                adapter.notifyDataSetChanged();
+                return false;
+            }
 
-        // Perform a query on the database
-        Cursor cursor = db.query(
-                "escuela",   // The table name
-                projection,             // The columns to return
-                null,          // The columns for the WHERE clause
-                null,      // The values for the WHERE clause
-                null,          // don't group the rows
-                null,           // don't filter by row groups
-                null            // The sort order
-        );
+            @Override
+            public void onError(String error) {
 
-        // Iterate through the cursor and populate dataList
-        while (cursor.moveToNext()) {
-            String data = cursor.getString(cursor.getColumnIndexOrThrow("nomEscuela"));
-            dataList.add(data);
-        }
+            }
+        });
 
-        // Close the cursor and database
-        cursor.close();
-        baseDatosHelper.close();
+
+
+
     }
 
 

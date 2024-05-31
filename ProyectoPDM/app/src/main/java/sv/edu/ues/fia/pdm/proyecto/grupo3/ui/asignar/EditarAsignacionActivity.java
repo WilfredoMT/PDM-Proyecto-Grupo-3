@@ -107,21 +107,33 @@ public class EditarAsignacionActivity extends AppCompatActivity {
 
 
                 String nombreCoordinadorEditado, codigoMateriaEditado, totalIntegrantesEditado;
-                String idCoordinador, idAsignatura;
+                final String[] idCoordinador = new String[1];
+                final String[] idAsignatura = new String[1];
 
                 nombreCoordinadorEditado = spinnnerCoordinador.getSelectedItem().toString();
                 codigoMateriaEditado = spinnerMateria.getSelectedItem().toString();
                 totalIntegrantesEditado = editTextIntegrantes.getText().toString();
 
-                Cursor cursor = baseDatosHelper.getAsignatura(codigoMateriaEditado, null);
-                idAsignatura = cursor.getString(0);
+                baseDatosHelper.getAsignatura(codigoMateriaEditado, new BaseDatosHelper.Callback() {
+                    @Override
+                    public boolean onSuccess(Cursor cursor) {
+                        idAsignatura[0] = cursor.getString(0);
 
-                cursor = baseDatosHelper.getCoordinador(nombreCoordinadorEditado, null);
-                idCoordinador = cursor.getString(0);
+                        cursor = baseDatosHelper.getCoordinador(nombreCoordinadorEditado, null);
+                        idCoordinador[0] = cursor.getString(0);
+                        return false;
+                    }
+
+                    @Override
+                    public void onError(String error) {
+
+                    }
+                });
 
 
 
-                baseDatosHelper.actualizarGrupoAsignatura(id, idAsignatura, idCoordinador, totalIntegrantesEditado);
+
+                baseDatosHelper.actualizarGrupoAsignatura(id, idAsignatura[0], idCoordinador[0], totalIntegrantesEditado);
                 Toast.makeText(EditarAsignacionActivity.this, R.string.grupo_editado_correctamente, Toast.LENGTH_SHORT).show();
                 finish();
 

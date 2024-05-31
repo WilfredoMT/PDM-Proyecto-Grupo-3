@@ -50,16 +50,29 @@ public class AgregarMateriaActivity extends AppCompatActivity {
 
                 baseDatosHelper = new BaseDatosHelper(getBaseContext());
 
-                if (!baseDatosHelper.existeAsignatura(codigoMateria)) {
-                    // Si no existe agregar materia
-                    baseDatosHelper.agregarAsignaturas(nombreMateria, codigoMateria, numeroCiclo);
-                    Toast.makeText(AgregarMateriaActivity.this, R.string.materia_agregada_correctamente, Toast.LENGTH_SHORT).show();
-                    finish();
+                baseDatosHelper.existeAsignatura(codigoMateria, new BaseDatosHelper.ExisteCallback() {
+                    @Override
+                    public void onResult(boolean existe) {
+                        if (existe) {
+                            // Si existe mostrar error
+                            Toast.makeText(AgregarMateriaActivity.this, R.string.la_materia_ya_existe, Toast.LENGTH_SHORT).show();
 
-                } else {
-                    // Si existe mostrar error
-                    Toast.makeText(AgregarMateriaActivity.this, R.string.la_materia_ya_existe, Toast.LENGTH_SHORT).show();
-                }
+
+
+                        } else {
+                            // Si no existe agregar materia
+                            baseDatosHelper.agregarAsignaturas(nombreMateria, numeroCiclo, codigoMateria);
+                            Toast.makeText(AgregarMateriaActivity.this, R.string.materia_agregada_correctamente, Toast.LENGTH_SHORT).show();
+                            finish();
+
+
+                        }
+
+                    }
+                });
+
+
+
 
             }
         });
