@@ -22,10 +22,10 @@ import sv.edu.ues.fia.pdm.proyecto.grupo3.R;
 import sv.edu.ues.fia.pdm.proyecto.grupo3.databinding.FragmentHorariosBinding;
 
 public class HorariosFragment extends Fragment {
-
-    private FragmentHorariosBinding binding;
     private BaseDatosHelper dbHelper;
     private Context mContext;
+
+    private FragmentHorariosBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         sv.edu.ues.fia.pdm.proyecto.grupo3.ui.horarios.HorariosViewModel horariosViewModel =
@@ -34,13 +34,11 @@ public class HorariosFragment extends Fragment {
         if (actionBar != null) {
             actionBar.setTitle("Horarios");
         }
+
         binding = FragmentHorariosBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
-        TextView scheduleTextView = root.findViewById(R.id.schedule_text_view);
+        TextView scheduleTextView = binding.textView;
 
-
-
-        View rootView = inflater.inflate(R.layout.fragment_horarios, container, false);
         dbHelper = new BaseDatosHelper(requireContext()); // Use requireContext() or getActivity() based on your requirements
 
         SQLiteDatabase db = dbHelper.getReadableDatabase();
@@ -76,7 +74,7 @@ public class HorariosFragment extends Fragment {
 
             // Append the event details to the TextView
 
-            Log.e("Horario", getString(R.string.diasemana) + dayOfWeek + "\n");
+
             scheduleTextView.append(getString(R.string.nombreEvento) + eventName + "\n");
             scheduleTextView.append(getString(R.string.diasemana) + dayOfWeek + "\n");
             scheduleTextView.append(getString(R.string.horainicios) + startTime + "\n");
@@ -88,6 +86,8 @@ public class HorariosFragment extends Fragment {
 
 
 
+        final TextView textView = binding.scheduleTextView;
+        horariosViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
         return root;
     }
 
