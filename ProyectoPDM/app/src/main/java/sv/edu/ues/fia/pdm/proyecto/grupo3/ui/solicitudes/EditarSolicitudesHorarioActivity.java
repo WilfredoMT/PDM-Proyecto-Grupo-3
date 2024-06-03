@@ -76,6 +76,7 @@ public class EditarSolicitudesHorarioActivity extends AppCompatActivity {
         baseDatosHelper.getLocal(idLocal, new BaseDatosHelper.Callback() {
             @Override
             public boolean onSuccess(Cursor cursor) {
+                cursor.moveToFirst();
                 local[0] = cursor.getString(1);
                 return false;
             }
@@ -96,6 +97,7 @@ public class EditarSolicitudesHorarioActivity extends AppCompatActivity {
         baseDatosHelper.getAsignatura(idAsignatura, new BaseDatosHelper.Callback() {
             @Override
             public boolean onSuccess(Cursor cursor) {
+                cursor.moveToFirst();
                 codigoMateria[0] = cursor.getString(2);
                 return false;
             }

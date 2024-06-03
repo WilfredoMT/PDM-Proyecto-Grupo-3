@@ -66,6 +66,7 @@ public class AsignarAdapter extends RecyclerView.Adapter<AsignarAdapter.AsignarV
         baseDatosHelper.getAsignatura(idAsignatura, new BaseDatosHelper.Callback() {
             @Override
             public boolean onSuccess(Cursor cursor) {
+                cursor.moveToFirst();
                 int indexCodigoMateria = cursor.getColumnIndex(BaseDatosHelper.KEY_codigoAsignatura);
                 materia[0] = cursor.getString(indexCodigoMateria);
                 return false;

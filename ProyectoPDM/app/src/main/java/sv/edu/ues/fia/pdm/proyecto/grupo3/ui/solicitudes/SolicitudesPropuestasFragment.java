@@ -95,7 +95,7 @@ public class SolicitudesPropuestasFragment extends Fragment {
     }
 
     public void refreshRecyclerView() {
-        ((MainActivity) requireActivity()).binding.appBarMain.fab.setVisibility(View.VISIBLE);
+        //((MainActivity) requireActivity()).binding.appBarMain.fab.setVisibility(View.VISIBLE);
         Cursor cursor = mDbHelper.getReadableDatabase().query(
                 BaseDatosHelper.EVENTO_TABLA,
                 null,
