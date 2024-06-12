@@ -140,14 +140,14 @@ public class MainActivity extends AppCompatActivity {
         }
         if (rolLogeado.equals("Encargado de Horario")) {
 
-            menuHorarios.setVisible(true);
+            menuHorarios.setVisible(false);
             menuPropuestas.setVisible(true);
             menuSolicitudesAtendidas.setVisible(true);
 
 
         }
         if (rolLogeado.equals("Coordinador")) {
-            menuHorarios.setVisible(true);
+            menuHorarios.setVisible(false);
             menuSolicitudesHorario.setVisible(true);
             menuRespuestaSolicitude.setVisible(true);
 

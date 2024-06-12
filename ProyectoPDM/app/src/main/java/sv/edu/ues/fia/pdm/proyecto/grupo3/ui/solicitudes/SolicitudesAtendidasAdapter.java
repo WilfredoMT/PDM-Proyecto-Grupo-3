@@ -3,6 +3,7 @@ package sv.edu.ues.fia.pdm.proyecto.grupo3.ui.solicitudes;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -89,7 +90,7 @@ public class SolicitudesAtendidasAdapter extends RecyclerView.Adapter<Solicitude
 
                         baseDatosHelper.actualizarPrioridad(idPrioridad, "3");
                         Toast.makeText(mContext.getApplicationContext(), R.string.propuesta_rechazada_correctamente, Toast.LENGTH_SHORT).show();
-                        SolicitudesPropuestasFragment.getInstance().refreshRecyclerView();
+                        //SolicitudesPropuestasFragment.getInstance().refreshRecyclerView();
 
                     }
                 });
@@ -138,7 +139,7 @@ public class SolicitudesAtendidasAdapter extends RecyclerView.Adapter<Solicitude
 
                         baseDatosHelper.actualizarPrioridad(idPrioridad, "2");
                         Toast.makeText(mContext.getApplicationContext(), R.string.propuesta_aceptada_correctamente, Toast.LENGTH_SHORT).show();
-                        SolicitudesPropuestasFragment.getInstance().refreshRecyclerView();
+
 
                     }
                 });
